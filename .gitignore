@@ -21,3 +21,15 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+*target
+*pom.xml
+*web.xml
+.vscode
+.idea
+.settings
+.project
+.classpath
+
+# TODO find what the hell those attach_pid#### files are and add them to gitignore
+
