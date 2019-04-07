@@ -5,3 +5,10 @@ CREATE TABLE IF NOT EXISTS properties (
     caption varchar(250),
     image varchar(300)
 );
+
+CREATE TABLE IF NOT EXISTS interests (
+    id INTEGER PRIMARY KEY,
+    propertyId INTEGER REFERENCES properties(id),
+    description varchar(300),
+    email varchar(300)
+);
