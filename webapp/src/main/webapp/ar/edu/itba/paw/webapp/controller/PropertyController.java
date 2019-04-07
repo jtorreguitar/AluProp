@@ -10,19 +10,20 @@ import org.springframework.web.servlet.ModelAndView;
 import ar.edu.itba.paw.interfaces.IPropertyService;
 
 @Controller
+@RequestMapping("/")
 public class PropertyController {
 
     @Autowired
     private IPropertyService propertyService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("greeting", propertyService.getAll());
         return mav;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") int id) {
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("greeting", propertyService.get(id).getCaption());
