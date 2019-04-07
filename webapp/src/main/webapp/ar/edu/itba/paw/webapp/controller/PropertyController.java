@@ -10,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ar.edu.itba.paw.interfaces.IPropertyService;
 
 @Controller()
-@RequestMapping("/property")
 public class PropertyController {
 
     @Autowired
