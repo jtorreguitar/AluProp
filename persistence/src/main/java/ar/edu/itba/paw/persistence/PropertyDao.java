@@ -57,7 +57,7 @@ public class PropertyDao implements IPropertyDao {
         args.put("email", email);
         args.put("description", description);
         final Number id = jdbcInsert.executeAndReturnKey(args);
-        final List<Interest> list = jdbcTemplate.query("SELECT * FROM properties WHERE id = ?", ROW_MAPPER_INTEREST, id);
+        final List<Interest> list = jdbcTemplate.query("SELECT * FROM interests WHERE id = ?", ROW_MAPPER_INTEREST, id.longValue());
         if (list.isEmpty()) {
             return null;
         }
