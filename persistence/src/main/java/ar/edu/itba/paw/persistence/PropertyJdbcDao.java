@@ -18,7 +18,7 @@ import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 
 @Repository
-public class PropertyDao implements IPropertyDao {
+public class PropertyJdbcDao implements PropertyDao {
 
     private JdbcTemplate jdbcTemplate;
     private final RowMapper<Property> ROW_MAPPER = (rs, rowNum) -> new Property(rs.getInt("id"),
