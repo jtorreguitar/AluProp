@@ -23,8 +23,6 @@
 hs_err_pid*
 
 *target
-*pom.xml
-*web.xml
 .vscode
 .idea
 .settings
