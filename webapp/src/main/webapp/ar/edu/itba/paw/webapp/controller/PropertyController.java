@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 // import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,8 +34,10 @@ public class PropertyController {
         return mav;
     }
 
-    @RequestMapping(value = "{propertyId}/interest", method = RequestMethod.POST)
-    public ModelAndView interest(int propertyId, String email, String description) {
+    @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
+    public ModelAndView interest(@PathVariable(value = "id") int propertyId, 
+                                @RequestParam(required = true) String email, 
+                                @RequestParam(required = false) String description) {
         final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, email, description);
         if(errorsOrLackThereof.isEmpty())
             return new ModelAndView("redirect:/" + propertyId);
