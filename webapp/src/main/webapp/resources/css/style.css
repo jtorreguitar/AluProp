@@ -1,0 +1,45 @@
+@media (min-width: 768px) {
+
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+
+}
+
+body {
+    display: flex;
+    flex-flow: column wrap;
+    min-height: 75rem;
+    padding-top: 4.5rem;
+    background-color: #EDF5E1 !important;
+    align-items: center;
+
+}
+
+img {
+    width: 30rem;
+    height: 15rem;
+    object-fit: cover;
+}
+
+.search-bar-form {
+    margin: 0;
+}
+
+.elem-container {
+    display: flex;
+    flex-flow: row wrap;
+    align-items:   center !important;
+
+    padding-left: 12.5%;
+    padding-right: 12.5%;
+
+}
+
+.property-elem {
+    display: flex;
+    /*! flex-flow: row wrap; */
+    /*! align-items: baseline; */
+    margin: 1rem;
+}
+
