@@ -14,7 +14,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import ar.edu.itba.paw.interfaces.PropertyDao;
-import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 
 @Repository

@@ -8,10 +8,8 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PropertyDao;
 import ar.edu.itba.paw.interfaces.PropertyService;
-import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 
 @Service
