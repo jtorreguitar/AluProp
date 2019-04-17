@@ -13,22 +13,20 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import ar.edu.itba.paw.interfaces.IPropertyDao;
+import ar.edu.itba.paw.interfaces.PropertyDao;
 import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 
 @Repository
-public class PropertyJdbcDao implements PropertyDao {
+public class APPropertyJdbcDao implements PropertyDao {
 
     private JdbcTemplate jdbcTemplate;
     private final RowMapper<Property> ROW_MAPPER = (rs, rowNum) -> new Property(rs.getInt("id"),
             rs.getString("caption"), rs.getString("description"), rs.getString("image"), rs.getString("area"));
-    private final RowMapper<Interest> ROW_MAPPER_INTEREST = (rs, rowNum) -> new Interest(rs.getInt("id"),
-            rs.getInt("propertyId"), rs.getString("description"), rs.getString("email"));
     private final SimpleJdbcInsert jdbcInsert;
 
     @Autowired
-    public PropertyDao(DataSource ds) {
+    public APPropertyJdbcDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                             .withTableName("interests")
@@ -51,17 +49,20 @@ public class PropertyJdbcDao implements PropertyDao {
     }
 
     @Override
-    public Interest interest(int propertyId, String email, String description) {
+    public boolean showInterest(int propertyId, String email, String description) {
+        final int rowsAffected 
+            = jdbcInsert.execute(generateArguementsForInterestCreation(propertyId, email, description));
+        if (rowsAffected == 1)
+            return true;
+        return false;
+    }
+
+    private Map<String, Object> generateArguementsForInterestCreation(int propertyId, String email, String description) {
         final Map<String, Object> args = new HashMap<>();
         args.put("propertyId", propertyId);
         args.put("email", email);
         args.put("description", description);
-        final Number id = jdbcInsert.executeAndReturnKey(args);
-        final List<Interest> list = jdbcTemplate.query("SELECT * FROM interests WHERE id = ?", ROW_MAPPER_INTEREST, id.longValue());
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0);
+        return args;
     }
 
 }

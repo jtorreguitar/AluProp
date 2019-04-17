@@ -7,19 +7,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+// import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import ar.edu.itba.paw.interfaces.Either;
-import ar.edu.itba.paw.interfaces.IPropertyService;
-import ar.edu.itba.paw.model.Interest;
+import ar.edu.itba.paw.interfaces.PropertyService;
 
 @Controller
 @RequestMapping("/")
 public class PropertyController {
 
     @Autowired
-    private IPropertyService propertyService;
+    private PropertyService propertyService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -35,15 +33,13 @@ public class PropertyController {
         return mav;
     }
 
-    @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
-    public ModelAndView interest(@PathVariable("id") int propertyId,
-                                @RequestParam(value = "email", required = true) String email,
-                                @RequestParam(value = "description") String description) {
-        final Either<Interest, List<String>> interest = propertyService.interest(propertyId, email, description);
-        if(interest.hasValue())
-            return new ModelAndView("redirect:/" + interest.value().getPropertyId());
+    @RequestMapping(value = "{propertyId}/interest", method = RequestMethod.POST)
+    public ModelAndView interest(int propertyId, String email, String description) {
+        final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, email, description);
+        if(errorsOrLackThereof.isEmpty())
+            return new ModelAndView("redirect:/" + propertyId);
         ModelAndView mav = new ModelAndView("index");
-        mav.addObject("errors", interest.alternative());
+        mav.addObject("errors", errorsOrLackThereof);
         return mav;
     }
 }

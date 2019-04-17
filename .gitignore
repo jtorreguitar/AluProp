@@ -29,6 +29,7 @@ hs_err_pid*
 .settings
 .project
 .classpath
+*application.properties
 
 # TODO find what the hell those attach_pid#### files are and add them to gitignore
 
