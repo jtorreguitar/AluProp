@@ -23,11 +23,11 @@
 hs_err_pid*
 
 *target
-*web.xml
 .vscode
 .idea
 .settings
 .project
+
 *.classpath
 *application.properties
 *.attach_pid*
