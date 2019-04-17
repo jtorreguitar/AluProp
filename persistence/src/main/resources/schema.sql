@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS properties (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     area varchar(250),
     description varchar(3000),
     caption varchar(250),
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS properties (
 );
 
 CREATE TABLE IF NOT EXISTS interests (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     propertyId INTEGER REFERENCES properties(id),
     description varchar(300),
     email varchar(300)

@@ -1,20 +1,23 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import ar.edu.itba.paw.interfaces.IPropertyService;
+import ar.edu.itba.paw.interfaces.PropertyService;
 
 @Controller
 @RequestMapping("/")
 public class PropertyController {
 
     @Autowired
-    private IPropertyService propertyService;
+    private PropertyService propertyService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -27,6 +30,18 @@ public class PropertyController {
     public ModelAndView get(@PathVariable("id") int id) {
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("greeting", propertyService.get(id).getCaption());
+        return mav;
+    }
+
+    @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
+    public ModelAndView interest(@PathVariable(value = "id") int propertyId, 
+                                @RequestParam(required = true) String email, 
+                                @RequestParam(required = false) String description) {
+        final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, email, description);
+        if(errorsOrLackThereof.isEmpty())
+            return new ModelAndView("redirect:/" + propertyId);
+        ModelAndView mav = new ModelAndView("index");
+        mav.addObject("errors", errorsOrLackThereof);
         return mav;
     }
 }
