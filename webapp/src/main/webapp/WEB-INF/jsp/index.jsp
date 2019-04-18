@@ -22,7 +22,6 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse" id="navbarCollapse">
-
             <ul class="navbar-nav mr-auto">
                 <%--<li class="nav-item active">--%>
                     <%--<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>--%>
@@ -35,8 +34,9 @@
                 <%--</li>--%>
             </ul>
             <ul class="navbar-nav" style="float: right">
-                <li class="nav-item"><a href="/logIn" class="nav-link">Log In</a></li>
-                <li class="nav-item"><a href="/signUp" class="nav-link">Sign Up</a></li>
+                <li><a class="nav-link mr-1 bold" href="/signUp">Sign up</a></li>
+                <li><span class="nav-link">or</span></li>
+                <li><a class="nav-link mr-1 bold" href="/logIn">Log in</a></li>
             </ul>
             <%--<form class="form-inline mt-2 mt-md-0 search-bar-form">--%>
                 <%--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">--%>
