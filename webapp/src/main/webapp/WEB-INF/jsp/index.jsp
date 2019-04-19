@@ -34,9 +34,9 @@
                 <%--</li>--%>
             </ul>
             <ul class="navbar-nav" style="float: right">
-                <li><a class="nav-link mr-1 bold" href="/signUp">Sign up</a></li>
+                <li><a class="nav-link mr-1 bold" href="/signup">Sign up</a></li>
                 <li><span class="nav-link">or</span></li>
-                <li><a class="nav-link mr-1 bold" href="/logIn">Log in</a></li>
+                <li><a class="nav-link mr-1 bold" href="/login">Log in</a></li>
             </ul>
             <%--<form class="form-inline mt-2 mt-md-0 search-bar-form">--%>
                 <%--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">--%>

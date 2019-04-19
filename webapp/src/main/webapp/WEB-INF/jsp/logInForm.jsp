@@ -34,7 +34,7 @@
                 <%--</li>--%>
             </ul>
             <ul class="navbar-nav" style="float: right">
-                <li><a class="nav-link mr-1 bold" href="/signUp">Sign up</a></li>
+                <li><a class="nav-link mr-1 bold" href="/signup">Sign up</a></li>
                 <li><span class="nav-link mr-1">or</span></li>
                 <li><a class="nav-link mr-1 bold active" href="#">Log in</a></li>
             </ul>
@@ -51,7 +51,7 @@
             <aside class="col-md-6">
                 <div class="card">
                     <header class="card-header">
-                        <a href="/signUp" class="float-right btn btn-outline-primary mt-1">Sign up</a>
+                        <a href="/signup" class="float-right btn btn-outline-primary mt-1">Sign up</a>
                         <h4 class="card-title mt-2">Log in</h4>
                     </header>
                     <article class="card-body">
