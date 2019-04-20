@@ -1,12 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
-import java.util.Collection;
-
 import ar.edu.itba.paw.model.Property;
 
-public interface PropertyDao {
+public interface PropertyDao extends Dao<Property>{
 
-    Property get(int id);
-    Collection<Property> getAll();
 	boolean showInterest(int propertyId, String email, String description);
 }
