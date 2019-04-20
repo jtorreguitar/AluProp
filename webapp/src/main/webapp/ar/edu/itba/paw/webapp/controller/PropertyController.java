@@ -22,7 +22,7 @@ public class PropertyController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
         final ModelAndView mav = new ModelAndView("index");
-        mav.addObject("greeting", propertyService.getAll());
+        mav.addObject("properties", propertyService.getAll());
         return mav;
     }
 
