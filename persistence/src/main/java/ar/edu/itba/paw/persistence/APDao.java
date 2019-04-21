@@ -19,9 +19,9 @@ public abstract class APDao<T> implements Dao<T> {
         this.jdbcTemplate = new JdbcTemplate(ds);
     }
 
-    public T get(int id) {
-        final List<T> list = jdbcTemplate.query("SELECT * FROM " + getTableName() + " WHERE id = ?", getRowMapper(),
-                id);
+    public T get(long id) {
+        final List<T> list = jdbcTemplate
+                                .query("SELECT * FROM " + getTableName() + " WHERE id = ?", getRowMapper(), id);
         return list.isEmpty() ? null : list.get(0);
     }
 
@@ -36,6 +36,4 @@ public abstract class APDao<T> implements Dao<T> {
     protected abstract String getTableName();
 
     protected abstract RowMapper<T> getRowMapper();
-
-    protected abstract SimpleJdbcInsert getJdbcInsert();
 }
