@@ -1,10 +1,11 @@
-package ar.edu.itba.paw.service;
+package ar.edu.itba.paw.webapp.auth;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,8 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import ar.edu.itba.paw.model.User;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class APUserDetailsService implements UserDetailsService {
 
     @Autowired

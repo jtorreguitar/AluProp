@@ -4,9 +4,11 @@ import ar.edu.itba.paw.interfaces.UniversityDao;
 import ar.edu.itba.paw.model.University;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 
+@Repository
 public class APUniversityDao extends APDao<University> implements UniversityDao {
     private RowMapper<University> ROW_MAPPER = (rs, rowNum)
         -> new University(rs.getLong("id"), rs.getString("name"));
