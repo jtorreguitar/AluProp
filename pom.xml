@@ -14,8 +14,8 @@
     <org.postgresql.version>9.3-1102-jdbc41</org.postgresql.version>
     <spring-security.version>4.0.4.RELEASE</spring-security.version>
     <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
-    <javax.validation-api.version>1.0.0.GA</javax.validation-api.version>
-    <org.hibernate.validator>4.3.1.Final</org.hibernate.validator>
+    <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
+    <org.hibernate.validator>6.0.16.Final</org.hibernate.validator>
   </properties>
 
   <build>
@@ -79,8 +79,7 @@
       <dependency>
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
-        <version>${javax.validation-api.version}</version
-        >
+        <version>${javax.validation-api.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
