@@ -17,9 +17,7 @@ public class Property {
     private Collection<Rule> rules;
     private Collection<User> interestedUsers;
 
-    private Property(Builder builder) {
-
-    }
+    private Property() { }
 
     public long getId() {
         return id;
@@ -68,6 +66,10 @@ public class Property {
     public static class Builder {
         public static final String MUST_BE_PROVIDED = "must be provided.";
         private Property property;
+
+        public Builder() {
+            this.property = new Property();
+        }
 
         public Property build() {
             if(property.id < 1) throw new IllegalArgumentException("id" + MUST_BE_PROVIDED);

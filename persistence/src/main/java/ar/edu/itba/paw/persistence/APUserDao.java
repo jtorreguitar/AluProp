@@ -51,6 +51,15 @@ public class APUserDao extends APDao<User> implements UserDao {
         return list.isEmpty() ? null : list.get(0);
     }
 
+    public User getUserWithRelatedEntities(long id) {
+        User incompleteUser = get(id);
+        return new User.Builder()
+                .fromUser(incompleteUser)
+                .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
+                .withCareer(careerDao.get(incompleteUser.getCareerId()))
+                .build();
+    }
+
     @Override
     protected RowMapper<User> getRowMapper() {
         return this.ROW_MAPPER;

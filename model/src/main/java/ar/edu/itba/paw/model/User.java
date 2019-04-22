@@ -88,6 +88,10 @@ public class User {
     public static class Builder {
         private static User user;
 
+        public Builder() {
+            this.user = new User();
+        }
+
         public User build(){
             ArgumentUtility.isNotPositive(user.id, "id must be provided.");
             ArgumentUtility.stringIsNotNullOrEmpty(user.email, "email must be provided.");
