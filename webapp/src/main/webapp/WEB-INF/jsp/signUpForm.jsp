@@ -11,9 +11,9 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
     <!-- Bootstrap core css -->
-    <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body data-gr-c-s-loaded="true">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -52,21 +52,51 @@
                     </header>
                     <article class="card-body">
                         <form>
+                            <div class="form-group">
+                                <label>Email address</label>
+                                <input type="email" class="form-control" placeholder="">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input class="form-control" type="password">
+                                <label>Re-enter password</label>
+                                <input class="form-control" type="password">
+                            </div>
                             <div class="form-row">
                                 <div class="col form-group">
                                     <label>First name </label>
                                     <input type="text" class="form-control" placeholder="">
-                                </div> <!-- form-group end.// -->
+                                </div>
                                 <div class="col form-group">
                                     <label>Last name</label>
                                     <input type="text" class="form-control" placeholder=" ">
-                                </div> <!-- form-group end.// -->
+                                </div>
                             </div> <!-- form-row end.// -->
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label>Phone Number</label>
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                                <div class="col form-group">
+                                    <label>Date of Birth</label>
+                                    <input type="date" class="form-control" placeholder="dd/mm/yyyy">
+                                </div>
+                            </div>
                             <div class="form-group">
-                                <label>Email address</label>
-                                <input type="email" class="form-control" placeholder="">
-                            </div> <!-- form-group end.// -->
+                                <label>University</label>
+                                <input type="text" class="form-control" placeholder="">
+                            </div>
+
                             <div class="form-group">
+                                <label>Career</label>
+                                <input type="text" class="form-control" placeholder="">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea type="text" class="form-control"  style="resize:both;" placeholder="Tell us a little about yourself..."></textarea>
+                            </div>
+                            <div class="col form-group">
                                 <label class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="gender" value="option1">
                                     <span class="form-check-label"> Male </span>
@@ -75,7 +105,11 @@
                                     <input class="form-check-input" type="radio" name="gender" value="option2">
                                     <span class="form-check-label"> Female</span>
                                 </label>
-                            </div> <!-- form-group end.// -->
+                            </div>
+
+
+
+
                             <%--<div class="form-row">--%>
                                 <%--<div class="form-group col-md-6">--%>
                                     <%--<label>City</label>--%>
@@ -93,12 +127,7 @@
                                     <%--</select>--%>
                                 <%--</div> <!-- form-group end.// -->--%>
                             <%--</div> <!-- form-row.// -->--%>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input class="form-control" type="password">
-                                <label>Re-enter password</label>
-                                <input class="form-control" type="password">
-                            </div> <!-- form-group end.// -->
+
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary btn-block"> Register  </button>
                             </div> <!-- form-group// -->
