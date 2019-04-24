@@ -65,3 +65,14 @@ CREATE TABLE IF NOT EXISTS interests (
     propertyId INTEGER REFERENCES properties(id),
     userId INTEGER REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS rules (
+    id SERIAL PRIMARY KEY,
+    name varchar(250)
+);
+
+CREATE TABLE IF NOT EXISTS propertyRules (
+    id SERIAL PRIMARY KEY,
+    propertyId INTEGER REFERENCES properties(id),
+    ruleId INTEGER REFERENCES rules(id)
+);

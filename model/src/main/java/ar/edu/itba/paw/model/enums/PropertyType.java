@@ -6,8 +6,7 @@ import java.util.Map;
 public enum PropertyType {
     HOUSE(0),
     APARTMENT(1),
-    LOFT(2),
-    MOTEL(3);
+    LOFT(2);
 
     private int value;
     private static Map<Integer, PropertyType> map = new HashMap<>();
