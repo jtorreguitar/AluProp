@@ -28,8 +28,8 @@ public class PropertyController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") int id) {
-        final ModelAndView mav = new ModelAndView("index");
-        mav.addObject("greeting", propertyService.get(id).getCaption());
+        final ModelAndView mav = new ModelAndView("detailedProperty");
+        mav.addObject("property", propertyService.get(id));
         return mav;
     }
 

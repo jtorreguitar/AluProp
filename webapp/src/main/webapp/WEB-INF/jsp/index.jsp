@@ -19,35 +19,9 @@
 
     <!-- #######################     NAV BAR     ####################### -->
 
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="/">AluProp</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <%--<li class="nav-item active">--%>
-                    <%--<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>--%>
-                <%--</li>--%>
-                <%--<li class="nav-item">--%>
-                    <%--<a class="nav-link" href="#">Link</a>--%>
-                <%--</li>--%>
-                <%--<li class="nav-item">--%>
-                    <%--<a class="nav-link disabled" href="#">Disabled</a>--%>
-                <%--</li>--%>
-            </ul>
-            <ul class="navbar-nav" style="float: right">
-                <li><a class="nav-link mr-1 bold" href="/signup">Sign up</a></li>
-                <li><span class="nav-link">or</span></li>
-                <li><a class="nav-link mr-1 bold" href="/login">Log in</a></li>
-            </ul>
-            <%--<form class="form-inline mt-2 mt-md-0 search-bar-form">--%>
-                <%--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">--%>
-                <%--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>--%>
-            <%--</form>--%>
 
-        </div>
-    </nav>
+    <%@include file="navigationBar.jsp"%>
+
 
     <!-- ####################### CARDS CONTAINING PROPERTIES  #######################-->
     <div class="elem-container">
@@ -55,17 +29,17 @@
             <c:when test="${not empty properties}">
                 <c:forEach var="property" items="${properties}">
                     <div class="card property-elem">
-                        <img class="card-img-top" src="${property.image}" alt="Card image" style="width:100%">
+                        <img class="card-img-top" src="${property.image}" alt="Card image">
                         <div class="card-body">
                             <h4 class="card-title">${property.description}</h4>
                             <p class="card-text">${property.caption}</p>
-                            <a href="#" class="btn btn-primary stretched-link">Me interesa</a>
+                            <a href="/${property.id}" class="btn btn-primary stretched-link">Ver m&aacute;s</a>
                         </div>
                     </div>
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <h1> Oops, There seems there is no properties loaded right now. </h1>
+                <h1> Oops, there are no properties loaded </h1>
             </c:otherwise>
         </c:choose>
 
