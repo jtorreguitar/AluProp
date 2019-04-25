@@ -22,11 +22,6 @@ public class UserController {
         return new ModelAndView("logInForm");
     }
 
-    @RequestMapping(value = "/logIn", method = RequestMethod.POST )
-    public ModelAndView login(@ModelAttribute("LogInForm") LogInForm form) {
-        return new ModelAndView("logInForm");
-    }
-
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
     public ModelAndView register() {
         return new ModelAndView("signUpForm");

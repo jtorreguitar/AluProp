@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import ar.edu.itba.paw.webapp.auth.APUserDetailsService;
@@ -14,8 +15,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -32,28 +39,28 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-    
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
-                .invalidSessionUrl("/logIn")
+            .invalidSessionUrl("/user/logIn")
             .and().authorizeRequests()
-                .antMatchers("/logIn").anonymous()
+                .antMatchers("/user/logIn", "/user/signUp").anonymous()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").authenticated()
             .and().formLogin()
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .defaultSuccessUrl("/", false)
-                .loginPage("/logIn")
+                .loginPage("/user/logIn")
             .and().rememberMe()
-                .rememberMeParameter("j_rememberme")
+                .rememberMeParameter("rememberme")
                 .userDetailsService(userDetailsService)
                 .key(remembermeKey)
                 .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
             .and().logout()
-                .logoutUrl("/logOut")
-                .logoutSuccessUrl("/logIn")
+                .logoutUrl("/user/logOut")
+                .logoutSuccessUrl("/user/logIn")
             .and().exceptionHandling()
                 .accessDeniedPage("/403")
             .and().csrf().disable();
@@ -62,7 +69,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
-            .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/403");
+                .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/403");
     }
 
     @Bean
