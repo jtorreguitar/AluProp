@@ -1,90 +1,147 @@
 package ar.edu.itba.paw.model;
 
-public class Property {
+import ar.edu.itba.paw.model.enums.PropertyType;
 
-    private int id;
+import java.util.Collection;
+
+public class Property {
+    private long id;
     private String caption;
     private String description;
     private String image;
-    private String area;
+    private PropertyType propertyType;
+    private long neighbourhoodId;
+    private Neighbourhood neighbourhood;
+    private boolean privacyLevel;
+    private int capacity;
+    private float price;
+    private Collection<Rule> rules;
+    private Collection<User> interestedUsers;
 
-    public Property(int id, String caption, String description, String image, String area) {
-        this.id = id;
-        this.caption = caption;
-        this.description = description;
-        this.image = image;
-        this.area = area;
-    }
+    private Property() { }
 
-    /**
-     * @return the id
-     */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    /**
-     * @return the area
-     */
-    public String getArea() {
-        return area;
-    }
-
-    /**
-     * @param area the area to set
-     */
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    /**
-     * @return the image
-     */
-    public String getImage() {
-        return image;
-    }
-
-    /**
-     * @param image the image to set
-     */
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return the caption
-     */
     public String getCaption() {
         return caption;
     }
 
-    /**
-     * @param caption the caption to set
-     */
-    public void setCaption(String caption) {
-        this.caption = caption;
+    public String getDescription() {
+        return description;
     }
 
-    /**
-     * @param id the id to set
-     */
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getImage() {
+        return image;
+    }
+
+    public PropertyType getPropertyType() {
+        return propertyType;
+    }
+
+    public long getNeighbourhoodId() {
+        return neighbourhoodId;
+    }
+
+    public Neighbourhood getNeighbourhood() {
+        return neighbourhood;
+    }
+
+    public boolean isPrivacyLevel() {
+        return privacyLevel;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public Collection<Rule> getRules() {
+        return rules;
+    }
+
+    public Collection<User> getInterestedUsers() {
+        return interestedUsers;
+    }
+
+    public static class Builder {
+        public static final String MUST_BE_PROVIDED = "must be provided.";
+        private Property property;
+
+        public Builder() {
+            this.property = new Property();
+        }
+
+        public Property build() {
+            if(property.id < 1) throw new IllegalArgumentException("id" + MUST_BE_PROVIDED);
+            if(property.caption == null && property.caption == "") throw new IllegalArgumentException("caption" + MUST_BE_PROVIDED);
+            if(property.description == null && property.description == "") throw new IllegalArgumentException("description" + MUST_BE_PROVIDED);
+            if(property.propertyType == null) throw new IllegalArgumentException("property type" + MUST_BE_PROVIDED);
+            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalArgumentException("neighbourhood" + MUST_BE_PROVIDED);
+            if(property.capacity < 1) throw new IllegalArgumentException("capacity" + MUST_BE_PROVIDED);
+            if(property.price <= 0) throw new IllegalArgumentException("price" + MUST_BE_PROVIDED);
+            return property;
+        }
+
+        public Builder withId(long id) {
+            property.id = id;
+            return this;
+        }
+
+        public Builder withCaption(String caption) {
+            property.caption = caption;
+            return this;
+        }
+
+        public Builder withDescription(String Description) {
+            property.description = Description;
+            return this;
+        }
+
+        public Builder withPropertyType(PropertyType propertyType) {
+            property.propertyType = propertyType;
+            return this;
+        }
+
+        public Builder withNeighbourhoodId(long neighbourhoodId) {
+            property.neighbourhoodId = neighbourhoodId;
+            return this;
+        }
+
+        public Builder withNeighbourhood(Neighbourhood neighbourhood) {
+            property.neighbourhood = neighbourhood;
+            return this;
+        }
+
+        public Builder withPrivacyLevel(boolean privacyLevel) {
+            property.privacyLevel = privacyLevel;
+            return this;
+        }
+
+        public Builder withCapacity(int capacity) {
+            property.capacity = capacity;
+            return this;
+        }
+
+        public Builder withPrice(float price) {
+            property.price = price;
+            return this;
+        }
+
+        public Builder withRules(Collection<Rule> rules) {
+            property.rules = rules;
+            return this;
+        }
+
+        public Builder withInterestedUsers(Collection<User> interestedUsers) {
+            property.interestedUsers = interestedUsers;
+            return this;
+        }
 
 
+    }
 }
