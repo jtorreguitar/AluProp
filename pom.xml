@@ -17,6 +17,7 @@
     <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
     <org.hibernate.validator>6.0.16.Final</org.hibernate.validator>
     <org.hsqldb.version> 2.3.1 </org.hsqldb.version>
+    <org.junit.version>4.12</org.junit.version>
   </properties>
 
   <build>
@@ -86,6 +87,8 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>${org.hibernate.validator}</version>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <version> ${org.springframework.version}</version>
@@ -96,6 +99,12 @@
         <artifactId> hsqldb </artifactId>
         <version> ${org.hsqldb.version}</version>
         <scope> test </scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${org.junit.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
