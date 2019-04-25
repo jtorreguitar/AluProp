@@ -16,20 +16,20 @@ import javax.sql.DataSource;
 @Sql("classpath:schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes= TestConfig.class)
-public class APPropertyJdbcDaoTest {
+public class APPropertyDaoTest {
 
     @Autowired
     private DataSource ds;
 
     @Autowired
-    private APPropertyJdbcDao propertyDao;
+    private APPropertyDao propertyDao;
 
     private JdbcTemplate jdbcTemplate;
 
     @Before
     public void setUp(){
         jdbcTemplate = new JdbcTemplate(ds);
-        propertyDao = new APPropertyJdbcDao(ds);
+        propertyDao = new APPropertyDao(ds);
 
 
     }
