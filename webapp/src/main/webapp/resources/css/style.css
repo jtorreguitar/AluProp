@@ -43,6 +43,35 @@ img {
     margin: 1rem;
 }
 
+
+.carousel-image{
+    height: 500px;
+}
+
+.flex-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.property-title{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.price{
+    display: flex;
+    align-self: center;
+}
+
+.interest-column{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
 .bold {
     font-weight: bold;
 }
+

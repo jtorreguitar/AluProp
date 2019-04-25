@@ -11,9 +11,9 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
     <!-- Bootstrap core css -->
-    <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body data-gr-c-s-loaded="true">
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -42,72 +42,102 @@
     </div>
 </nav>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <header class="card-header">
-                    <a href="/login" class="float-right btn btn-outline-primary mt-1">Log in</a>
-                    <h4 class="card-title mt-2">Sign up</h4>
-                </header>
-                <article class="card-body">
-                    <form>
-                        <div class="form-row">
-                            <div class="col form-group">
-                                <label>First name </label>
-                                <input type="text" class="form-control" placeholder="">
-                            </div> <!-- form-group end.// -->
-                            <div class="col form-group">
-                                <label>Last name</label>
-                                <input type="text" class="form-control" placeholder=" ">
-                            </div> <!-- form-group end.// -->
-                        </div> <!-- form-row end.// -->
-                        <div class="form-group">
-                            <label>Email address</label>
-                            <input type="email" class="form-control" placeholder="">
-                        </div> <!-- form-group end.// -->
-                        <div class="form-group">
-                            <label class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" value="option1">
-                                <span class="form-check-label"> Male </span>
-                            </label>
-                            <label class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" value="option2">
-                                <span class="form-check-label"> Female</span>
-                            </label>
-                        </div> <!-- form-group end.// -->
-                        <%--<div class="form-row">--%>
-                        <%--<div class="form-group col-md-6">--%>
-                        <%--<label>City</label>--%>
-                        <%--<input type="text" class="form-control">--%>
-                        <%--</div> <!-- form-group end.// -->--%>
-                        <%--<div class="form-group col-md-6">--%>
-                        <%--<label>Country</label>--%>
-                        <%--<select id="inputState" class="form-control">--%>
-                        <%--<option> Choose...</option>--%>
-                        <%--<option>Uzbekistan</option>--%>
-                        <%--<option>Russia</option>--%>
-                        <%--<option selected="">United States</option>--%>
-                        <%--<option>India</option>--%>
-                        <%--<option>Afganistan</option>--%>
-                        <%--</select>--%>
-                        <%--</div> <!-- form-group end.// -->--%>
-                        <%--</div> <!-- form-row.// -->--%>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input class="form-control" type="password">
-                            <label>Re-enter password</label>
-                            <input class="form-control" type="password">
-                        </div> <!-- form-group end.// -->
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block"> Register  </button>
-                        </div> <!-- form-group// -->
-                        <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
-                    </form>
-                </article> <!-- card-body end .// -->
-                <div class="border-top card-body text-center">Have an account? <a href="">Log In</a></div>
-            </div> <!-- card.// -->
-        </div> <!-- col.//-->
+
+  <div class="container">
+      <div class="row justify-content-center">
+          <div class="col-md-6">
+              <div class="card">
+                  <header class="card-header">
+                      <a href="/login" class="float-right btn btn-outline-primary mt-1">Log in</a>
+                      <h4 class="card-title mt-2">Sign up</h4>
+                  </header>
+                  <article class="card-body">
+                      <form>
+                          <div class="form-group">
+                              <label>Email address</label>
+                              <input type="email" class="form-control" placeholder="">
+                          </div>
+                          <div class="form-group">
+                              <label>Password</label>
+                              <input class="form-control" type="password">
+                              <label>Re-enter password</label>
+                              <input class="form-control" type="password">
+                          </div>
+                          <div class="form-row">
+                              <div class="col form-group">
+                                  <label>First name </label>
+                                  <input type="text" class="form-control" placeholder="">
+                              </div>
+                              <div class="col form-group">
+                                  <label>Last name</label>
+                                  <input type="text" class="form-control" placeholder=" ">
+                              </div>
+                          </div> <!-- form-row end.// -->
+                          <div class="form-row">
+                              <div class="col form-group">
+                                  <label>Phone Number</label>
+                                  <input type="text" class="form-control" placeholder="">
+                              </div>
+                              <div class="col form-group">
+                                  <label>Date of Birth</label>
+                                  <input type="date" class="form-control" placeholder="dd/mm/yyyy">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label>University</label>
+                              <input type="text" class="form-control" placeholder="">
+                          </div>
+
+                          <div class="form-group">
+                              <label>Career</label>
+                              <input type="text" class="form-control" placeholder="">
+                          </div>
+
+                          <div class="form-group">
+                              <label>Bio</label>
+                              <textarea type="text" class="form-control"  style="resize:both;" placeholder="Tell us a little about yourself..."></textarea>
+                          </div>
+                          <div class="col form-group">
+                              <label class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="gender" value="option1">
+                                  <span class="form-check-label"> Male </span>
+                              </label>
+                              <label class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="gender" value="option2">
+                                  <span class="form-check-label"> Female</span>
+                              </label>
+                          </div>
+
+
+
+
+                          <%--<div class="form-row">--%>
+                              <%--<div class="form-group col-md-6">--%>
+                                  <%--<label>City</label>--%>
+                                  <%--<input type="text" class="form-control">--%>
+                              <%--</div> <!-- form-group end.// -->--%>
+                              <%--<div class="form-group col-md-6">--%>
+                                  <%--<label>Country</label>--%>
+                                  <%--<select id="inputState" class="form-control">--%>
+                                      <%--<option> Choose...</option>--%>
+                                      <%--<option>Uzbekistan</option>--%>
+                                      <%--<option>Russia</option>--%>
+                                      <%--<option selected="">United States</option>--%>
+                                      <%--<option>India</option>--%>
+                                      <%--<option>Afganistan</option>--%>
+                                  <%--</select>--%>
+                              <%--</div> <!-- form-group end.// -->--%>
+                          <%--</div> <!-- form-row.// -->--%>
+
+                          <div class="form-group">
+                              <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+                          </div> <!-- form-group// -->
+                          <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
+                      </form>
+                  </article> <!-- card-body end .// -->
+                  <div class="border-top card-body text-center">Have an account? <a href="">Log In</a></div>
+              </div> <!-- card.// -->
+          </div> <!-- col.//-->
 
     </div> <!-- row.//-->
 
