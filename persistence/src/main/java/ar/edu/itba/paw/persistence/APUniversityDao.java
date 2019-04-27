@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.UniversityDao;
+import ar.edu.itba.paw.interfaces.dao.UniversityDao;
 import ar.edu.itba.paw.model.University;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

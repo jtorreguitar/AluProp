@@ -51,7 +51,7 @@
         <aside class="col-md-6">
             <div class="card">
                 <header class="card-header">
-                    <a href="/signup" class="float-right btn btn-outline-primary mt-1">Sign up</a>
+                    <a href="/user/logIn" class="float-right btn btn-outline-primary mt-1">Sign up</a>
                     <h4 class="card-title mt-2">Log in</h4>
                 </header>
                 <article class="card-body">

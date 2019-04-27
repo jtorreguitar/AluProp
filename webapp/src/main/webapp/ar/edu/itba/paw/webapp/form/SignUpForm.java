@@ -2,13 +2,65 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.model.enums.Gender;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Date;
+
 public class SignUpForm {
     private String name;
     private String lastName;
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
     private String email;
     private Gender gender;
+    @Size(min = 6, max = 100)
     private String password;
+    @Size(min = 6, max = 100)
     private String repeatPassword;
+    private Date birthDate;
+    private String bio;
+    private String phoneNumber;
+    private int universityId;
+    private int careerId;
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public int getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(int universityId) {
+        this.universityId = universityId;
+    }
+
+    public int getCareerId() {
+        return careerId;
+    }
+
+    public void setCareerId(int careerId) {
+        this.careerId = careerId;
+    }
 
     public String getName() {
         return name;

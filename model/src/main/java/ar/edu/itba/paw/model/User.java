@@ -3,7 +3,7 @@ package ar.edu.itba.paw.model;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.utilities.ArgumentUtility;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Collection;
 
 public class User {
@@ -93,16 +93,14 @@ public class User {
         }
 
         public User build(){
-            ArgumentUtility.isNotPositive(user.id, "id must be provided.");
             ArgumentUtility.stringIsNotNullOrEmpty(user.email, "email must be provided.");
-            ArgumentUtility.stringIsNotNullOrEmpty(user.username, "username must be provided.");
             ArgumentUtility.stringIsNotNullOrEmpty(user.name, "name must be provided.");
             ArgumentUtility.stringIsNotNullOrEmpty(user.lastName, "last name must be provided.");
             ArgumentUtility.isNotNull(user.birthDate, "birth date must be provided.");
             ArgumentUtility.isNotNull(user.gender, "gender must be provided");
             ArgumentUtility.stringIsNotNullOrEmpty(user.passwordHash, "password must be provided");
-            if(user.universityId < 1 || user.university == null) throw new IllegalArgumentException("university must be provided");
-            if(user.careerId < 1 || user.career == null) throw new IllegalArgumentException("university must be provided");
+            if(user.universityId < 1 && user.university == null) throw new IllegalArgumentException("university must be provided");
+            if(user.careerId < 1 && user.career == null) throw new IllegalArgumentException("university must be provided");
             ArgumentUtility.stringIsNotNullOrEmpty(user.bio, "bio must be provided");
             ArgumentUtility.stringIsNotNullOrEmpty(user.contactNumber, "contact number must be provided");
             return user;

@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.interfaces;
+package ar.edu.itba.paw.interfaces.service;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,5 +9,5 @@ public interface PropertyService {
 
     Property get(int id);
     Collection<Property> getAll();
-	List<String> showInterestOrReturnErrors(int propertyId, String email, String description);
+	List<String> showInterestOrReturnErrors(int propertyId, String username);
 }

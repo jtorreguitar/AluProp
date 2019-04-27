@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.service;
 
-import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +20,11 @@ public class APUserService implements UserService {
     @Override
     public User getByUsername(String username) {
         return userDao.getByUsername(username);
+    }
+
+    @Override
+    public User CreateUser(User user) {
+        // TODO: validations
+        return userDao.create(user);
     }
 }

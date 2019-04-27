@@ -7,9 +7,8 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import ar.edu.itba.paw.interfaces.Dao;
+import ar.edu.itba.paw.interfaces.dao.Dao;
 
 public abstract class APDao<T> implements Dao<T> {
 
