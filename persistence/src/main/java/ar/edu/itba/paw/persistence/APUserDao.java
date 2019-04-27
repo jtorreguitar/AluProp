@@ -75,6 +75,7 @@ public class APUserDao extends APDao<User> implements UserDao {
         ret.put("Gender", user.getGender().getValue());
         ret.put("birthDate", user.getBirthDate());
         ret.put("contactNumber", user.getContactNumber());
+        ret.put("username", user.getUsername());
         return ret;
     }
 
