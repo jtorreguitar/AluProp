@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.CareerDao;
+import ar.edu.itba.paw.interfaces.dao.CareerDao;
 import ar.edu.itba.paw.model.Career;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

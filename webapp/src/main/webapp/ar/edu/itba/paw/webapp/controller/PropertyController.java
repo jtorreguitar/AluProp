@@ -2,15 +2,16 @@ package ar.edu.itba.paw.webapp.controller;
 
 import java.util.List;
 
+import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import ar.edu.itba.paw.interfaces.PropertyService;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
 
 @Controller
 @RequestMapping("/")
@@ -34,10 +35,9 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
-    public ModelAndView interest(@PathVariable(value = "id") int propertyId, 
-                                @RequestParam(required = true) String email, 
-                                @RequestParam(required = false) String description) {
-        final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, email, description);
+    public ModelAndView interest(@PathVariable(value = "id") int propertyId) {
+        String currentUsername = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+        final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, currentUsername);
         if(errorsOrLackThereof.isEmpty())
             return new ModelAndView("redirect:/" + propertyId);
         ModelAndView mav = new ModelAndView("index");

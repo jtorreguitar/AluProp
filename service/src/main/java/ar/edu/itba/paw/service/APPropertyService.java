@@ -3,24 +3,27 @@ package ar.edu.itba.paw.service;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
+import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ar.edu.itba.paw.interfaces.PropertyDao;
-import ar.edu.itba.paw.interfaces.PropertyService;
+import ar.edu.itba.paw.interfaces.dao.PropertyDao;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.Property;
 
 @Service
 public class APPropertyService implements PropertyService {
 
-    private final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-    private final String INVALID_EMAIL_STRING = "the given email is invalid";
-    private final String PROPERTY_NOT_FOUND_STRING = "desired property not found";
+    private final String PROPERTY_NOT_FOUND = "desired property not found";
+    private final String USER_NOT_FOUND = "user not found";
+    private final String DATABASE_ERROR = "Database error";
 
     @Autowired
     private PropertyDao propertyDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public Property get(int id) {
@@ -33,23 +36,23 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public List<String> showInterestOrReturnErrors(int propertyId, String email, String description) {
-        List<String> errors = validateInterestValues(propertyId, email);
+    public List<String> showInterestOrReturnErrors(int propertyId, String username) {
+        List<String> errors = new LinkedList<>();
+        User user = userDao.getByUsername(username);
+        CheckUserAndPropertyExist(propertyId, errors, user);
         if (!errors.isEmpty()) 
             return errors;
-        boolean wasCreated = propertyDao.showInterest(propertyId, email, description);
+        boolean wasCreated = propertyDao.showInterest(propertyId, user);
         if(!wasCreated) 
-            errors.add("Database error");
+            errors.add(DATABASE_ERROR);
         return errors;
     }
 
-    private List<String> validateInterestValues(int propertyId, String email) {
-        List<String> errors = new LinkedList<String>();
-        if (email == null || email.isEmpty() || !Pattern.compile(EMAIL_REGEX).matcher(email).matches())
-            errors.add(INVALID_EMAIL_STRING);
-        else if (propertyDao.get(propertyId) == null)
-            errors.add(PROPERTY_NOT_FOUND_STRING);
-        return errors;
+    private void CheckUserAndPropertyExist(int propertyId, List<String> errors, User user) {
+        if (propertyDao.get(propertyId) == null)
+            errors.add(PROPERTY_NOT_FOUND);
+        if(user == null)
+            errors.add(USER_NOT_FOUND);
     }
 
 }

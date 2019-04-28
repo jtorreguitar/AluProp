@@ -5,13 +5,14 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import ar.edu.itba.paw.interfaces.PropertyDao;
+import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.Property;
 
 @Repository
@@ -40,18 +41,16 @@ public class APPropertyDao extends APDao<Property> implements PropertyDao {
     }
 
     @Override
-    public boolean showInterest(int propertyId, String email, String description) {
+    public boolean showInterest(int propertyId, User user) {
         final int rowsAffected = interestJdbcInsert
-                .execute(generateArgumentsForInterestCreation(propertyId, email, description));
-        return rowsAffected == 1 ? true : false;
+                .execute(generateArgumentsForInterestCreation(propertyId, user));
+        return rowsAffected == 1;
     }
 
-    private Map<String, Object> generateArgumentsForInterestCreation(int propertyId, String email,
-                                                                     String description) {
+    private Map<String, Object> generateArgumentsForInterestCreation(int propertyId, User user) {
         final Map<String, Object> args = new HashMap<>();
         args.put("propertyId", propertyId);
-        args.put("email", email);
-        args.put("description", description);
+        args.put("userId", user.getId());
         return args;
     }
 
