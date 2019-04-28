@@ -7,7 +7,9 @@ import ar.edu.itba.paw.model.Property;
 
 public interface PropertyService {
 
-    Property get(int id);
+    Property get(long id);
     Collection<Property> getAll();
-	List<String> showInterestOrReturnErrors(int propertyId, String username);
+	List<String> showInterestOrReturnErrors(int propertyId, String email, String description);
+
+    Property getPropertyWithRelatedEntities(long id);
 }

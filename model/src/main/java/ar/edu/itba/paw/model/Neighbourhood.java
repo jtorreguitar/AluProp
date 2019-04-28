@@ -15,6 +15,11 @@ public class Neighbourhood {
         this.properties = properties;
     }
 
+    public Neighbourhood(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }

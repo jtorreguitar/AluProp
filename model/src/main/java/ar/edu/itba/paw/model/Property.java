@@ -87,6 +87,22 @@ public class Property {
             return property;
         }
 
+        public Builder fromProperty(Property property) {
+            this.property.id = property.id;
+            this.property.caption = property.caption;
+            this.property.description = property.description;
+            this.property.image = property.image;
+            this.property.propertyType = property.propertyType;
+            this.property.neighbourhoodId = property.neighbourhoodId;
+            this.property.neighbourhood = property.neighbourhood;
+            this.property.privacyLevel = property.privacyLevel;
+            this.property.capacity = property.capacity;
+            this.property.price = property.price;
+            this.property.rules = property.rules;
+            this.property.interestedUsers = property.interestedUsers;
+            return this;
+        }
+
         public Builder withId(long id) {
             property.id = id;
             return this;

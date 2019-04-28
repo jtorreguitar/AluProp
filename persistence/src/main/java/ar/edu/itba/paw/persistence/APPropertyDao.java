@@ -1,11 +1,16 @@
 package ar.edu.itba.paw.persistence;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.model.Rule;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -31,6 +36,12 @@ public class APPropertyDao extends APDao<Property> implements PropertyDao {
             .withPropertyType(PropertyType.valueOf(rs.getInt("propertyType")))
             .build();
     private final SimpleJdbcInsert interestJdbcInsert;
+    @Autowired NeighbourhoodDao neighbourhoodDao;
+    @Autowired PropertyRuleDao propertyRuleDao;
+    @Autowired APRuleDao ruleDao;
+    @Autowired InterestDao interestDao;
+    @Autowired
+    UserDao userDao;
 
     @Autowired
     public APPropertyDao(DataSource ds) {
@@ -52,6 +63,33 @@ public class APPropertyDao extends APDao<Property> implements PropertyDao {
         args.put("propertyId", propertyId);
         args.put("userId", user.getId());
         return args;
+    }
+
+    @Override
+    public Property getPropertyWithRelatedEntities(long id) {
+        Property property = get(id);
+        return new Property.Builder()
+                    .fromProperty(property)
+                    .withNeighbourhood(neighbourhoodDao.get(property.getNeighbourhoodId()))
+                    .withInterestedUsers(getInterestedUsers(id))
+                    .withRules(getPropertyRules(id))
+                    .build();
+    }
+
+    private Collection<Rule> getPropertyRules(long id) {
+        return ruleDao.getAllAsStream()
+                .filter(rule -> propertyRuleDao.getAllAsStream()
+                        .filter(pr -> pr.getPropertyId() == id)
+                        .anyMatch(pr -> rule.getId() == pr.getId()))
+                .collect(Collectors.toList());
+    }
+
+    private Collection<User> getInterestedUsers(long id) {
+        return userDao.getAllAsStream()
+                .filter(user -> interestDao.getAllAsStream()
+                                    .filter(interest -> interest.getId() == id)
+                                    .anyMatch(interest -> user.getId() == interest.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override

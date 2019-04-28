@@ -26,7 +26,7 @@ public class APPropertyService implements PropertyService {
     private UserDao userDao;
 
     @Override
-    public Property get(int id) {
+    public Property get(long id) {
         return propertyDao.get(id);
     }
 
@@ -53,6 +53,11 @@ public class APPropertyService implements PropertyService {
             errors.add(PROPERTY_NOT_FOUND);
         if(user == null)
             errors.add(USER_NOT_FOUND);
+    }
+
+    @Override
+    public Property getPropertyWithRelatedEntities(long id) {
+        return propertyDao.getPropertyWithRelatedEntities(id);
     }
 
 }

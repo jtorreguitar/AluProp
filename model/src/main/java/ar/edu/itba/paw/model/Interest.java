@@ -1,25 +1,25 @@
 package ar.edu.itba.paw.model;
 
 public class Interest {
-    private int id;
-    private int propertyId;
-    private int userId;
+    private long id;
+    private long propertyId;
+    private long userId;
 
-    public Interest(int id, int propertyId, int userId) {
+    public Interest(long id, long propertyId, long userId) {
         this.id = id;
         this.propertyId = propertyId;
         this.userId = userId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public int getPropertyId() {
+    public long getPropertyId() {
         return propertyId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 }

@@ -17,8 +17,7 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 @RequestMapping("/")
 public class PropertyController {
 
-    @Autowired
-    private PropertyService propertyService;
+    @Autowired private PropertyService propertyService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -30,7 +29,7 @@ public class PropertyController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") int id) {
         final ModelAndView mav = new ModelAndView("detailedProperty");
-        mav.addObject("property", propertyService.get(id));
+        mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
         return mav;
     }
 

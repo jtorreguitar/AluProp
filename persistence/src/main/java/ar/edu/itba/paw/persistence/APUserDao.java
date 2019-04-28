@@ -16,6 +16,7 @@ import ar.edu.itba.paw.model.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Repository
 public class APUserDao extends APDao<User> implements UserDao {
@@ -49,6 +50,11 @@ public class APUserDao extends APDao<User> implements UserDao {
         jdbcInsert = new SimpleJdbcInsert(getJdbcTemplate())
                             .withTableName("users")
                             .usingGeneratedKeyColumns("id");
+    }
+
+    @Override
+    public Stream<User> getAllAsStream() {
+        return getJdbcTemplate().query("SELECT * FROM users", getRowMapper()).stream();
     }
 
     public User getByUsername(String username) {
