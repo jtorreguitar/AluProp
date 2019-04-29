@@ -9,7 +9,6 @@ public interface PropertyService {
 
     Property get(long id);
     Collection<Property> getAll();
-	List<String> showInterestOrReturnErrors(int propertyId, String email, String description);
-
+	List<String> showInterestOrReturnErrors(long propertyId, String username);
     Property getPropertyWithRelatedEntities(long id);
 }

@@ -52,13 +52,13 @@ public class APPropertyDao extends APDao<Property> implements PropertyDao {
     }
 
     @Override
-    public boolean showInterest(int propertyId, User user) {
+    public boolean showInterest(long propertyId, User user) {
         final int rowsAffected = interestJdbcInsert
                 .execute(generateArgumentsForInterestCreation(propertyId, user));
         return rowsAffected == 1;
     }
 
-    private Map<String, Object> generateArgumentsForInterestCreation(int propertyId, User user) {
+    private Map<String, Object> generateArgumentsForInterestCreation(long propertyId, User user) {
         final Map<String, Object> args = new HashMap<>();
         args.put("propertyId", propertyId);
         args.put("userId", user.getId());
