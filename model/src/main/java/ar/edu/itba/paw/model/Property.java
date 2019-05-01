@@ -81,7 +81,7 @@ public class Property {
             if(property.caption == null && property.caption == "") throw new IllegalArgumentException("caption" + MUST_BE_PROVIDED);
             if(property.description == null && property.description == "") throw new IllegalArgumentException("description" + MUST_BE_PROVIDED);
             if(property.propertyType == null) throw new IllegalArgumentException("property type" + MUST_BE_PROVIDED);
-            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalArgumentException("neighbourhood" + MUST_BE_PROVIDED);
+            //if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalArgumentException("neighbourhood" + MUST_BE_PROVIDED);
             if(property.capacity < 1) throw new IllegalArgumentException("capacity" + MUST_BE_PROVIDED);
             if(property.price <= 0) throw new IllegalArgumentException("price" + MUST_BE_PROVIDED);
             return property;
