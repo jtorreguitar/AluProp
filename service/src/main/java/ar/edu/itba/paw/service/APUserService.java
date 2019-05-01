@@ -18,8 +18,8 @@ public class APUserService implements UserService {
     }
 
     @Override
-    public User getByUsername(String username) {
-        return userDao.getByUsername(username);
+    public User getByEmail(String username) {
+        return userDao.getByEmail(username);
     }
 
     @Override

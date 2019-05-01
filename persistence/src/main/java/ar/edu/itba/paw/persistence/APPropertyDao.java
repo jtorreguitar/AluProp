@@ -7,39 +7,30 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.interfaces.dao.*;
+import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.model.Rule;
-import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.persistence.mappings.PropertyDatabaseMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.Property;
 
 @Repository
 public class APPropertyDao extends APDao<Property> implements PropertyDao {
 
     private static final String TABLE_NAME = "properties";
-    private final RowMapper<Property> ROW_MAPPER = (rs, rowNum)
-        -> new Property.Builder()
-            .withId(rs.getLong("id"))
-            .withCapacity(rs.getInt("capacity"))
-            .withCaption(rs.getString("caption"))
-            .withDescription(rs.getString("description"))
-            .withNeighbourhoodId(rs.getLong("neighbourhoodId"))
-            .withPrice(rs.getFloat("price"))
-            .withPrivacyLevel(rs.getBoolean("privacyLevel"))
-            .withPropertyType(PropertyType.valueOf(rs.getInt("propertyType")))
-            .build();
     private final SimpleJdbcInsert interestJdbcInsert;
-    @Autowired NeighbourhoodDao neighbourhoodDao;
-    @Autowired PropertyRuleDao propertyRuleDao;
+    @Autowired
+    NeighbourhoodDao neighbourhoodDao;
+    @Autowired
+    PropertyRuleDao propertyRuleDao;
     @Autowired APRuleDao ruleDao;
-    @Autowired InterestDao interestDao;
+    @Autowired
+    InterestDao interestDao;
     @Autowired
     UserDao userDao;
 
@@ -94,7 +85,7 @@ public class APPropertyDao extends APDao<Property> implements PropertyDao {
 
     @Override
     protected RowMapper<Property> getRowMapper() {
-        return this.ROW_MAPPER;
+        return PropertyDatabaseMapping.ROW_MAPPER;
     }
 
     @Override

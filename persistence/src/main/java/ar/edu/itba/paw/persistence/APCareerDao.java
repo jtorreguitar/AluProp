@@ -8,11 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 
+import static ar.edu.itba.paw.persistence.mappings.CareerDatabaseMapping.ROW_MAPPER;
+
 @Repository
 public class APCareerDao extends APDao<Career> implements CareerDao {
-
-    private RowMapper<Career> ROW_MAPPER = (rs, rownum)
-        -> new Career(rs.getLong("id"), rs.getString("name"));
 
     @Autowired
     public APCareerDao(DataSource ds) {

@@ -25,6 +25,7 @@ public class APPropertyService implements PropertyService {
     @Autowired
     private UserDao userDao;
 
+    // TODO: check property exists
     @Override
     public Property get(long id) {
         return propertyDao.get(id);
@@ -38,7 +39,7 @@ public class APPropertyService implements PropertyService {
     @Override
     public List<String> showInterestOrReturnErrors(long propertyId, String username) {
         List<String> errors = new LinkedList<>();
-        User user = userDao.getByUsername(username);
+        User user = userDao.getByEmail(username);
         CheckUserAndPropertyExist(propertyId, errors, user);
         if (!errors.isEmpty()) 
             return errors;
@@ -55,6 +56,7 @@ public class APPropertyService implements PropertyService {
             errors.add(USER_NOT_FOUND);
     }
 
+    // TODO: check property exists
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
         return propertyDao.getPropertyWithRelatedEntities(id);
