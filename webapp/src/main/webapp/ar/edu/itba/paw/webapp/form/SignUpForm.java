@@ -19,7 +19,6 @@ public class SignUpForm {
     private Date birthDate;
     private String bio;
     private String phoneNumber;
-    private String role;
     private int universityId;
     private int careerId;
 
@@ -109,13 +108,5 @@ public class SignUpForm {
 
     public void setRepeatPassword(String repeatPassword) {
         this.repeatPassword = repeatPassword;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 }

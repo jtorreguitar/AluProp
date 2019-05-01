@@ -8,6 +8,7 @@ public class Property {
     private long id;
     private String caption;
     private String description;
+    private String image;
     private PropertyType propertyType;
     private long neighbourhoodId;
     private Neighbourhood neighbourhood;
@@ -16,8 +17,6 @@ public class Property {
     private float price;
     private Collection<Rule> rules;
     private Collection<User> interestedUsers;
-    private Collection<Service> services;
-    private String mainImage;
 
     private Property() { }
 
@@ -33,6 +32,10 @@ public class Property {
         return description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
     public PropertyType getPropertyType() {
         return propertyType;
     }
@@ -45,7 +48,7 @@ public class Property {
         return neighbourhood;
     }
 
-    public boolean getPrivacyLevel() {
+    public boolean isPrivacyLevel() {
         return privacyLevel;
     }
 
@@ -65,14 +68,6 @@ public class Property {
         return interestedUsers;
     }
 
-    public Collection<Service> getServices() {
-        return services;
-    }
-
-    public String getMainImage() {
-        return mainImage;
-    }
-
     public static class Builder {
         public static final String MUST_BE_PROVIDED = "must be provided.";
         private Property property;
@@ -83,8 +78,8 @@ public class Property {
 
         public Property build() {
             if(property.id < 1) throw new IllegalArgumentException("id" + MUST_BE_PROVIDED);
-            if(property.caption == null || property.caption.equals("")) throw new IllegalArgumentException("caption" + MUST_BE_PROVIDED);
-            if(property.description == null || property.description.equals("")) throw new IllegalArgumentException("description" + MUST_BE_PROVIDED);
+            if(property.caption == null && property.caption == "") throw new IllegalArgumentException("caption" + MUST_BE_PROVIDED);
+            if(property.description == null && property.description == "") throw new IllegalArgumentException("description" + MUST_BE_PROVIDED);
             if(property.propertyType == null) throw new IllegalArgumentException("property type" + MUST_BE_PROVIDED);
             if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalArgumentException("neighbourhood" + MUST_BE_PROVIDED);
             if(property.capacity < 1) throw new IllegalArgumentException("capacity" + MUST_BE_PROVIDED);
@@ -96,6 +91,7 @@ public class Property {
             this.property.id = property.id;
             this.property.caption = property.caption;
             this.property.description = property.description;
+            this.property.image = property.image;
             this.property.propertyType = property.propertyType;
             this.property.neighbourhoodId = property.neighbourhoodId;
             this.property.neighbourhood = property.neighbourhood;
@@ -162,14 +158,6 @@ public class Property {
             return this;
         }
 
-        public Builder withServices(Collection<Service> services) {
-            this.property.services = services;
-            return this;
-        }
 
-        public Builder withMainImage(String mainImage){
-            this.property.mainImage = mainImage;
-            return this;
-        }
     }
 }

@@ -4,11 +4,11 @@ import ar.edu.itba.paw.interfaces.service.CareerService;
 import ar.edu.itba.paw.interfaces.service.UniversityService;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,7 +55,7 @@ public class UserController {
                                         .withBio(form.getBio())
                                         .withBirthDate(form.getBirthDate())
                                         .withContactNumber(form.getPhoneNumber())
-                                        .withRole(Role.valueOf(form.getRole()))
+                                        .withUsername(form.getEmail())
                                         .build());
         return new ModelAndView("redirect:/");
     }

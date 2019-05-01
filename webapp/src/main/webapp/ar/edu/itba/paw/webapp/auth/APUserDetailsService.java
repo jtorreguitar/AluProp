@@ -22,11 +22,12 @@ public class APUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final User user = us.getByEmail(username);
+        final User user = us.getByUsername(username);
         if (user == null)
             throw new UsernameNotFoundException("No user by the name " + username);
         final Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-            new SimpleGrantedAuthority(user.getRole().toString())
+            new SimpleGrantedAuthority("ROLE_USER"),
+            new SimpleGrantedAuthority("ROLE_ADMIN")
         );
         return new org.springframework.security.core.userdetails.User(username, user.getPasswordHash(), authorities);
     }

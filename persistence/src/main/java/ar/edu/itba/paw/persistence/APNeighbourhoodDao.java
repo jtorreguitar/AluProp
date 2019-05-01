@@ -1,8 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.dao.NeighbourhoodDao;
+import ar.edu.itba.paw.interfaces.NeighbourhoodDao;
 import ar.edu.itba.paw.model.Neighbourhood;
-import ar.edu.itba.paw.persistence.mappings.NeighbourhoodDatabaseMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +13,8 @@ import java.util.List;
 @Repository
 public class APNeighbourhoodDao implements NeighbourhoodDao {
 
+    private RowMapper<Neighbourhood> ROW_MAPPER = (rs, rowNum)
+            -> new Neighbourhood(rs.getLong("id"), rs.getString("name"));
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -24,11 +25,7 @@ public class APNeighbourhoodDao implements NeighbourhoodDao {
     @Override
     public Neighbourhood get(long id) {
         final List<Neighbourhood> list = jdbcTemplate
-                .query("SELECT * FROM neighbourhoods WHERE id = ?", getRowMapper(), id);
+                .query("SELECT * FROM neighbourhoods WHERE id = ?", ROW_MAPPER, id);
         return list.isEmpty() ? null : list.get(0);
-    }
-
-    private RowMapper<Neighbourhood> getRowMapper() {
-        return NeighbourhoodDatabaseMapping.ROW_MAPPER;
     }
 }

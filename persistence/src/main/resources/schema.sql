@@ -6,42 +6,34 @@ CREATE TABLE IF NOT EXISTS countries (
 CREATE TABLE IF NOT EXISTS provinces (
      id SERIAL PRIMARY KEY,
      name varchar(75),
-     countryId INTEGER REFERENCES countries(id) ON DELETE SET NULL
+     countryId INTEGER REFERENCES countries(id)
 );
 
 CREATE TABLE IF NOT EXISTS cities (
     id SERIAL PRIMARY KEY,
     name varchar(75),
-    countryId INTEGER REFERENCES countries(id) ON DELETE SET NULL,
-    provinceId INTEGER REFERENCES countries(id) ON DELETE SET NULL
+    countryId INTEGER REFERENCES countries(id) null,
+    provinceId INTEGER REFERENCES countries(id) null
 );
 
 CREATE TABLE IF NOT EXISTS neighbourhoods (
     id SERIAL PRIMARY KEY,
     name varchar(75),
-    cityId INTEGER REFERENCES cities(id) ON DELETE SET NULL
+    cityId INTEGER REFERENCES cities(id) null
 );
 
 CREATE TABLE IF NOT EXISTS properties (
     id SERIAL PRIMARY KEY,
+    area varchar(250),
     description varchar(3000),
     caption varchar(250),
-    propertyType varchar(100),
-    neighbourhoodId integer references neighbourhoods(id) ON DELETE SET NULL,
+    image varchar(300),
+    propertyType integer,
+    neighbourhoodId integer references neighbourhoods(id),
     privacyLevel boolean,
     capacity integer,
     price float
 );
-
-CREATE TABLE IF NOT EXISTS images (
-    id SERIAL PRIMARY KEY,
-    propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
-    image varchar(200),
-    mainPropertyId integer references properties(id) ON DELETE CASCADE
-);
-
--- The statement "ADD COLUMN IF NOT EXISTS" was added to postgres in version 9.6, watch out for version to use in prod
-ALTER TABLE properties ADD COLUMN IF NOT EXISTS mainImageId integer references images(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS universities (
     id SERIAL PRIMARY KEY,
@@ -56,22 +48,22 @@ CREATE TABLE IF NOT EXISTS careers (
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email varchar(250),
+    username varchar(250),
     passwordHash varchar(300),
     name varchar(50),
     lastName varchar(100),
     birthDate date,
-    gender varchar(50),
+    gender integer,
     bio varchar(1000),
     contactNumber varchar(25),
-    universityId INTEGER REFERENCES universities(id) ON DELETE SET NULL,
-    careerId INTEGER REFERENCES careers(id) ON DELETE SET NULL,
-    role varchar(50)
+    universityId INTEGER REFERENCES universities(id),
+    careerId INTEGER REFERENCES careers(id)
 );
 
 CREATE TABLE IF NOT EXISTS interests (
     id SERIAL PRIMARY KEY,
-    propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
-    userId INTEGER REFERENCES users(id) ON DELETE CASCADE
+    propertyId INTEGER REFERENCES properties(id),
+    userId INTEGER REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS rules (
@@ -81,17 +73,6 @@ CREATE TABLE IF NOT EXISTS rules (
 
 CREATE TABLE IF NOT EXISTS propertyRules (
     id SERIAL PRIMARY KEY,
-    propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
-    ruleId INTEGER REFERENCES rules(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS services (
-    id SERIAL PRIMARY KEY,
-    name varchar(100)
-);
-
-CREATE TABLE IF NOT EXISTS propertyServices (
-    id SERIAL PRIMARY KEY,
-    propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
-    serviceId INTEGER REFERENCES services(id) ON DELETE CASCADE
+    propertyId INTEGER REFERENCES properties(id),
+    ruleId INTEGER REFERENCES rules(id)
 );

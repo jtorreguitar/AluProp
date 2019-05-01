@@ -4,7 +4,7 @@ import javax.sql.DataSource;
 
 import ar.edu.itba.paw.interfaces.dao.CareerDao;
 import ar.edu.itba.paw.interfaces.dao.UniversityDao;
-import ar.edu.itba.paw.persistence.mappings.UserDatabaseMapping;
+import ar.edu.itba.paw.model.enums.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -22,7 +22,27 @@ import java.util.stream.Stream;
 public class APUserDao extends APDao<User> implements UserDao {
 
     private static final String TABLE_NAME = "users";
+    private final RowMapper<User> ROW_MAPPER = (rs, rowNum)
+            -> new User.Builder()
+                .withId(rs.getLong("id"))
+                .withBio(rs.getString("bio"))
+                .withBirthDate(rs.getDate("birthDate"))
+                .withCareerId(rs.getLong("careerId"))
+                .withContactNumber(rs.getString("contactNumber"))
+                .withEmail(rs.getString("email"))
+                .withGender(Gender.valueOf(rs.getInt("gender")))
+                .withLastName(rs.getString("lastName"))
+                .withName(rs.getString("name"))
+                .withUsername(rs.getString("username"))
+                .withPasswordHash(rs.getString("passwordHash"))
+                .withUniversityId(rs.getLong("universityId"))
+                .build();
     private final SimpleJdbcInsert jdbcInsert;
+
+    @Autowired
+    private CareerDao careerDao;
+    @Autowired
+    private UniversityDao universityDao;
 
     @Autowired
     public APUserDao(DataSource ds) {
@@ -37,7 +57,7 @@ public class APUserDao extends APDao<User> implements UserDao {
         return getJdbcTemplate().query("SELECT * FROM users", getRowMapper()).stream();
     }
 
-    public User getByEmail(String username) {
+    public User getByUsername(String username) {
         final List<User> list = getJdbcTemplate()
                 .query("SELECT * FROM users WHERE username = ?", getRowMapper(), username);
         return list.isEmpty() ? null : list.get(0);
@@ -47,14 +67,6 @@ public class APUserDao extends APDao<User> implements UserDao {
     public User create(User user) {
         Number id = jdbcInsert.executeAndReturnKey(generateArgumentsForUserCreation(user));
         return get(id.longValue());
-    }
-
-    public User getWithRelatedEntities(long id) {
-        final List<User> list = getJdbcTemplate()
-                .query(UserDatabaseMapping.USER_GET_BY_ID_WITH_RELATED_ENTITIES_QUERY,
-                        UserDatabaseMapping.ROW_MAPPER_WITH_RELATED_ENTITIES_FOR_SINGLE_USER_QUERIES,
-                        id);
-        return list.isEmpty() ? null : list.get(0);
     }
 
     private Map<String,Object> generateArgumentsForUserCreation(User user) {
@@ -68,12 +80,23 @@ public class APUserDao extends APDao<User> implements UserDao {
         ret.put("universityId", user.getUniversityId());
         ret.put("Gender", user.getGender().getValue());
         ret.put("birthDate", user.getBirthDate());
+        ret.put("contactNumber", user.getContactNumber());
+        ret.put("username", user.getUsername());
         return ret;
+    }
+
+    public User getUserWithRelatedEntities(long id) {
+        User incompleteUser = get(id);
+        return new User.Builder()
+                .fromUser(incompleteUser)
+                .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
+                .withCareer(careerDao.get(incompleteUser.getCareerId()))
+                .build();
     }
 
     @Override
     protected RowMapper<User> getRowMapper() {
-        return UserDatabaseMapping.ROW_MAPPER;
+        return this.ROW_MAPPER;
     }
 
     @Override

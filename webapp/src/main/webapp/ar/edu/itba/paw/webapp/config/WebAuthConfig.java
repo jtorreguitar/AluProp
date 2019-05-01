@@ -40,7 +40,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             .and().authorizeRequests()
                 .antMatchers("/user/logIn", "/user/signUp").anonymous()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                // TODO: think of a better permissions scheme.
                 .antMatchers("/**").permitAll()
             .and().formLogin()
                 .usernameParameter("username")

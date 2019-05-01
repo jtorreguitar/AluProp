@@ -34,7 +34,7 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="${property.mainImage}" class="d-block w-100 carousel-image">
+                    <img src="${property.image}" class="d-block w-100 carousel-image">
                 </div>
                 <div class="carousel-item">
                     <img src="https://apartmentsilike.files.wordpress.com/2014/04/warehouse-loft-room-of-the-week.jpg" class="d-block w-100 carousel-image" alt="...">

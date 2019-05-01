@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.interfaces.dao;
+package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.model.Neighbourhood;
 
