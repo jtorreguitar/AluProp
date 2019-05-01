@@ -28,7 +28,7 @@
                     <h4 class="card-title mt-2">Log in</h4>
                 </header>
                 <article class="card-body">
-                    <c:url value="/logIn" var="loginUrl" />
+                    <c:url value="/user/logIn" var="loginUrl" />
                     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
                         <div class="form-group">
                             <label for="email">Your email</label>

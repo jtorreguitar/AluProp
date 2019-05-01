@@ -25,7 +25,7 @@ public class APPropertyDao extends APDao<Property> implements PropertyDao {
             .withCapacity(rs.getInt("capacity"))
             .withCaption(rs.getString("caption"))
             .withDescription(rs.getString("description"))
-            .withNeighbourhoodId(rs.getLong("neighbourhoodId"))
+            .withNeighbourhoodId(rs.getInt("neighbourhoodId"))
             .withPrice(rs.getFloat("price"))
             .withPrivacyLevel(rs.getBoolean("privacyLevel"))
             .withPropertyType(PropertyType.valueOf(rs.getInt("propertyType")))
