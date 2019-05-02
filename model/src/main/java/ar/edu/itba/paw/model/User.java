@@ -1,15 +1,16 @@
 package ar.edu.itba.paw.model;
 
 import ar.edu.itba.paw.model.enums.Gender;
+import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.utilities.ArgumentUtility;
 
 import java.util.Date;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class User {
     private long id;
     private String email;
-    private String username;
     private String name;
     private String lastName;
     private Date birthDate;
@@ -22,8 +23,11 @@ public class User {
     private String bio;
     private String contactNumber;
     private Collection<Property> interestedProperties;
+    private Role role;
 
-    private User() { }
+    private User() {
+        this.interestedProperties = new LinkedList<>();
+    }
 
     public long getId() {
         return id;
@@ -31,10 +35,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getName() {
@@ -85,8 +85,12 @@ public class User {
         return interestedProperties;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     public static class Builder {
-        private static User user;
+        private User user;
 
         public Builder() {
             this.user = new User();
@@ -103,13 +107,13 @@ public class User {
             if(user.careerId < 1 && user.career == null) throw new IllegalArgumentException("university must be provided");
             ArgumentUtility.stringIsNotNullOrEmpty(user.bio, "bio must be provided");
             ArgumentUtility.stringIsNotNullOrEmpty(user.contactNumber, "contact number must be provided");
+            ArgumentUtility.isNotNull(user.role, "role must be provided");
             return user;
         }
 
         public Builder fromUser(User u) {
             user.id = u.id;
             user.email = u.email;
-            user.username = u.username;
             user.name = u.name;
             user.lastName = u.lastName;
             user.birthDate = u.birthDate;
@@ -122,6 +126,7 @@ public class User {
             user.bio = u.bio;
             user.contactNumber = u.contactNumber;
             user.interestedProperties = u.interestedProperties;
+            user.role = u.role;
             return this;
         }
 
@@ -132,11 +137,6 @@ public class User {
 
         public Builder withEmail(String email) {
             user.email = email;
-            return this;
-        }
-
-        public Builder withUsername(String username) {
-            user.username = username;
             return this;
         }
 
@@ -197,6 +197,11 @@ public class User {
 
         public Builder withInterestedProperties(Collection<Property> interestedProperties) {
             user.interestedProperties = interestedProperties;
+            return this;
+        }
+
+        public Builder withRole(Role role) {
+            user.role = role;
             return this;
         }
     }

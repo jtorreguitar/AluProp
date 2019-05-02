@@ -38,7 +38,7 @@ public class APPropertyService implements PropertyService {
     @Override
     public List<String> showInterestOrReturnErrors(long propertyId, String username) {
         List<String> errors = new LinkedList<>();
-        User user = userDao.getByUsername(username);
+        User user = userDao.getByEmail(username);
         CheckUserAndPropertyExist(propertyId, errors, user);
         if (!errors.isEmpty()) 
             return errors;

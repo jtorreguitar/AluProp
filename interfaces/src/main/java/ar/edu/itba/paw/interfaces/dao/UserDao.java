@@ -6,6 +6,6 @@ import java.util.stream.Stream;
 
 public interface UserDao extends Dao<User> {
     Stream<User> getAllAsStream();
-    User getByUsername(String username);
+    User getByEmail(String email);
     User create(User user);
 }

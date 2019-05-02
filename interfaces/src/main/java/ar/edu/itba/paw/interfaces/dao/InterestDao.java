@@ -1,9 +1,10 @@
-package ar.edu.itba.paw.interfaces;
+package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.model.Interest;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 public interface InterestDao {
-    Stream<Interest> getAllAsStream();
+    Collection<Interest> getAll();
 }

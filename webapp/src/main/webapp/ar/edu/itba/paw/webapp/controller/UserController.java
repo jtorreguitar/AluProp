@@ -55,7 +55,6 @@ public class UserController {
                                         .withBio(form.getBio())
                                         .withBirthDate(form.getBirthDate())
                                         .withContactNumber(form.getPhoneNumber())
-                                        .withUsername(form.getEmail())
                                         .build());
         return new ModelAndView("redirect:/");
     }

@@ -34,7 +34,7 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="${property.image}" class="d-block w-100 carousel-image">
+                    <img src="http://localhost:8080/webapp_war_exploded/images/${property.mainImageId}" class="d-block w-100 carousel-image">
                 </div>
                 <div class="carousel-item">
                     <img src="https://apartmentsilike.files.wordpress.com/2014/04/warehouse-loft-room-of-the-week.jpg" class="d-block w-100 carousel-image" alt="...">
@@ -56,11 +56,11 @@
         <div class="flex-container">
             <div>
                 <H2>${property.description}</H2>
-                <H6>[Tipo de propiedad] en [Barrio]</H6>
-                <H8>[N] huespedes | [privacidad]</H8>
+                <H6>${property.propertyType.toString()} en ${property.neighbourhood.name}</H6>
+                <H8>${property.capacity} huespedes | [privacidad]</H8>
             </div>
             <div class="interest-column">
-                <H4 class="price">$[precio]</H4>
+                <H4 class="price">$${property.price}</H4>
                 <a href="#" class="btn btn-primary stretched-link">Me interesa</a>
             </div>
         </div>

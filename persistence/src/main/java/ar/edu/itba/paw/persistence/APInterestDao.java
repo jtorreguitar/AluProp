@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.InterestDao;
+import ar.edu.itba.paw.interfaces.dao.InterestDao;
 import ar.edu.itba.paw.model.Interest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.stream.Stream;
+import java.util.Collection;
 
 @Repository
 public class APInterestDao implements InterestDao {
@@ -22,8 +22,13 @@ public class APInterestDao implements InterestDao {
         this.jdbcTemplate = new JdbcTemplate(ds);
     }
 
+
     @Override
-    public Stream<Interest> getAllAsStream() {
-        return jdbcTemplate.query("SELECT * FROM interests", ROW_MAPPER).stream();
+    public Collection<Interest> getAll() {
+        return jdbcTemplate.query("SELECT * FROM interests", getRowMapper());
+    }
+
+    private RowMapper<Interest> getRowMapper() {
+        return ROW_MAPPER;
     }
 }

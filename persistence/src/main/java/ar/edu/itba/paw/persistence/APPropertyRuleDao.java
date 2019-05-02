@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.PropertyRuleDao;
+import ar.edu.itba.paw.interfaces.dao.PropertyRuleDao;
 import ar.edu.itba.paw.model.PropertyRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 @Repository
@@ -23,7 +24,7 @@ public class APPropertyRuleDao implements PropertyRuleDao {
     }
 
     @Override
-    public Stream<PropertyRule> getAllAsStream() {
-        return jdbcTemplate.query("SELECT * FROM propertyRules", ROW_MAPPER).stream();
+    public Collection<PropertyRule> getAll() {
+        return jdbcTemplate.query("SELECT * FROM propertyRules", ROW_MAPPER);
     }
 }
