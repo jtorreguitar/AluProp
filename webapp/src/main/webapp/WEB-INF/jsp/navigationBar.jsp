@@ -18,9 +18,15 @@
             <%--</li>--%>
         </ul>
         <ul class="navbar-nav" style="float: right">
-            <li><a class="nav-link mr-1 bold active" href="/user/signUp">Sign up</a></li>
-            <li><span class="nav-link mr-1">or</span></li>
-            <li><a class="nav-link mr-1 bold" href="/user/logIn">Log in</a></li>
+            <c:if test="${pageContext.request.userPrincipal.name == null}">
+                <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/signUp' ? 'active':''}" href="/user/signUp">Sign up</a></li>
+                <li><span class="nav-link mr-1">or</span></li>
+                <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" href="/user/logIn">Log in</a></li>
+            </c:if>
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <li><a class="nav-link mr-1 bold active" href="#">Hi, ${pageContext.request.userPrincipal.name}!</a></li>
+            </c:if>
         </ul>
+
     </div>
 </nav>

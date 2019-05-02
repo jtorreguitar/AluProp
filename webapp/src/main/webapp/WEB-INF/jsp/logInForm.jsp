@@ -13,8 +13,9 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
     <!-- Bootstrap core css -->
-    <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css" />
+
 </head>
 <body data-gr-c-s-loaded="true">
 <%@include file="navigationBar.jsp"%>
@@ -24,7 +25,7 @@
         <aside class="col-md-6">
             <div class="card">
                 <header class="card-header">
-                    <a href="/user/logIn" class="float-right btn btn-outline-primary mt-1">Sign up</a>
+                    <a href="/user/signUp" class="float-right btn btn-outline-primary mt-1">Sign up</a>
                     <h4 class="card-title mt-2">Log in</h4>
                 </header>
                 <article class="card-body">
