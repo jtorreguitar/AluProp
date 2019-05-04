@@ -2,8 +2,11 @@ package ar.edu.itba.paw.persistence;
 
 import javax.sql.DataSource;
 
+import ar.edu.itba.paw.interfaces.dao.InterestDao;
 import ar.edu.itba.paw.interfaces.dao.CareerDao;
+import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.interfaces.dao.UniversityDao;
+import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.enums.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,9 +16,13 @@ import org.springframework.stereotype.Repository;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.model.User;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class APUserDao extends APDao<User> implements UserDao {
@@ -29,10 +36,9 @@ public class APUserDao extends APDao<User> implements UserDao {
                 .withCareerId(rs.getLong("careerId"))
                 .withContactNumber(rs.getString("contactNumber"))
                 .withEmail(rs.getString("email"))
-                .withGender(Gender.valueOf(rs.getInt("gender")))
+                .withGender(Gender.valueOf(rs.getString("gender")))
                 .withLastName(rs.getString("lastName"))
                 .withName(rs.getString("name"))
-                .withUsername(rs.getString("username"))
                 .withPasswordHash(rs.getString("passwordHash"))
                 .withUniversityId(rs.getLong("universityId"))
                 .build();
@@ -42,6 +48,10 @@ public class APUserDao extends APDao<User> implements UserDao {
     private CareerDao careerDao;
     @Autowired
     private UniversityDao universityDao;
+    @Autowired
+    private InterestDao interestDao;
+    @Autowired
+    private PropertyDao propertyDao;
 
     @Autowired
     public APUserDao(DataSource ds) {
@@ -51,9 +61,14 @@ public class APUserDao extends APDao<User> implements UserDao {
                             .usingGeneratedKeyColumns("id");
     }
 
-    public User getByUsername(String username) {
+    @Override
+    public Stream<User> getAllAsStream() {
+        return getJdbcTemplate().query("SELECT * FROM users", getRowMapper()).stream();
+    }
+
+    public User getByEmail(String email) {
         final List<User> list = getJdbcTemplate()
-                .query("SELECT * FROM users WHERE username = ?", getRowMapper(), username);
+                .query("SELECT * FROM users WHERE username = ?", getRowMapper(), email);
         return list.isEmpty() ? null : list.get(0);
     }
 
@@ -75,7 +90,6 @@ public class APUserDao extends APDao<User> implements UserDao {
         ret.put("Gender", user.getGender().getValue());
         ret.put("birthDate", user.getBirthDate());
         ret.put("contactNumber", user.getContactNumber());
-        ret.put("username", user.getUsername());
         return ret;
     }
 
@@ -85,7 +99,20 @@ public class APUserDao extends APDao<User> implements UserDao {
                 .fromUser(incompleteUser)
                 .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
                 .withCareer(careerDao.get(incompleteUser.getCareerId()))
+                .withInterestedProperties(getInterestedProperties(id))
                 .build();
+    }
+
+    private Collection<Property> getInterestedProperties(long id) {
+        return propertyDao.getAll().stream()
+                .filter(userIsInterestedInProperty(id))
+                .collect(Collectors.toList());
+    }
+
+    private Predicate<Property> userIsInterestedInProperty(long id) {
+        return p -> interestDao.getAll().stream()
+                        .filter(i -> i.getUserId() == id)
+                        .anyMatch(i -> i.getPropertyId() == p.getId());
     }
 
     @Override

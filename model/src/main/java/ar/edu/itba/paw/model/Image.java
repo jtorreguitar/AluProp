@@ -1,14 +1,16 @@
 package ar.edu.itba.paw.model;
 
-public class Interest {
+import java.io.InputStream;
+
+public class Image {
     private long id;
     private long propertyId;
-    private long userId;
+    private InputStream image;
 
-    public Interest(long id, long propertyId, long userId) {
+    public Image(long id, long propertyId, InputStream image) {
         this.id = id;
         this.propertyId = propertyId;
-        this.userId = userId;
+        this.image = image;
     }
 
     public long getId() {
@@ -19,7 +21,7 @@ public class Interest {
         return propertyId;
     }
 
-    public long getUserId() {
-        return userId;
+    public InputStream getImage() {
+        return image;
     }
 }

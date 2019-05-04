@@ -2,13 +2,13 @@ package ar.edu.itba.paw.model;
 
 import ar.edu.itba.paw.model.enums.PropertyType;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 public class Property {
     private long id;
     private String caption;
     private String description;
-    private String image;
     private PropertyType propertyType;
     private long neighbourhoodId;
     private Neighbourhood neighbourhood;
@@ -17,6 +17,9 @@ public class Property {
     private float price;
     private Collection<Rule> rules;
     private Collection<User> interestedUsers;
+    private Collection<Service> services;
+    private long mainImageId;
+    private InputStream mainImage;
 
     private Property() { }
 
@@ -32,10 +35,6 @@ public class Property {
         return description;
     }
 
-    public String getImage() {
-        return image;
-    }
-
     public PropertyType getPropertyType() {
         return propertyType;
     }
@@ -48,7 +47,7 @@ public class Property {
         return neighbourhood;
     }
 
-    public boolean isPrivacyLevel() {
+    public boolean getPrivacyLevel() {
         return privacyLevel;
     }
 
@@ -68,6 +67,16 @@ public class Property {
         return interestedUsers;
     }
 
+    public Collection<Service> getServices() {
+        return services;
+    }
+
+    public InputStream getMainImage() {
+        return mainImage;
+    }
+
+    public long getMainImageId() { return mainImageId; }
+
     public static class Builder {
         public static final String MUST_BE_PROVIDED = "must be provided.";
         private Property property;
@@ -77,14 +86,32 @@ public class Property {
         }
 
         public Property build() {
-            if(property.id < 1) throw new IllegalArgumentException("id" + MUST_BE_PROVIDED);
-            if(property.caption == null && property.caption == "") throw new IllegalArgumentException("caption" + MUST_BE_PROVIDED);
-            if(property.description == null && property.description == "") throw new IllegalArgumentException("description" + MUST_BE_PROVIDED);
-            if(property.propertyType == null) throw new IllegalArgumentException("property type" + MUST_BE_PROVIDED);
-            //if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalArgumentException("neighbourhood" + MUST_BE_PROVIDED);
-            if(property.capacity < 1) throw new IllegalArgumentException("capacity" + MUST_BE_PROVIDED);
-            if(property.price <= 0) throw new IllegalArgumentException("price" + MUST_BE_PROVIDED);
+            if(property.id < 1) throw new IllegalStateException("id" + MUST_BE_PROVIDED);
+            if(property.caption == null || property.caption.equals("")) throw new IllegalStateException("caption" + MUST_BE_PROVIDED);
+            if(property.description == null || property.description.equals("")) throw new IllegalStateException("description" + MUST_BE_PROVIDED);
+            if(property.propertyType == null) throw new IllegalStateException("property type" + MUST_BE_PROVIDED);
+            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood" + MUST_BE_PROVIDED);
+            if(property.capacity < 1) throw new IllegalStateException("capacity" + MUST_BE_PROVIDED);
+            if(property.price <= 0) throw new IllegalStateException("price" + MUST_BE_PROVIDED);
+            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided")
             return property;
+        }
+
+        public Builder fromProperty(Property property) {
+            this.property.id = property.id;
+            this.property.caption = property.caption;
+            this.property.description = property.description;
+            this.property.propertyType = property.propertyType;
+            this.property.neighbourhoodId = property.neighbourhoodId;
+            this.property.neighbourhood = property.neighbourhood;
+            this.property.privacyLevel = property.privacyLevel;
+            this.property.capacity = property.capacity;
+            this.property.price = property.price;
+            this.property.rules = property.rules;
+            this.property.interestedUsers = property.interestedUsers;
+            this.property.mainImageId = property.mainImageId;
+            this.property.mainImage = property.mainImage;
+            return this;
         }
 
         public Builder withId(long id) {
@@ -142,6 +169,19 @@ public class Property {
             return this;
         }
 
+        public Builder withServices(Collection<Service> services) {
+            this.property.services = services;
+            return this;
+        }
 
+        public Builder withMainImage(InputStream mainImage) {
+            this.property.mainImage = mainImage;
+            return this;
+        }
+
+        public Builder withMainImageId(long mainImageId) {
+            this.property.mainImageId = mainImageId;
+            return this;
+        }
     }
 }

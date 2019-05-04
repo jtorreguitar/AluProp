@@ -26,7 +26,7 @@ public class APPropertyService implements PropertyService {
     private UserDao userDao;
 
     @Override
-    public Property get(int id) {
+    public Property get(long id) {
         return propertyDao.get(id);
     }
 
@@ -36,9 +36,9 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public List<String> showInterestOrReturnErrors(int propertyId, String username) {
+    public List<String> showInterestOrReturnErrors(long propertyId, String username) {
         List<String> errors = new LinkedList<>();
-        User user = userDao.getByUsername(username);
+        User user = userDao.getByEmail(username);
         CheckUserAndPropertyExist(propertyId, errors, user);
         if (!errors.isEmpty()) 
             return errors;
@@ -48,11 +48,16 @@ public class APPropertyService implements PropertyService {
         return errors;
     }
 
-    private void CheckUserAndPropertyExist(int propertyId, List<String> errors, User user) {
+    private void CheckUserAndPropertyExist(long propertyId, List<String> errors, User user) {
         if (propertyDao.get(propertyId) == null)
             errors.add(PROPERTY_NOT_FOUND);
         if(user == null)
             errors.add(USER_NOT_FOUND);
+    }
+
+    @Override
+    public Property getPropertyWithRelatedEntities(long id) {
+        return propertyDao.getPropertyWithRelatedEntities(id);
     }
 
 }

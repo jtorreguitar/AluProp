@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import java.util.List;
 
+import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,8 +18,7 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 @RequestMapping("/")
 public class PropertyController {
 
-    @Autowired
-    private PropertyService propertyService;
+    @Autowired private PropertyService propertyService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -28,9 +28,9 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ModelAndView get(@PathVariable("id") int id) {
+    public ModelAndView get(@PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("detailedProperty");
-        mav.addObject("property", propertyService.get(id));
+        mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
         return mav;
     }
 
