@@ -11,7 +11,7 @@ public class SignUpForm {
     private String lastName;
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
     private String email;
-    private Gender gender;
+    private int gender;
     @Size(min = 6, max = 100)
     private String password;
     @Size(min = 6, max = 100)
@@ -74,7 +74,7 @@ public class SignUpForm {
         return email;
     }
 
-    public Gender getGender() {
+    public int getGender() {
         return gender;
     }
 
@@ -98,7 +98,7 @@ public class SignUpForm {
         this.email = email;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(int gender) {
         this.gender = gender;
     }
 

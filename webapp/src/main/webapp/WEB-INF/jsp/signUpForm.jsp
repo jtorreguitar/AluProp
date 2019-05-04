@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <head>
@@ -12,128 +13,103 @@
 
     <!-- Bootstrap core css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css" />
 
-    <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body data-gr-c-s-loaded="true">
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="/">AluProp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse" id="navbarCollapse">
-
-        <ul class="navbar-nav mr-auto">
-            <%--<li class="nav-item active">--%>
-            <%--<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>--%>
-            <%--</li>--%>
-            <%--<li class="nav-item">--%>
-            <%--<a class="nav-link" href="#">Link</a>--%>
-            <%--</li>--%>
-            <%--<li class="nav-item">--%>
-            <%--<a class="nav-link disabled" href="#">Disabled</a>--%>
-            <%--</li>--%>
-        </ul>
-        <ul class="navbar-nav" style="float: right">
-            <li><a class="nav-link mr-1 bold active" href="#">Sign up</a></li>
-            <li><span class="nav-link mr-1">or</span></li>
-            <li><a class="nav-link mr-1 bold" href="/login">Log in</a></li>
-        </ul>
-    </div>
-</nav>
-
+    <%@include file="navigationBar.jsp"%>
 
   <div class="container">
       <div class="row justify-content-center">
           <div class="col-md-6">
               <div class="card">
                   <header class="card-header">
-                      <a href="/login" class="float-right btn btn-outline-primary mt-1">Log in</a>
+                      <a href="/user/logIn" class="float-right btn btn-outline-primary mt-1">Log in</a>
                       <h4 class="card-title mt-2">Sign up</h4>
                   </header>
                   <article class="card-body">
-                      <form>
+                      <c:url value="/user/signUp" var="postPath"/>
+                      <form:form modelAttribute="signUpForm" action="${postPath}" method="post">
                           <div class="form-group">
-                              <label>Email address</label>
-                              <input type="email" class="form-control" placeholder="">
+                            <form:label path="email">Email address</form:label>
+                            <form:input path="email" type="email" class="form-control" placeholder=""></form:input>
+                            <form:errors path="email" cssClass="formError" element="p"/>
                           </div>
                           <div class="form-group">
-                              <label>Password</label>
-                              <input class="form-control" type="password">
-                              <label>Re-enter password</label>
-                              <input class="form-control" type="password">
+                              <form:label path="password">Password</form:label>
+                          <form:input path="password" class="form-control" type="password"></form:input>
+                          <form:errors path="password" cssClass="formError" element="p"/>
+
+                          <form:label path="repeatPassword">Re-enter password</form:label>
+                          <form:input path="repeatPassword" class="form-control" type="password"></form:input>
+                          <form:errors path="repeatPassword" cssClass="formError" element="p"/>
                           </div>
                           <div class="form-row">
                               <div class="col form-group">
-                                  <label>First name </label>
-                                  <input type="text" class="form-control" placeholder="">
+                                  <form:label path="name">First name </form:label>
+                                  <form:input path="name" type="text" class="form-control" placeholder=""></form:input>
+                                  <form:errors path="name" cssClass="formError" element="p"/>
+                          <form:errors path="repeatPassword" cssClass="formError" element="p"/>
                               </div>
                               <div class="col form-group">
-                                  <label>Last name</label>
-                                  <input type="text" class="form-control" placeholder=" ">
+                                  <form:label path="lastName">Last name</form:label>
+                                  <form:input path="lastName" type="text" class="form-control" placeholder=" "></form:input>
+                                  <form:errors path="lastName" cssClass="formError" element="p"/>
                               </div>
                           </div> <!-- form-row end.// -->
                           <div class="form-row">
                               <div class="col form-group">
-                                  <label>Phone Number</label>
-                                  <input type="text" class="form-control" placeholder="">
+                                  <form:label path="phoneNumber">Phone Number</form:label>
+                                  <form:input path="phoneNumber" type="text" class="form-control" placeholder=""></form:input>
+                                  <form:errors path="phoneNumber" cssClass="formError" element="p"/>
                               </div>
                               <div class="col form-group">
-                                  <label>Date of Birth</label>
-                                  <input type="date" class="form-control" placeholder="dd/mm/yyyy">
+                                  <form:label path="birthDate">Date of Birth</form:label>
+                                  <form:input path="birthDate" type="date" class="form-control" placeholder="dd/mm/yyyy"></form:input>
+                                  <form:errors path="birthDate" cssClass="formError" element="p"/>
                               </div>
                           </div>
                           <div class="form-group">
-                              <label>University</label>
-                              <input type="text" class="form-control" placeholder="">
+                              <form:label path="universityId">University</form:label>
+                              <form:select path="universityId" id="select-university" name="universities">
+                                  <option value="" selected>Please choose</option>
+                                  <c:forEach var="university" items="${universities}">
+                                      <form:option value="${university.id}">${university.name}</form:option>
+                                  </c:forEach>
+                              </form:select>
+                              <form:errors path="universityId" cssClass="formError" element="p"/>
                           </div>
 
                           <div class="form-group">
-                              <label>Career</label>
-                              <input type="text" class="form-control" placeholder="">
+                              <form:label path="careerId">Career</form:label>
+                              <form:select path="careerId" id="select-career" name="careers">
+                                  <option value="" selected>Please choose</option>
+                                  <c:forEach var="career" items="${careers}">
+                                      <option value="${career.id}">${career.name}</option>
+                                  </c:forEach>
+                              </form:select>
+                              <form:errors path="careerId" cssClass="formError" element="p"/>
                           </div>
 
                           <div class="form-group">
-                              <label>Bio</label>
-                              <textarea type="text" class="form-control"  style="resize:both;" placeholder="Tell us a little about yourself..."></textarea>
+                              <form:label path="bio">Bio</form:label>
+                              <form:textarea path="bio" type="text" class="form-control"  style="resize:both;" placeholder="Tell us a little about yourself..."></form:textarea>
+                              <form:errors path="bio" cssClass="formError" element="p"/>
                           </div>
                           <div class="col form-group">
-                              <label class="form-check form-check-inline">
-                                  <input class="form-check-input" type="radio" name="gender" value="option1">
-                                  <span class="form-check-label"> Male </span>
-                              </label>
-                              <label class="form-check form-check-inline">
-                                  <input class="form-check-input" type="radio" name="gender" value="option2">
-                                  <span class="form-check-label"> Female</span>
-                              </label>
+                              <form:label path="gender" class="form-check form-check-inline">Gender:</form:label>
+                              <form:select path="gender">
+                                  <form:option value="0">Male</form:option>
+                                  <form:option value="1">Female</form:option>
+                                  <form:option value="2">Other</form:option>
+                              </form:select>
                           </div>
 
-
-
-
-                          <%--<div class="form-row">--%>
-                              <%--<div class="form-group col-md-6">--%>
-                                  <%--<label>City</label>--%>
-                                  <%--<input type="text" class="form-control">--%>
-                              <%--</div> <!-- form-group end.// -->--%>
-                              <%--<div class="form-group col-md-6">--%>
-                                  <%--<label>Country</label>--%>
-                                  <%--<select id="inputState" class="form-control">--%>
-                                      <%--<option> Choose...</option>--%>
-                                      <%--<option>Uzbekistan</option>--%>
-                                      <%--<option>Russia</option>--%>
-                                      <%--<option selected="">United States</option>--%>
-                                      <%--<option>India</option>--%>
-                                      <%--<option>Afganistan</option>--%>
-                                  <%--</select>--%>
-                              <%--</div> <!-- form-group end.// -->--%>
-                          <%--</div> <!-- form-row.// -->--%>
-
                           <div class="form-group">
-                              <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+                              <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
                           </div> <!-- form-group// -->
                           <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
-                      </form>
+                      </form:form>
                   </article> <!-- card-body end .// -->
                   <div class="border-top card-body text-center">Have an account? <a href="">Log In</a></div>
               </div> <!-- card.// -->

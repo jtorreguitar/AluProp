@@ -36,13 +36,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
-            .invalidSessionUrl("/user/logIn")
+            .invalidSessionUrl("/")
             .and().authorizeRequests()
                 .antMatchers("/user/logIn", "/user/signUp").anonymous()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()
             .and().formLogin()
-                .usernameParameter("username")
+                .usernameParameter("email")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/", false)
                 .loginPage("/user/logIn")

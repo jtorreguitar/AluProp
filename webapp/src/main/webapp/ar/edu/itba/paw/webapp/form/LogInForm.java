@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.form;
 public class LogInForm {
     private String email;
     private String password;
-    private boolean rememberme;
+    private boolean rememberMe;
 
     public String getEmail() {
         return email;
@@ -14,7 +14,7 @@ public class LogInForm {
     }
 
     public boolean isRememberme() {
-        return rememberme;
+        return rememberMe;
     }
 
     public void setEmail(String email) {
@@ -26,6 +26,6 @@ public class LogInForm {
     }
 
     public void setRememberme(boolean rememberme) {
-        this.rememberme = rememberme;
+        this.rememberMe = rememberme;
     }
 }
