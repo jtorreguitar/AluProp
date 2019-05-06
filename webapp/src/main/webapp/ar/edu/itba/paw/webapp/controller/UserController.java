@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.sql.Date;
 
 @Controller
 @RequestMapping("/user")
@@ -55,7 +56,7 @@ public class UserController {
                                         .withUniversityId(form.getUniversityId())
                                         .withCareerId(form.getCareerId())
                                         .withBio(form.getBio())
-                                        .withBirthDate(form.getBirthDate())
+                                        .withBirthDate(Date.valueOf(form.getBirthDate()))
                                         .withContactNumber(form.getPhoneNumber())
                                         .withRole(Role.valueOf(form.getRole()))
                                         .build());

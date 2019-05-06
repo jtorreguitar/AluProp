@@ -17,18 +17,18 @@ public class SignUpForm {
     private String password;
     @Size(min = 6, max = 100)
     private String repeatPassword;
-    private Date birthDate;
+    private String birthDate;
     private String bio;
     private String phoneNumber;
     private int universityId;
     private int careerId;
     private int role;
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
