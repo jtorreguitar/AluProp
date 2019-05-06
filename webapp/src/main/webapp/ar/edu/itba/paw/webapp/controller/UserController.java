@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.service.UniversityService;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
+import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.webapp.form.LogInForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class UserController {
                                         .withBio(form.getBio())
                                         .withBirthDate(form.getBirthDate())
                                         .withContactNumber(form.getPhoneNumber())
-                                        .withRole(form.getRole())
+                                        .withRole(Role.valueOf(form.getRole()))
                                         .build());
         return new ModelAndView("redirect:/");
     }

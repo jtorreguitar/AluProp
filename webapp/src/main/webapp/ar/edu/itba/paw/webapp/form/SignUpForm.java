@@ -22,7 +22,7 @@ public class SignUpForm {
     private String phoneNumber;
     private int universityId;
     private int careerId;
-    private Role role;
+    private int role;
 
     public Date getBirthDate() {
         return birthDate;
@@ -112,11 +112,11 @@ public class SignUpForm {
         this.repeatPassword = repeatPassword;
     }
 
-    public Role getRole() {
+    public int getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(int role) {
         this.role = role;
     }
 }

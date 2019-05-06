@@ -105,6 +105,14 @@
                               </form:select>
                           </div>
 
+                          <div class="col form-group">
+                              <form:label path="role" class="form-check form-check-inline">I am a:</form:label>
+                              <form:select path="role">
+                                  <form:option value="0">Guest</form:option>
+                                  <form:option value="1">Host</form:option>
+                              </form:select>
+                          </div>
+
                           <div class="form-group">
                               <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
                           </div> <!-- form-group// -->
