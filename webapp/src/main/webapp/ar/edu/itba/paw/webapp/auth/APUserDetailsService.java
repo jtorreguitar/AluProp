@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.auth;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import ar.edu.itba.paw.interfaces.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,8 @@ public class APUserDetailsService implements UserDetailsService {
         final User user = us.getByEmail(email);
         if (user == null)
             throw new UsernameNotFoundException("No user with the email " + email);
-        final Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-            new SimpleGrantedAuthority("ROLE_USER"),
-            new SimpleGrantedAuthority("ROLE_ADMIN")
+        final Collection<? extends GrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority(user.getRole().toString())
         );
         return new org.springframework.security.core.userdetails.User(email, user.getPasswordHash(), authorities);
     }

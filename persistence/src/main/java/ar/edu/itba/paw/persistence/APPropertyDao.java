@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
+import ar.edu.itba.paw.model.Service;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.Rule;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -39,7 +42,9 @@ public class APPropertyDao implements PropertyDao {
             .withMainImageId(rs.getLong("mainImageId"))
             .build();
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert interestJdbcInsert;
+
     @Autowired
     private NeighbourhoodDao neighbourhoodDao;
     @Autowired
@@ -52,10 +57,17 @@ public class APPropertyDao implements PropertyDao {
     private UserDao userDao;
     @Autowired
     private ImageDao imageDao;
+    @Autowired
+    private ServiceDao serviceDao;
+    @Autowired
+    private PropertyServiceDao propertyServiceDao;
 
     @Autowired
     public APPropertyDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(ds)
+                        .withTableName("properties")
+                        .usingGeneratedKeyColumns("id");
         interestJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                         .withTableName("interests")
                         .usingGeneratedKeyColumns("id");
@@ -63,7 +75,7 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Property get(long id) {
-        List<Property> list = jdbcTemplate.query("SELECT * FROM properties WHERE id = ?", getRowMapper(), id);
+        List<Property> list = jdbcTemplate.query("SELECT * FROM properties WHERE id = ?", ROW_MAPPER, id);
         if(!list.isEmpty())
             return list.get(0);
         return null;
@@ -71,7 +83,7 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> getAll() {
-        return jdbcTemplate.query("SELECT * FROM properties", getRowMapper());
+        return jdbcTemplate.query("SELECT * FROM properties", ROW_MAPPER);
     }
 
     @Override
@@ -94,23 +106,27 @@ public class APPropertyDao implements PropertyDao {
         return new Property.Builder()
                     .fromProperty(property)
                     .withNeighbourhood(neighbourhoodDao.get(property.getNeighbourhoodId()))
-                    .withInterestedUsers(getInterestedUsers(id))
-                    .withRules(getPropertyRules(id))
+                    .withInterestedUsers(getRelatedEntities(userShowedInterestInProperty(id), userDao.getAll().stream()))
+                    .withRules(getRelatedEntities(isRuleOfProperty(id), ruleDao.getAll().stream()))
+                    .withServices(getRelatedEntities(isServiceOfProperty(id), serviceDao.getAll().stream()))
+                    .withImages(imageDao.getByProperty(property.getId()))
                     .build();
     }
 
-    private Collection<Rule> getPropertyRules(long id) {
-        return ruleDao.getAllAsStream()
-                .filter(rule -> propertyRuleDao.getAll().stream()
-                        .filter(pr -> pr.getPropertyId() == id)
-                        .anyMatch(pr -> rule.getId() == pr.getId()))
-                .collect(Collectors.toList());
+    private <T> Collection<T> getRelatedEntities(Predicate<T> isRelated, Stream<T> entities) {
+        return entities.filter(isRelated).collect(Collectors.toList());
     }
 
-    private Collection<User> getInterestedUsers(long id) {
-        return userDao.getAllAsStream()
-                .filter(userShowedInterestInProperty(id))
-                .collect(Collectors.toList());
+    private Predicate<Service> isServiceOfProperty(long id) {
+        return service -> propertyServiceDao.getAll().stream()
+                .filter(ps -> ps.getPropertyId() == id)
+                .anyMatch(ps -> service.getId() == ps.getId());
+    }
+
+    private Predicate<Rule> isRuleOfProperty(long id) {
+        return rule -> propertyRuleDao.getAll().stream()
+                .filter(pr -> pr.getPropertyId() == id)
+                .anyMatch(pr -> rule.getId() == pr.getId());
     }
 
     private Predicate<User> userShowedInterestInProperty(long id) {
@@ -119,7 +135,34 @@ public class APPropertyDao implements PropertyDao {
                             .anyMatch(interest -> user.getId() == interest.getId());
     }
 
-    protected RowMapper<Property> getRowMapper() {
-        return this.ROW_MAPPER;
+    @Override
+    public Property create(Property property) {
+        final Number id = jdbcInsert.executeAndReturnKey(generateArgumentsForPropertyCreation(property));
+        Property ret = new Property.Builder()
+                            .fromProperty(property)
+                            .withId(id.longValue())
+                            .build();
+        createRelatedEntities(ret);
+        return ret;
+    }
+
+    private Map<String, Object> generateArgumentsForPropertyCreation(Property property) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("caption", property.getCaption());
+        args.put("description", property.getDescription());
+        args.put("capacity", property.getCapacity());
+        args.put("price", property.getPrice());
+        args.put("mainImageId", property.getMainImageId());
+        args.put("neighbourhoodId", property.getNeighbourhoodId());
+        args.put("privacyLevel", property.getPrivacyLevel());
+        args.put("propertyType", property.getPropertyType().toString());
+        return args;
+    }
+
+    private void createRelatedEntities(Property property) {
+        imageDao.addProperty(property.getMainImageId(), property.getId());
+        property.getImages().forEach(image -> imageDao.addProperty(image.getId(), property.getId()));
+        property.getRules().forEach(rule -> propertyRuleDao.create(rule.getId(), property.getId()));
+        property.getServices().forEach(service -> propertyServiceDao.create(service.getId(), property.getId()));
     }
 }

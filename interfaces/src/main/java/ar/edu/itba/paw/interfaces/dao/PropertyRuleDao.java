@@ -7,4 +7,5 @@ import java.util.stream.Stream;
 
 public interface PropertyRuleDao {
     Collection<PropertyRule> getAll();
+    void create(long ruleId, long propertyId);
 }

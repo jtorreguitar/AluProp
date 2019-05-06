@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.model.enums.Gender;
+import ar.edu.itba.paw.model.enums.Role;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -21,6 +22,7 @@ public class SignUpForm {
     private String phoneNumber;
     private int universityId;
     private int careerId;
+    private Role role;
 
     public Date getBirthDate() {
         return birthDate;
@@ -108,5 +110,13 @@ public class SignUpForm {
 
     public void setRepeatPassword(String repeatPassword) {
         this.repeatPassword = repeatPassword;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

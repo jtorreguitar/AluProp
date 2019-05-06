@@ -43,8 +43,7 @@ public class UserController {
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
     public ModelAndView register(@Valid @ModelAttribute("signUpForm") SignUpForm form) {
         if(!form.getRepeatPassword().equals(form.getPassword())){
-            ModelAndView mav = new ModelAndView();
-            mav.addObject("");
+            return new ModelAndView("redirect:/user/signUp");
         }
         userService.CreateUser(new User.Builder()
                                         .withEmail(form.getEmail())
@@ -57,6 +56,7 @@ public class UserController {
                                         .withBio(form.getBio())
                                         .withBirthDate(form.getBirthDate())
                                         .withContactNumber(form.getPhoneNumber())
+                                        .withRole(form.getRole())
                                         .build());
         return new ModelAndView("redirect:/");
     }

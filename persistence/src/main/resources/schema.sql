@@ -153,3 +153,13 @@ INSERT INTO properties(
     id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid)
 VALUES (7, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1)
 ON CONFLICT DO NOTHING;
+
+INSERT INTO universities(
+    id, name)
+VALUES (1, 'ITBA')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO careers(
+    id, name)
+VALUES (1, 'Ingeniería informática')
+ON CONFLICT DO NOTHING;

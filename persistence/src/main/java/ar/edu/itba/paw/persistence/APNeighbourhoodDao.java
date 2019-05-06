@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -27,5 +28,10 @@ public class APNeighbourhoodDao implements NeighbourhoodDao {
         final List<Neighbourhood> list = jdbcTemplate
                 .query("SELECT * FROM neighbourhoods WHERE id = ?", ROW_MAPPER, id);
         return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
+    public Collection<Neighbourhood> getAll() {
+        return jdbcTemplate.query("SELECT * FROM neighbourhoods", ROW_MAPPER);
     }
 }

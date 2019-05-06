@@ -24,7 +24,6 @@ public class ImageController {
     @RequestMapping(value = "images/{id}", method = RequestMethod.GET)
     public @ResponseBody byte[]
     get(@PathVariable long id) throws IOException {
-        InputStream x = imageService.get(id).getImage();
-        return IOUtils.toByteArray(x);
+        return IOUtils.toByteArray(imageService.get(id).getImage());
     }
 }

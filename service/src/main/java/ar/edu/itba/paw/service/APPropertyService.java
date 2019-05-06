@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,4 +61,9 @@ public class APPropertyService implements PropertyService {
         return propertyDao.getPropertyWithRelatedEntities(id);
     }
 
+    @Override
+    public Either<Property, Collection<String>> create(Property property) {
+        // TODO: add validations
+        return Either.valueFrom(propertyDao.create(property));
+    }
 }
