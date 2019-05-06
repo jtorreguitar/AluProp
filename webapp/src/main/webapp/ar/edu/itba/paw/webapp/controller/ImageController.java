@@ -18,12 +18,14 @@ public class ImageController {
 
     @Autowired
     private ImageService imageService;
-    @Autowired
-    private ServletContext servletContext;
 
     @RequestMapping(value = "images/{id}", method = RequestMethod.GET)
     public @ResponseBody byte[]
     get(@PathVariable long id) throws IOException {
-        return IOUtils.toByteArray(imageService.get(id).getImage());
+        InputStream image = imageService.get(id).getImage();
+        if(image != null)
+            return IOUtils.toByteArray(image);
+        else
+            return new byte[] { };
     }
 }
