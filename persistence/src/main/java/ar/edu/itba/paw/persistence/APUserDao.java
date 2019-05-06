@@ -104,6 +104,7 @@ public class APUserDao implements UserDao {
         ret.put("Gender", user.getGender().toString());
         ret.put("birthDate", user.getBirthDate());
         ret.put("contactNumber", user.getContactNumber());
+        ret.put("role", user.getRole().toString());
         return ret;
     }
 
