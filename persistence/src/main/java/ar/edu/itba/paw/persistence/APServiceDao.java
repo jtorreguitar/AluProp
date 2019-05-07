@@ -17,7 +17,7 @@ public class APServiceDao implements ServiceDao {
     private RowMapper<Service> ROW_MAPPER = (rs, rowNum)
         -> new Service(rs.getLong("id"), rs.getString("name"));
     private JdbcTemplate jdbcTemplate;
-    private String propertyServiceQuery = "SELECT * FROM services s WHERE EXISTS (SELECT * FROM propertyServices WHERE s.id = id AND propertyId = ?)";
+    private String propertyServiceQuery = "SELECT * FROM services s WHERE EXISTS (SELECT * FROM propertyServices WHERE serviceId = s.id AND propertyId = ?)";
 
     @Autowired
     public APServiceDao(DataSource ds) {
