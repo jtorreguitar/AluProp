@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class APServiceDao implements ServiceDao {
@@ -20,6 +21,12 @@ public class APServiceDao implements ServiceDao {
     @Autowired
     public APServiceDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
+    }
+
+    @Override
+    public Service get(long id) {
+        List<Service> services = jdbcTemplate.query("SELECT * FROM services WHERE id = ?", ROW_MAPPER);
+        return services.isEmpty() ? null : services.get(0);
     }
 
     @Override

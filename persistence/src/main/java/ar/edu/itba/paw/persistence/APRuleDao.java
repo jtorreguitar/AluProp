@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Repository
@@ -21,6 +22,12 @@ public class APRuleDao implements RuleDao {
     @Autowired
     public APRuleDao(DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
+    }
+
+    @Override
+    public Rule get(long id) {
+        List<Rule> rules = jdbcTemplate.query("SELECT * FROM rules WHERE id = ?", ROW_MAPPER, id);
+        return rules.isEmpty() ? null : rules.get(0);
     }
 
     @Override

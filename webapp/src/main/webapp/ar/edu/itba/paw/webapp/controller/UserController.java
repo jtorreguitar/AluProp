@@ -24,10 +24,14 @@ import java.sql.Date;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired private UserService userService;
-    @Autowired private UniversityService universityService;
-    @Autowired private CareerService careerService;
-    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UniversityService universityService;
+    @Autowired
+    private CareerService careerService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/logIn")
     public ModelAndView login() {
