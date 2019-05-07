@@ -17,7 +17,6 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.Rule;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -106,9 +105,8 @@ public class APPropertyDao implements PropertyDao {
         return new Property.Builder()
                     .fromProperty(property)
                     .withNeighbourhood(neighbourhoodDao.get(property.getNeighbourhoodId()))
-                    .withInterestedUsers(getRelatedEntities(userShowedInterestInProperty(id), userDao.getAll().stream()))
-                    .withRules(getRelatedEntities(isRuleOfProperty(id), ruleDao.getAll().stream()))
-                    .withServices(getRelatedEntities(isServiceOfProperty(id), serviceDao.getAll().stream()))
+                    .withRules(ruleDao.getRulesOfProperty(id))
+                    .withServices(serviceDao.getServicesOfProperty(id))
                     .withImages(imageDao.getByProperty(property.getId()))
                     .build();
     }

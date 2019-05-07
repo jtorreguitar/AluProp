@@ -19,6 +19,8 @@ public class APRuleDao implements RuleDao {
             -> new Rule(rs.getLong("id"), rs.getString("name"));
     private JdbcTemplate jdbcTemplate;
 
+    private String rulesOfPropertyQuery = "SELECT * FROM rules r WHERE EXISTS (SELECT * FROM propertyRules WHERE ruleId = r.id and propertyId = ?)";
+
     @Autowired
     public APRuleDao(DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
@@ -33,5 +35,10 @@ public class APRuleDao implements RuleDao {
     @Override
     public Collection<Rule> getAll() {
         return jdbcTemplate.query("SELECT * FROM rules", ROW_MAPPER);
+    }
+
+    @Override
+    public Collection<Rule> getRulesOfProperty(long propertyId) {
+        return jdbcTemplate.query(rulesOfPropertyQuery, ROW_MAPPER, propertyId);
     }
 }

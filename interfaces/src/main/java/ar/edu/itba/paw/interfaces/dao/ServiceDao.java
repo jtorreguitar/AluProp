@@ -7,4 +7,6 @@ import java.util.Collection;
 public interface ServiceDao {
     Service get(long id);
     Collection<Service> getAll();
+
+    Collection<Service> getServicesOfProperty(long propertyId);
 }
