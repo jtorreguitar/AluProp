@@ -93,7 +93,7 @@ public class Property {
             if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood" + MUST_BE_PROVIDED);
             if(property.capacity < 1) throw new IllegalStateException("capacity" + MUST_BE_PROVIDED);
             if(property.price <= 0) throw new IllegalStateException("price" + MUST_BE_PROVIDED);
-            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided")
+            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
             return property;
         }
 
