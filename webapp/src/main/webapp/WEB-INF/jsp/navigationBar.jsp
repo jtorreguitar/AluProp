@@ -30,7 +30,7 @@
                 <li><a class="nav-link mr-1" href="/user/logOut">Log Out</a></li>
             </c:if>
             <c:if test="${userRole == '[ROLE_HOST]'}">
-                <li><a class="nav-link mr-1 bold active" href="">Publish a property</a></li>
+                <li><a class="nav-link mr-1 bold active" href="/host/create">Publish a property</a></li>
             </c:if>
         </ul>
 

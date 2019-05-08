@@ -2,8 +2,12 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.model.enums.PropertyType;
 
+import javax.validation.constraints.Size;
+
 public class PropertyCreationForm {
+    @Size(min=1, max=100)
     private String caption;
+    @Size(min=1, max=2000)
     private String description;
     private PropertyType propertyType;
     private long neighbourhoodId;

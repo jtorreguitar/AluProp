@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.function.LongSupplier;
@@ -17,14 +16,14 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
+import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -70,7 +69,7 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.GET)
-    public ModelAndView create() {
+    public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form) {
         return ModelAndViewWithPropertyCreationAttributes();
     }
 
@@ -88,8 +87,34 @@ public class PropertyController {
         return mav;
     }
 
+    @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
+    public @ResponseBody
+    ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
+        int uploadedFiles = 0;
+        //if (errors.hasErrors()){
+            System.out.println("hjhjhkhjjh");
+            for (int i = 0; i < files.length; i++) {
+                MultipartFile file = files[i];
+                try {
+                    byte[] bytes = file.getBytes();
+                    InputStream inputStream = new ByteArrayInputStream(bytes);
+                    inputStream.close();
+                    uploadedFiles++;
+                } catch (Exception e) {
+                    //return "You failed to upload " + name + " => " + e.getMessage();
+                }
+            }
+            return create(form).addObject("filesUploaded", uploadedFiles + " pictures uploaded!");
+//        }
+//        return create(form).addObject("filesUploaded", "dasdas");
+
+    }
+
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm) {
+    public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors) {
+        if (errors.hasErrors()){
+            return create(propertyForm);
+        }
         Either<Property, Collection<String>> propertyOrErrors = propertyService.create(
                 new Property.Builder()
                     .withCaption(propertyForm.getCaption())
