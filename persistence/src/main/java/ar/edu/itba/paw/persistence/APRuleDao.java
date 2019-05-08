@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Repository
@@ -23,7 +25,13 @@ public class APRuleDao implements RuleDao {
     }
 
     @Override
-    public Stream<Rule> getAllAsStream() {
-        return jdbcTemplate.query("SELECT * FROM rules", ROW_MAPPER).stream();
+    public Rule get(long id) {
+        List<Rule> rules = jdbcTemplate.query("SELECT * FROM rules WHERE id = ?", ROW_MAPPER, id);
+        return rules.isEmpty() ? null : rules.get(0);
+    }
+
+    @Override
+    public Collection<Rule> getAll() {
+        return jdbcTemplate.query("SELECT * FROM rules", ROW_MAPPER);
     }
 }

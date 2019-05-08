@@ -30,7 +30,7 @@
             <c:when test="${not empty properties}">
                 <c:forEach var="property" items="${properties}">
                     <div class="card property-elem">
-                        <img class="card-img-top" src="http://localhost:8080/webapp_war_exploded/images/${property.mainImageId}" alt="Card image">
+                        <img class="card-img-top" src="http://localhost:8080/images/${property.mainImageId}" alt="Card image">
                         <div class="card-body">
                             <h4 class="card-title">${property.description}</h4>
                             <p class="card-text">${property.caption}</p>

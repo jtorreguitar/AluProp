@@ -13,6 +13,10 @@ public class Image {
         this.image = image;
     }
 
+    public Image(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

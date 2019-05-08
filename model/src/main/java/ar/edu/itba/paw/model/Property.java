@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.enums.PropertyType;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class Property {
     private long id;
@@ -18,10 +19,9 @@ public class Property {
     private Collection<Rule> rules;
     private Collection<User> interestedUsers;
     private Collection<Service> services;
+    private Collection<Image> images;
     private long mainImageId;
     private InputStream mainImage;
-
-    private Property() { }
 
     public long getId() {
         return id;
@@ -71,32 +71,25 @@ public class Property {
         return services;
     }
 
+    public Collection<Image> getImages() {
+        return images;
+    }
+
+    public long getMainImageId() {
+        return mainImageId;
+    }
+
     public InputStream getMainImage() {
         return mainImage;
     }
 
-    public long getMainImageId() { return mainImageId; }
-
     public static class Builder {
-        public static final String MUST_BE_PROVIDED = "must be provided.";
         private Property property;
 
         public Builder() {
             this.property = new Property();
         }
-
-        public Property build() {
-            if(property.id < 1) throw new IllegalStateException("id" + MUST_BE_PROVIDED);
-            if(property.caption == null || property.caption.equals("")) throw new IllegalStateException("caption" + MUST_BE_PROVIDED);
-            if(property.description == null || property.description.equals("")) throw new IllegalStateException("description" + MUST_BE_PROVIDED);
-            if(property.propertyType == null) throw new IllegalStateException("property type" + MUST_BE_PROVIDED);
-            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood" + MUST_BE_PROVIDED);
-            if(property.capacity < 1) throw new IllegalStateException("capacity" + MUST_BE_PROVIDED);
-            if(property.price <= 0) throw new IllegalStateException("price" + MUST_BE_PROVIDED);
-            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
-            return property;
-        }
-
+      
         public Builder fromProperty(Property property) {
             this.property.id = property.id;
             this.property.caption = property.caption;
@@ -111,7 +104,31 @@ public class Property {
             this.property.interestedUsers = property.interestedUsers;
             this.property.mainImageId = property.mainImageId;
             this.property.mainImage = property.mainImage;
+            this.property.images = property.images;
+            this.property.services = property.services;
             return this;
+        }
+
+        public Property build() {
+            checkStateLegality();
+            initializeLists();
+            return property;
+        }
+
+        private void checkStateLegality() {
+            if(property.caption == null || property.caption.equals("")) throw new IllegalStateException("caption must be provided.");
+            if(property.description == null || property.description.equals("")) throw new IllegalStateException("description must be provided.");
+            if(property.propertyType == null) throw new IllegalStateException("property type must be provided.");
+            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood must be provided.");
+            if(property.capacity < 1) throw new IllegalStateException("capacity must be provided.");
+            if(property.price <= 0) throw new IllegalStateException("price must be provided.");
+            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
+        }
+
+        private void initializeLists() {
+            if(this.property.services == null) this.property.services = new LinkedList<>();
+            if(this.property.images == null) this.property.images = new LinkedList<>();
+            if(this.property.rules == null) this.property.rules = new LinkedList<>();
         }
 
         public Builder withId(long id) {
@@ -181,6 +198,11 @@ public class Property {
 
         public Builder withMainImageId(long mainImageId) {
             this.property.mainImageId = mainImageId;
+            return this;
+        }
+
+        public Builder withImages(Collection<Image> images) {
+            this.property.images = images;
             return this;
         }
     }

@@ -13,10 +13,6 @@ public class APUniversityService implements UniversityService {
 
     @Autowired private UniversityDao universityDao;
 
-    public University get(long id) {
-        return universityDao.get(id);
-    }
-
     public Collection<University> getAll() {
         return universityDao.getAll();
     }

@@ -8,7 +8,9 @@ import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.interfaces.dao.UniversityDao;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.enums.Gender;
+import ar.edu.itba.paw.model.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -22,10 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
-public class APUserDao extends APDao<User> implements UserDao {
+public class APUserDao implements UserDao {
 
     private static final String TABLE_NAME = "users";
     private final RowMapper<User> ROW_MAPPER = (rs, rowNum)
@@ -41,7 +42,9 @@ public class APUserDao extends APDao<User> implements UserDao {
                 .withName(rs.getString("name"))
                 .withPasswordHash(rs.getString("passwordHash"))
                 .withUniversityId(rs.getLong("universityId"))
+                .withRole(Role.valueOf(rs.getString("role")))
                 .build();
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
     @Autowired
@@ -55,27 +58,38 @@ public class APUserDao extends APDao<User> implements UserDao {
 
     @Autowired
     public APUserDao(DataSource ds) {
-        super(ds);
-        jdbcInsert = new SimpleJdbcInsert(getJdbcTemplate())
+        jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                             .withTableName("users")
                             .usingGeneratedKeyColumns("id");
     }
 
     @Override
-    public Stream<User> getAllAsStream() {
-        return getJdbcTemplate().query("SELECT * FROM users", getRowMapper()).stream();
+    public User get(long id) {
+        final List<User> list = jdbcTemplate
+                .query("SELECT * FROM users WHERE id = ?", ROW_MAPPER, id);
+        return list.isEmpty() ? null : list.get(0);
     }
 
+    @Override
     public User getByEmail(String email) {
-        final List<User> list = getJdbcTemplate()
-                .query("SELECT * FROM users WHERE username = ?", getRowMapper(), email);
+        final List<User> list = jdbcTemplate
+                .query("SELECT * FROM users WHERE email = ?", ROW_MAPPER, email);
         return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
+    public Collection<User> getAll() {
+        return jdbcTemplate.query("SELECT * FROM users", ROW_MAPPER);
     }
 
     @Override
     public User create(User user) {
         Number id = jdbcInsert.executeAndReturnKey(generateArgumentsForUserCreation(user));
-        return get(id.longValue());
+        return new User.Builder()
+                    .fromUser(user)
+                    .withId(id.longValue())
+                    .build();
     }
 
     private Map<String,Object> generateArgumentsForUserCreation(User user) {
@@ -87,9 +101,10 @@ public class APUserDao extends APDao<User> implements UserDao {
         ret.put("lastName", user.getLastName());
         ret.put("careerId", user.getCareerId());
         ret.put("universityId", user.getUniversityId());
-        ret.put("Gender", user.getGender().getValue());
+        ret.put("Gender", user.getGender().toString());
         ret.put("birthDate", user.getBirthDate());
         ret.put("contactNumber", user.getContactNumber());
+        ret.put("role", user.getRole().toString());
         return ret;
     }
 
@@ -113,15 +128,5 @@ public class APUserDao extends APDao<User> implements UserDao {
         return p -> interestDao.getAll().stream()
                         .filter(i -> i.getUserId() == id)
                         .anyMatch(i -> i.getPropertyId() == p.getId());
-    }
-
-    @Override
-    protected RowMapper<User> getRowMapper() {
-        return this.ROW_MAPPER;
-    }
-
-    @Override
-    protected String getTableName() {
-        return TABLE_NAME;
     }
 }

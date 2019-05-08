@@ -1,10 +1,9 @@
-package ar.edu.itba.paw.interfaces.dao;
+package ar.edu.itba.paw.interfaces.service;
 
 import ar.edu.itba.paw.model.Rule;
 
 import java.util.Collection;
 
-public interface RuleDao {
-    Rule get(long id);
+public interface RuleService {
     Collection<Rule> getAll();
 }

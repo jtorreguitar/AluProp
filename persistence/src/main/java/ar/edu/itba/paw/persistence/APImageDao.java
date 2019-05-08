@@ -25,7 +25,7 @@ public class APImageDao implements ImageDao {
 
     @Override
     public Image get(long id) {
-        List<Image> list = jdbcTemplate.query("SELECT * FROM images WHERE id = ?", getRowMapper(), id);
+        List<Image> list = jdbcTemplate.query("SELECT * FROM images WHERE id = ?", ROW_MAPPER, id);
         if(!list.isEmpty())
             return list.get(0);
         return null;
@@ -33,10 +33,11 @@ public class APImageDao implements ImageDao {
 
     @Override
     public Collection<Image> getByProperty(long propertyId) {
-        return jdbcTemplate.query("SELECT * FROM images WHERE propertyId = ?", getRowMapper(), propertyId);
+        return jdbcTemplate.query("SELECT * FROM images WHERE propertyId = ?", ROW_MAPPER, propertyId);
     }
 
-    private RowMapper<Image> getRowMapper() {
-        return ROW_MAPPER;
+    @Override
+    public void addProperty(long id, long propertyId) {
+        jdbcTemplate.update("UPDATE images SET propertyId = ? WHERE id = ?", propertyId, id);
     }
 }
