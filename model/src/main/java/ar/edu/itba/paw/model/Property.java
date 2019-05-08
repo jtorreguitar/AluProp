@@ -89,7 +89,7 @@ public class Property {
         public Builder() {
             this.property = new Property();
         }
-
+      
         public Builder fromProperty(Property property) {
             this.property.id = property.id;
             this.property.caption = property.caption;
