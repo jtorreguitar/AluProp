@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,13 +13,12 @@ import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.model.Image;
-import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.model.Rule;
-import ar.edu.itba.paw.model.Service;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -45,6 +45,8 @@ public class PropertyController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
         final ModelAndView mav = new ModelAndView("index");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("properties", propertyService.getAll());
         return mav;
     }
