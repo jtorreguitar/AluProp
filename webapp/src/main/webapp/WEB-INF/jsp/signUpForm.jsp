@@ -42,6 +42,9 @@
 
                           <form:label path="repeatPassword">Re-enter password</form:label>
                           <form:input path="repeatPassword" class="form-control" type="password"></form:input>
+                          <c:if test="${passwordMatch == false}">
+                                  <span class="formError">Please make sure that the passwords match.</span>
+                          </c:if>
                           <form:errors path="repeatPassword" cssClass="formError" element="p"/>
                           </div>
                           <div class="form-row">
@@ -49,7 +52,6 @@
                                   <form:label path="name">First name </form:label>
                                   <form:input path="name" type="text" class="form-control" placeholder=""></form:input>
                                   <form:errors path="name" cssClass="formError" element="p"/>
-                          <form:errors path="repeatPassword" cssClass="formError" element="p"/>
                               </div>
                               <div class="col form-group">
                                   <form:label path="lastName">Last name</form:label>
@@ -65,7 +67,7 @@
                               </div>
                               <div class="col form-group">
                                   <form:label path="birthDate">Date of Birth</form:label>
-                                  <form:input path="birthDate" type="date" class="form-control" placeholder="dd/mm/yyyy"></form:input>
+                                  <form:input path="birthDate" type="date" class="form-control" placeholder="yyyy-mm-dd"></form:input>
                                   <form:errors path="birthDate" cssClass="formError" element="p"/>
                               </div>
                           </div>
@@ -119,7 +121,7 @@
                           <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
                       </form:form>
                   </article> <!-- card-body end .// -->
-                  <div class="border-top card-body text-center">Have an account? <a href="">Log In</a></div>
+                  <div class="border-top card-body text-center">Have an account? <a href="/user/logIn">Log In</a></div>
               </div> <!-- card.// -->
           </div> <!-- col.//-->
 

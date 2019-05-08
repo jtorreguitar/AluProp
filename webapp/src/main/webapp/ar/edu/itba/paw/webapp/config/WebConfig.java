@@ -3,11 +3,13 @@ package ar.edu.itba.paw.webapp.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,5 +113,14 @@ public class WebConfig implements WebMvcConfigurer {
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setWriteAcceptCharset(true);
         return stringHttpMessageConverter;
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:i18n/messages");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        messageSource.setCacheSeconds(5);
+        return messageSource;
     }
 }

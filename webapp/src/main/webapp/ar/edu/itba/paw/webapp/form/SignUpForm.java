@@ -2,26 +2,45 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.sql.Date;
 
 public class SignUpForm {
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String lastName;
+
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
     private String email;
-    private int gender;
+
     @Size(min = 6, max = 100)
     private String password;
+
     @Size(min = 6, max = 100)
     private String repeatPassword;
+
+    @Pattern(regexp = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")
     private String birthDate;
+
+    @NotBlank
+    @Size(max = 400)
     private String bio;
+
+    @Size(min = 8, max = 15)
     private String phoneNumber;
-    private int universityId;
-    private int careerId;
+
+    @NotNull
+    private Integer universityId;
+    @NotNull
+    private Integer careerId;
+    private int gender;
     private int role;
 
     public String getBirthDate() {
@@ -48,19 +67,19 @@ public class SignUpForm {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getUniversityId() {
+    public Integer getUniversityId() {
         return universityId;
     }
 
-    public void setUniversityId(int universityId) {
+    public void setUniversityId(Integer universityId) {
         this.universityId = universityId;
     }
 
-    public int getCareerId() {
+    public Integer getCareerId() {
         return careerId;
     }
 
-    public void setCareerId(int careerId) {
+    public void setCareerId(Integer careerId) {
         this.careerId = careerId;
     }
 

@@ -74,3 +74,6 @@ img {
     font-weight: bold;
 }
 
+.formError{
+    color: red;
+}

@@ -25,7 +25,7 @@ public class APUniversityDao implements UniversityDao {
 
     @Override
     public University get(long id) {
-        List<University> list = jdbcTemplate.query("SELECT * FROM universties WHERE id = ?", ROW_MAPPER, id);
+        List<University> list = jdbcTemplate.query("SELECT * FROM universities WHERE id = ?", ROW_MAPPER, id);
         return list.isEmpty() ? null : list.get(0);
     }
 

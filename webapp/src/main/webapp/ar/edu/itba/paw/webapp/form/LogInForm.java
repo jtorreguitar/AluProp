@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.webapp.form;
 
+import javax.validation.constraints.Pattern;
+
 public class LogInForm {
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
     private String email;
     private String password;
     private boolean rememberMe;

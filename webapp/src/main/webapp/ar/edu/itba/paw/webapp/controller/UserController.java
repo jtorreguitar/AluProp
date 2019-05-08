@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping("/user")
@@ -47,9 +50,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
-    public ModelAndView register(@Valid @ModelAttribute("signUpForm") SignUpForm form) {
-        if(!form.getRepeatPassword().equals(form.getPassword())){
-            return new ModelAndView("redirect:/user/signUp");
+    public ModelAndView register(@Valid @ModelAttribute("signUpForm") SignUpForm form, final BindingResult errors) {
+
+        if(errors.hasErrors()){
+            return signUp(form);
+        }
+        else if (!form.getRepeatPassword().equals(form.getPassword())){
+            form.setRepeatPassword("");
+            return signUp(form).addObject("passwordMatch", false);
         }
         userService.CreateUser(new User.Builder()
                                         .withEmail(form.getEmail())
