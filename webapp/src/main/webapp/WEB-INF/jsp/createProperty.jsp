@@ -36,7 +36,7 @@
                                 Picture 2 to upload: <input type="file" class="btn btn-block" name="file"><br />
                                 Picture 3 to upload: <input type="file" class="btn btn-block" name="file"><br />
                                 Picture 4 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                <button type="submit" value="Upload"> Press here to upload the file!</button>
+                                <button type="submit" value="Upload"> Upload pictures!</button>
                             </form>
                         </div>
                     </c:if>

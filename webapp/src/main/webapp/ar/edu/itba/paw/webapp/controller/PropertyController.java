@@ -97,9 +97,12 @@ public class PropertyController {
                 MultipartFile file = files[i];
                 try {
                     byte[] bytes = file.getBytes();
+                    //System.out.println(bytes.length);
+                    if (bytes.length != 0)
+                        uploadedFiles++;
                     InputStream inputStream = new ByteArrayInputStream(bytes);
                     inputStream.close();
-                    uploadedFiles++;
+
                 } catch (Exception e) {
                     //return "You failed to upload " + name + " => " + e.getMessage();
                 }
