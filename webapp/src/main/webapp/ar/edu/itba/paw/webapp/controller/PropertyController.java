@@ -14,6 +14,7 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
@@ -91,26 +92,25 @@ public class PropertyController {
     public @ResponseBody
     ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
         int uploadedFiles = 0;
-        //if (errors.hasErrors()){
-            System.out.println("hjhjhkhjjh");
-            for (int i = 0; i < files.length; i++) {
-                MultipartFile file = files[i];
-                try {
-                    byte[] bytes = file.getBytes();
-                    //System.out.println(bytes.length);
-                    if (bytes.length != 0)
-                        uploadedFiles++;
-                    InputStream inputStream = new ByteArrayInputStream(bytes);
-                    inputStream.close();
+        boolean[] failedFiles = new boolean[files.length];
+        for (int i = 0; i < failedFiles.length;i++)failedFiles[i]=false;
 
-                } catch (Exception e) {
-                    //return "You failed to upload " + name + " => " + e.getMessage();
-                }
+        for (int i = 0; i < files.length; i++) {
+            MultipartFile file = files[i];
+            try {
+                byte[] bytes = file.getBytes();
+                //System.out.println(bytes.length);
+                if (bytes.length != 0)
+                    uploadedFiles++;
+                InputStream inputStream = new ByteArrayInputStream(bytes);
+                inputStream.close();
+
+            } catch (Exception e) {
+                failedFiles[i] = true;
             }
-            return create(form).addObject("filesUploaded", uploadedFiles + " pictures uploaded!");
-//        }
-//        return create(form).addObject("filesUploaded", "dasdas");
-
+        }
+        return create(form).addObject("filesUploaded", uploadedFiles)
+                .addObject("failedFiles", failedFiles);
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)
@@ -124,7 +124,7 @@ public class PropertyController {
                     .withDescription(propertyForm.getDescription())
                     .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
                     .withPrice(propertyForm.getPrice())
-                    .withPropertyType(propertyForm.getPropertyType())
+                    .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
                     .withPrivacyLevel(propertyForm.getPrivacyLevel())
                     .withCapacity(propertyForm.getCapacity())
                     .withMainImageId(propertyForm.getMainImageId())

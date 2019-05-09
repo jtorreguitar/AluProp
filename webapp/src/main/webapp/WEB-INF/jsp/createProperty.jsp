@@ -27,24 +27,28 @@
                     <h4 class="card-title mt-2">Create a new property</h4>
                 </header>
                 <article class="card-body">
-                    ${filesUploaded}
-                    <c:if test="${filesUploaded == null}">
-                        <div class="form-group">
-                            <label>Upload up to 4 pictures of the property:</label>
-                            <form id="images" method="POST" action="/host/create/uploadPictures" enctype="multipart/form-data">
-                                Picture 1 to upload: <input type="file" class="btn btn-primary btn-block" name="file"><br />
-                                Picture 2 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                Picture 3 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                Picture 4 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                <button type="submit" value="Upload"> Upload pictures!</button>
-                            </form>
-                        </div>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${filesUploaded == null}">
+                            <div class="form-group">
+                                <label>Upload up to 4 pictures of the property:</label>
+                                <form id="images" method="POST" action="/host/create/uploadPictures" enctype="multipart/form-data">
+                                    Picture 1 to upload: <input type="file" class="btn btn-primary btn-block" name="file"><br />
+                                    Picture 2 to upload: <input type="file" class="btn btn-block" name="file"><br />
+                                    Picture 3 to upload: <input type="file" class="btn btn-block" name="file"><br />
+                                    Picture 4 to upload: <input type="file" class="btn btn-block" name="file"><br />
+                                    <button type="submit" value="Upload"> Upload pictures!</button>
+                                </form>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            ${filesUploaded} pictures uploaded!
+                        </c:otherwise>
+                    </c:choose>
                     <c:url value="/host/create" var="postPath"/>
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post">
                         <div class="form-group">
                             <form:label path="caption">Caption</form:label>
-                            <form:input path="caption" type="email" class="form-control" placeholder=""></form:input>
+                            <form:input path="caption" type="text" class="form-control" placeholder=""></form:input>
                             <form:errors path="caption" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
@@ -89,95 +93,24 @@
                         </div>
                         <div class="form-group">
                             <form:label path="ruleIds">Rules:</form:label>
-                            <%--<form:checkboxes items="" path="ruleIds" id="select-neighbourhood" name="rules">--%>
                                 <c:forEach var="rule" items="${rules}">
                                     <form:checkbox path="ruleIds" value="${rule.id}"/>${rule.name}
                                 </c:forEach>
-                            <%--</form:checkboxes>--%>
-                            <form:errors path="neighbourhoodId" cssClass="formError" element="p"/>
+                            <form:errors path="ruleIds" cssClass="formError" element="p"/>
                         </div>
-                        <%--<div class="form-group">--%>
-                            <%--<form:label path="password">Password</form:label>--%>
-                            <%--<form:input path="password" class="form-control" type="password"></form:input>--%>
-                            <%--<form:errors path="password" cssClass="formError" element="p"/>--%>
-
-                            <%--<form:label path="repeatPassword">Re-enter password</form:label>--%>
-                            <%--<form:input path="repeatPassword" class="form-control" type="password"></form:input>--%>
-                            <%--<c:if test="${passwordMatch == false}">--%>
-                                <%--<span class="formError">Please make sure that the passwords match.</span>--%>
-                            <%--</c:if>--%>
-                            <%--<form:errors path="repeatPassword" cssClass="formError" element="p"/>--%>
-                        <%--</div>--%>
-                        <%--<div class="form-row">--%>
-                            <%--<div class="col form-group">--%>
-                                <%--<form:label path="name">First name </form:label>--%>
-                                <%--<form:input path="name" type="text" class="form-control" placeholder=""></form:input>--%>
-                                <%--<form:errors path="name" cssClass="formError" element="p"/>--%>
-                            <%--</div>--%>
-                            <%--<div class="col form-group">--%>
-                                <%--<form:label path="lastName">Last name</form:label>--%>
-                                <%--<form:input path="lastName" type="text" class="form-control" placeholder=" "></form:input>--%>
-                                <%--<form:errors path="lastName" cssClass="formError" element="p"/>--%>
-                            <%--</div>--%>
-                        <%--</div> <!-- form-row end.// -->--%>
-                        <%--<div class="form-row">--%>
-                            <%--<div class="col form-group">--%>
-                                <%--<form:label path="phoneNumber">Phone Number</form:label>--%>
-                                <%--<form:input path="phoneNumber" type="text" class="form-control" placeholder=""></form:input>--%>
-                                <%--<form:errors path="phoneNumber" cssClass="formError" element="p"/>--%>
-                            <%--</div>--%>
-                            <%--<div class="col form-group">--%>
-                                <%--<form:label path="birthDate">Date of Birth</form:label>--%>
-                                <%--<form:input path="birthDate" type="date" class="form-control" placeholder="yyyy-mm-dd"></form:input>--%>
-                                <%--<form:errors path="birthDate" cssClass="formError" element="p"/>--%>
-                            <%--</div>--%>
-                        <%--</div>--%>
-                        <%--<div class="form-group">--%>
-                            <%--<form:label path="universityId">University</form:label>--%>
-                            <%--<form:select path="universityId" id="select-university" name="universities">--%>
-                                <%--<option value="" selected>Please choose</option>--%>
-                                <%--<c:forEach var="university" items="${universities}">--%>
-                                    <%--<form:option value="${university.id}">${university.name}</form:option>--%>
-                                <%--</c:forEach>--%>
-                            <%--</form:select>--%>
-                            <%--<form:errors path="universityId" cssClass="formError" element="p"/>--%>
-                        <%--</div>--%>
-
-                        <%--<div class="form-group">--%>
-                            <%--<form:label path="careerId">Career</form:label>--%>
-                            <%--<form:select path="careerId" id="select-career" name="careers">--%>
-                                <%--<option value="" selected>Please choose</option>--%>
-                                <%--<c:forEach var="career" items="${careers}">--%>
-                                    <%--<option value="${career.id}">${career.name}</option>--%>
-                                <%--</c:forEach>--%>
-                            <%--</form:select>--%>
-                            <%--<form:errors path="careerId" cssClass="formError" element="p"/>--%>
-                        <%--</div>--%>
-
-                        <%--<div class="col form-group">--%>
-                            <%--<form:label path="gender" class="form-check form-check-inline">Gender:</form:label>--%>
-                            <%--<form:select path="gender">--%>
-                                <%--<form:option value="0">Male</form:option>--%>
-                                <%--<form:option value="1">Female</form:option>--%>
-                                <%--<form:option value="2">Other</form:option>--%>
-                            <%--</form:select>--%>
-                        <%--</div>--%>
-
-                        <%--<div class="col form-group">--%>
-                            <%--<form:label path="role" class="form-check form-check-inline">I am a:</form:label>--%>
-                            <%--<form:select path="role">--%>
-                                <%--<form:option value="0">Guest</form:option>--%>
-                                <%--<form:option value="1">Host</form:option>--%>
-                            <%--</form:select>--%>
-                        <%--</div>--%>
+                        <div class="form-group">
+                            <form:label path="serviceIds">Services:</form:label>
+                            <c:forEach var="service" items="${services}">
+                                <form:checkbox path="serviceIds" value="${service.id}"/>${service.name}
+                            </c:forEach>
+                            <form:errors path="serviceIds" cssClass="formError" element="p"/>
+                        </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                            <button type="submit" class="btn btn-primary btn-block">Create Property</button>
                         </div> <!-- form-group// -->
-                        <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
                     </form:form>
                 </article> <!-- card-body end .// -->
-                <div class="border-top card-body text-center">Have an account? <a href="/user/logIn">Log In</a></div>
             </div> <!-- card.// -->
         </div> <!-- col.//-->
 

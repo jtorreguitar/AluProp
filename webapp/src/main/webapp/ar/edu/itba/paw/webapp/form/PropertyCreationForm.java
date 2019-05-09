@@ -9,7 +9,7 @@ public class PropertyCreationForm {
     private String caption;
     @Size(min=1, max=2000)
     private String description;
-    private PropertyType propertyType;
+    private int propertyType;
     private long neighbourhoodId;
     private boolean privacyLevel;
     private int capacity;
@@ -35,11 +35,11 @@ public class PropertyCreationForm {
         this.description = description;
     }
 
-    public PropertyType getPropertyType() {
+    public int getPropertyType() {
         return propertyType;
     }
 
-    public void setPropertyType(PropertyType propertyType) {
+    public void setPropertyType(int propertyType) {
         this.propertyType = propertyType;
     }
 
