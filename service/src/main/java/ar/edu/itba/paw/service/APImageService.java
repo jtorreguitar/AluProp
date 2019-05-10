@@ -5,6 +5,11 @@ import ar.edu.itba.paw.interfaces.service.ImageService;
 import ar.edu.itba.paw.model.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @Service
 public class APImageService implements ImageService {
@@ -15,5 +20,15 @@ public class APImageService implements ImageService {
     @Override
     public Image get(long id) {
         return imageDao.get(id);
+    }
+
+    @Override
+    public long create(MultipartFile file) {
+        try {
+            return imageDao.create(new BufferedInputStream(file.getInputStream()));
+        }
+        catch(IOException e) {
+            return 0;
+        }
     }
 }

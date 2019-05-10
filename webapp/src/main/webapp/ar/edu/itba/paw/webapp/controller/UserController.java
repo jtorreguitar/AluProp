@@ -6,9 +6,11 @@ import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
+import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.LogInForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,5 +75,12 @@ public class UserController {
                                         .withRole(Role.valueOf(form.getRole()))
                                         .build());
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public ModelAndView profile() {
+        String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+        User u = userService.getUserWithRelatedEntitiesByEmail(email);
+        return new ModelAndView("profile").addObject("user", u);
     }
 }

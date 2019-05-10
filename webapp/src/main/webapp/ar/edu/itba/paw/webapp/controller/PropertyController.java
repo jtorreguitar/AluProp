@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.*;
@@ -18,6 +19,7 @@ import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,6 +43,8 @@ public class PropertyController {
     private RuleService ruleService;
     @Autowired
     private NeighbourhoodService neighbourhoodService;
+    @Autowired
+    private ImageService imageService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -91,26 +95,11 @@ public class PropertyController {
     @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
     public @ResponseBody
     ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
-        int uploadedFiles = 0;
-        boolean[] failedFiles = new boolean[files.length];
-        for (int i = 0; i < failedFiles.length;i++)failedFiles[i]=false;
-
-        for (int i = 0; i < files.length; i++) {
-            MultipartFile file = files[i];
-            try {
-                byte[] bytes = file.getBytes();
-                //System.out.println(bytes.length);
-                if (bytes.length != 0)
-                    uploadedFiles++;
-                InputStream inputStream = new ByteArrayInputStream(bytes);
-                inputStream.close();
-
-            } catch (Exception e) {
-                failedFiles[i] = true;
-            }
-        }
-        return create(form).addObject("filesUploaded", uploadedFiles)
-                .addObject("failedFiles", failedFiles);
+        long[] imageIds = new long[files.length];
+        for (int i = 0; i < files.length; i++)
+            imageIds[i] = imageService.create(files[i]);
+        return create(form)
+                .addObject("imageIds", imageIds);
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)

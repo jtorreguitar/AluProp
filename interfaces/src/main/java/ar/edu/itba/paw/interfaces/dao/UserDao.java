@@ -9,5 +9,6 @@ public interface UserDao {
     Collection<User> getAll();
     User get(long id);
     User getByEmail(String email);
+    User getUserWithRelatedEntitiesByEmail(String email);
     User create(User user);
 }

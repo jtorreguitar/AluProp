@@ -25,10 +25,7 @@ public class APInterestDao implements InterestDao {
 
     @Override
     public Collection<Interest> getAll() {
-        return jdbcTemplate.query("SELECT * FROM interests", getRowMapper());
+        return jdbcTemplate.query("SELECT * FROM interests", ROW_MAPPER);
     }
 
-    private RowMapper<Interest> getRowMapper() {
-        return ROW_MAPPER;
-    }
 }

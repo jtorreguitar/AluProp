@@ -165,4 +165,9 @@ public class APPropertyDao implements PropertyDao {
         property.getRules().forEach(rule -> propertyRuleDao.create(rule.getId(), property.getId()));
         property.getServices().forEach(service -> propertyServiceDao.create(service.getId(), property.getId()));
     }
+
+    @Override
+    public Collection<Property> getInterestsOfUser(long id) {
+        return jdbcTemplate.query("SELECT * FROM properties p WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.id AND userId = ?)", ROW_MAPPER, id);
+    }
 }

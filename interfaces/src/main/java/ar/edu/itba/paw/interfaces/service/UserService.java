@@ -9,4 +9,5 @@ public interface UserService {
     User get(long id);
     User getByEmail(String username);
     Either<User, List<String>> CreateUser(User user);
+    User getUserWithRelatedEntitiesByEmail(String email);
 }
