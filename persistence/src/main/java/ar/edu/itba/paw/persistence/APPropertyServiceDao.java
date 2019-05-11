@@ -24,7 +24,9 @@ public class APPropertyServiceDao implements PropertyServiceDao {
     @Autowired
     public APPropertyServiceDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(ds);
+        jdbcInsert = new SimpleJdbcInsert(ds)
+                        .withTableName("services")
+                        .usingGeneratedKeyColumns("id");
     }
 
     @Override

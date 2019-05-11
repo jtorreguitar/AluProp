@@ -26,7 +26,7 @@ public class APServiceDao implements ServiceDao {
 
     @Override
     public Service get(long id) {
-        List<Service> services = jdbcTemplate.query("SELECT * FROM services WHERE id = ?", ROW_MAPPER);
+        List<Service> services = jdbcTemplate.query("SELECT * FROM services WHERE id = ?", ROW_MAPPER, id);
         return services.isEmpty() ? null : services.get(0);
     }
 
