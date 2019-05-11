@@ -1,23 +1,40 @@
 package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.model.enums.PropertyType;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Arrays;
 
 public class PropertyCreationForm {
     @Size(min=1, max=100)
     private String caption;
     @Size(min=1, max=2000)
     private String description;
+
     private int propertyType;
-    private long neighbourhoodId;
+
+    @NotNull
+    private int neighbourhoodId;
+
     private boolean privacyLevel;
+
+    @Range(min=1, max=100)
     private int capacity;
+
     private float price;
     private long[] ruleIds;
     private long[] serviceIds;
     private long[] imageIds;
     private long mainImageId;
+
+    @AssertTrue
+    public boolean priceCheck() {
+        return price > 10.0;
+    }
+
 
     public String getCaption() {
         return caption;
@@ -43,11 +60,11 @@ public class PropertyCreationForm {
         this.propertyType = propertyType;
     }
 
-    public long getNeighbourhoodId() {
+    public int getNeighbourhoodId() {
         return neighbourhoodId;
     }
 
-    public void setNeighbourhoodId(long neighbourhoodId) {
+    public void setNeighbourhoodId(int neighbourhoodId) {
         this.neighbourhoodId = neighbourhoodId;
     }
 
@@ -96,6 +113,7 @@ public class PropertyCreationForm {
     }
 
     public void setImageIds(long[] imageIds) {
+        System.out.println("In form: " + Arrays.toString(imageIds));
         this.imageIds = imageIds;
     }
 

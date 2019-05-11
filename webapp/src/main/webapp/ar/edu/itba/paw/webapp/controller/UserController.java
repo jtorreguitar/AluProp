@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.LogInForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -81,6 +82,9 @@ public class UserController {
     public ModelAndView profile() {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         User u = userService.getUserWithRelatedEntitiesByEmail(email);
-        return new ModelAndView("profile").addObject("user", u);
+        ModelAndView mav = new ModelAndView("profile").addObject("user", u);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        mav.addObject("userRole", auth.getAuthorities());
+        return mav;
     }
 }

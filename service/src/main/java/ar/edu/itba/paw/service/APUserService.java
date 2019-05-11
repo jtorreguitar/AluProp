@@ -43,6 +43,11 @@ public class APUserService implements UserService {
         return Either.valueFrom(userDao.create(user));
     }
 
+    @Override
+    public User getUserWithRelatedEntitiesByEmail(String email) {
+        return null;
+    }
+
     private void checkRelatedEntitiesExist(User user) {
         checkUniversityExists(user.getUniversityId());
         checkCareerExists(user.getCareerId());
