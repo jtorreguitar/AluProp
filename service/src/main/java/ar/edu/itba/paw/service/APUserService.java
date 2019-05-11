@@ -62,4 +62,9 @@ public class APUserService implements UserService {
         if(careerDao.get(careerId) == null)
             errors.add("The specified career does not exist");
     }
+
+    @Override
+    public User getUserWithRelatedEntitiesByEmail(String email) {
+        return userDao.getUserWithRelatedEntitiesByEmail(email);
+    }
 }
