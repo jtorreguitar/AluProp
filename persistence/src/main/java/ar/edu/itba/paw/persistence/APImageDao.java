@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import sun.misc.IOUtils;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,7 +55,21 @@ public class APImageDao implements ImageDao {
     @Override
     public long create(InputStream inputStream) {
         Map<String, Object> args = new HashMap<>();
-        args.put("image", inputStream);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        while (true) {
+            int r = 0;
+            try{
+                r = inputStream.read(buffer);
+            } catch (IOException e){
+                System.out.println("AKASKAKAAJKAJKSJAKSJAKSJAKS WFT HELP ME");
+            }
+            if (r == -1) break;
+            out.write(buffer, 0, r);
+        }
+
+        byte[] ret = out.toByteArray();
+        args.put("image",ret);
         Number id = jdbcInsert.executeAndReturnKey(args);
         return id.longValue();
     }

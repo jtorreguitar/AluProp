@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <title>Sign Up</title>
+    <title>Create a Property</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
@@ -27,34 +27,49 @@
                     <h4 class="card-title mt-2">Create a new property</h4>
                 </header>
                 <article class="card-body">
-                    <c:choose>
-                        <c:when test="${filesUploaded == null}">
-                            <div class="form-group">
-                                <label>Upload up to 4 pictures of the property:</label>
-                                <form id="images" method="POST" action="/host/create/uploadPictures" enctype="multipart/form-data">
-                                    Picture 1 to upload: <input type="file" class="btn btn-primary btn-block" name="file"><br />
-                                    Picture 2 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                    Picture 3 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                    Picture 4 to upload: <input type="file" class="btn btn-block" name="file"><br />
-                                    <button type="submit" value="Upload"> Upload pictures!</button>
-                                </form>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            ${filesUploaded} pictures uploaded!
-                        </c:otherwise>
-                    </c:choose>
-                    <c:url value="/host/create" var="postPath"/>
-                    <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post">
+
+                    <c:url value="/host/create/uploadPictures" var="postPath"/>
+                    <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
+                        <label>Upload up to 4 pictures of the property:</label>
+                        <c:choose>
+                            <c:when test="${uploadSuccessful == null}">
+                                <div class="form-group">
+                                    Picture 1 to upload:
+                                    <input id="uploadFile1" placeholder="Choose File" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                        <input id="uploadBtn1" type="file" class="upload" name="file"/>
+                                    </div>
+                                    Picture 2 to upload:
+                                    <input id="uploadFile2" placeholder="Choose File" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                        <input id="uploadBtn2" type="file" class="upload" name="file"/>
+                                    </div>
+                                    Picture 3 to upload:
+                                    <input id="uploadFile3" placeholder="Choose File" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                        <input id="uploadBtn3" type="file" class="upload" name="file"/>
+                                    </div>
+                                    Picture 4 to upload:
+                                    <input id="uploadFile4" placeholder="Choose File" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                        <input id="uploadBtn4" type="file" class="upload" name="file"/>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                The pictures were successfully uploaded!
+                            </c:otherwise>
+                        </c:choose>
+
                         <div class="form-group">
-                            <form:label path="caption">Caption</form:label>
-                            <form:input path="caption" type="text" class="form-control" placeholder=""></form:input>
-                            <form:errors path="caption" cssClass="formError" element="p"/>
+                            <form:label path="description">Name</form:label>
+                            <form:input path="description" type="text" class="form-control" placeholder=""></form:input>
+                            <form:errors path="description" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="description">Description</form:label>
-                            <form:textarea path="description" type="text" class="form-control"  style="resize:both;" placeholder="Include more details of the property..."></form:textarea>
-                            <form:errors path="description" cssClass="formError" element="p"/>
+                            <form:label path="caption">Description</form:label>
+                            <form:textarea path="caption" type="text" class="form-control"  style="resize:both;" placeholder="Include more details of the property..."></form:textarea>
+                            <form:errors path="caption" cssClass="formError" element="p"/>
                         </div>
                         <div class="col form-group">
                             <form:label path="propertyType" class="form-check form-check-inline">Property type:</form:label>
@@ -119,6 +134,20 @@
 
 </div>
 <!--container end.//-->
+<script>
+    document.getElementById("uploadBtn1").onchange = function () {
+        document.getElementById("uploadFile1").value = this.value.split("\\fakepath\\")[1];
+    };
+    document.getElementById("uploadBtn2").onchange = function () {
+        document.getElementById("uploadFile2").value = this.value.split("\\fakepath\\")[1];
+    };
+    document.getElementById("uploadBtn3").onchange = function () {
+        document.getElementById("uploadFile3").value = this.value.split("\\fakepath\\")[1];
+    };
+    document.getElementById("uploadBtn4").onchange = function () {
+        document.getElementById("uploadFile4").value = this.value.split("\\fakepath\\")[1];
+    };
+</script>
 
 </body>
 </html>

@@ -115,7 +115,7 @@ public class APUserDao implements UserDao {
                 .fromUser(incompleteUser)
                 .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
                 .withCareer(careerDao.get(incompleteUser.getCareerId()))
-                .withInterestedProperties(interestDao.getByUser(incompleteUser.getId()))
+                //.withInterestedProperties(interestDao.getByUser(incompleteUser.getId()))
                 .build();
     }
 }
