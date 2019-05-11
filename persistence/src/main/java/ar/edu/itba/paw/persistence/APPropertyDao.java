@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.Service;
@@ -23,11 +25,19 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import ar.edu.itba.paw.model.Property;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class APPropertyDao implements PropertyDao {
 
-    private static final String TABLE_NAME = "properties";
+    private final String GET_INTERESTS_OF_USER_QUERY = "SELECT * FROM properties p WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.id AND userId = ?)";
+    private final String GET_INTERESTS_OF_USER_PAGED_QUERY =
+                        "SELECT SUBQ.*\n" +
+                        "FROM (SELECT ROW_NUMBER() OVER (ORDER BY id) AS row_num, * " +
+                                "FROM properties p" +
+                                "WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.Id AND userId = ?)" +
+                                "ORDER BY id) SUBQ\n" +
+                        "WHERE SUBQ.row_num > ? AND SUBQ.row_num < ?";
     private final RowMapper<Property> ROW_MAPPER = (rs, rowNum)
         -> new Property.Builder()
             .withId(rs.getLong("id"))
@@ -111,29 +121,8 @@ public class APPropertyDao implements PropertyDao {
                     .build();
     }
 
-    private <T> Collection<T> getRelatedEntities(Predicate<T> isRelated, Stream<T> entities) {
-        return entities.filter(isRelated).collect(Collectors.toList());
-    }
-
-    private Predicate<Service> isServiceOfProperty(long id) {
-        return service -> propertyServiceDao.getAll().stream()
-                .filter(ps -> ps.getPropertyId() == id)
-                .anyMatch(ps -> service.getId() == ps.getId());
-    }
-
-    private Predicate<Rule> isRuleOfProperty(long id) {
-        return rule -> propertyRuleDao.getAll().stream()
-                .filter(pr -> pr.getPropertyId() == id)
-                .anyMatch(pr -> rule.getId() == pr.getId());
-    }
-
-    private Predicate<User> userShowedInterestInProperty(long id) {
-        return user -> interestDao.getAll().stream()
-                            .filter(interest -> interest.getId() == id)
-                            .anyMatch(interest -> user.getId() == interest.getId());
-    }
-
     @Override
+    @Transactional
     public Property create(Property property) {
         final Number id = jdbcInsert.executeAndReturnKey(generateArgumentsForPropertyCreation(property));
         Property ret = new Property.Builder()
@@ -166,6 +155,11 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> getInterestsOfUser(long id) {
-        return jdbcTemplate.query("SELECT * FROM properties p WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.id AND userId = ?)", ROW_MAPPER, id);
+        return jdbcTemplate.query(GET_INTERESTS_OF_USER_QUERY, ROW_MAPPER, id);
+    }
+
+    @Override
+    public PageResponse<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest) {
+        return null;
     }
 }

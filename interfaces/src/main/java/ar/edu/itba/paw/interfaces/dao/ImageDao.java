@@ -10,5 +10,5 @@ public interface ImageDao {
     Image get(long id);
     Collection<Image> getByProperty(long propertyId);
     void addProperty(long id, long propertyId);
-    long create(InputStream inputStream);
+    long create(byte[] image);
 }
