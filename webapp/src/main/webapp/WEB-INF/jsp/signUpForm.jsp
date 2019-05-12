@@ -74,7 +74,7 @@
                           <div class="form-group">
                               <form:label path="universityId">University</form:label>
                               <form:select path="universityId" id="select-university" name="universities">
-                                  <option value="" selected>Please choose</option>
+                                  <form:option value="-1">Please choose</form:option>
                                   <c:forEach var="university" items="${universities}">
                                       <form:option value="${university.id}">${university.name}</form:option>
                                   </c:forEach>
@@ -85,7 +85,7 @@
                           <div class="form-group">
                               <form:label path="careerId">Career</form:label>
                               <form:select path="careerId" id="select-career" name="careers">
-                                  <option value="" selected>Please choose</option>
+                                  <form:option value="-1">Please choose</form:option>
                                   <c:forEach var="career" items="${careers}">
                                       <option value="${career.id}">${career.name}</option>
                                   </c:forEach>
@@ -101,17 +101,20 @@
                           <div class="col form-group">
                               <form:label path="gender" class="form-check form-check-inline">Gender:</form:label>
                               <form:select path="gender">
-                                  <form:option value="0">Male</form:option>
-                                  <form:option value="1">Female</form:option>
-                                  <form:option value="2">Other</form:option>
+                                  <option value="-1">Please choose</option>
+                                  <option value="0">Male</option>
+                                  <option value="1">Female</option>
+                                  <option value="2">Other</option>
+
                               </form:select>
                           </div>
 
                           <div class="col form-group">
                               <form:label path="role" class="form-check form-check-inline">I am a:</form:label>
                               <form:select path="role">
-                                  <form:option value="0">Guest</form:option>
-                                  <form:option value="1">Host</form:option>
+                                  <option value="-1" selected="selected">Please choose</option>
+                                  <option value="0">Guest</option>
+                                  <option value="1">Host</option>
                               </form:select>
                           </div>
 

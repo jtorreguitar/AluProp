@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -79,6 +81,8 @@ public class PropertyController {
 
     @RequestMapping(value = "/host/create", method = RequestMethod.GET)
     public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form) {
+        System.out.println("1" + form.getMainImageId() + form.getDescription());
+//        model.addAttribute()
         return ModelAndViewWithPropertyCreationAttributes();
     }
 
@@ -99,20 +103,43 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
-        long[] imageArray = new long[files.length];
-        for (int i = 0; i < files.length; i++)
-            imageArray[i] = imageService.create(files[i]);
-        form.setMainImageId(imageArray[0]);
+    public ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @Valid @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
+        if (form.getImageIds() != null){
+            System.out.println("dsdsd");
+            System.out.println(form.getMainImageId());
+            System.out.println(form.getDescription());
+
+            return create(form);
+        }
+        System.out.println(form.getMainImageId());
+        System.out.println(form.getDescription());
+
+        ArrayList<Long> images = new ArrayList<>();
+        for (int i = 0; i < files.length; i++){
+            if (!files[i].isEmpty()){
+                images.add(imageService.create(files[i]));
+            }
+        }
+        if (images.size() == 0){
+            return create(form).addObject("noImages", true);
+        }
+        long[] imageArray = new long[images.size()];
+        form.setMainImageId(images.get(0));
+        for (int i = 0; i < images.size(); i++){
+            imageArray[i] = images.get(i);
+        }
         form.setImageIds(imageArray);
-        return create(form, errors);
+        System.out.println("New array: " + Arrays.toString(form.getImageIds()));
+        return create(form).addObject("imagesUploaded", imageArray.length);
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors) {
         if (errors.hasErrors()){
+            System.out.println("dsdsds");
             return create(propertyForm);
         }
+        System.out.println("In create: " + Arrays.toString(propertyForm.getImageIds()));
         Either<Property, Collection<String>> propertyOrErrors = propertyService.create(
                 new Property.Builder()
                     .withCaption(propertyForm.getCaption())
@@ -120,7 +147,8 @@ public class PropertyController {
                     .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
                     .withPrice(propertyForm.getPrice())
                     .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
-                    .withPrivacyLevel(propertyForm.getPrivacyLevel())
+                    .withPrivacyLevel(propertyForm.getPrivacyLevel()>0
+                    )
                     .withCapacity(propertyForm.getCapacity())
                     .withMainImageId(propertyForm.getMainImageId())
                     .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
@@ -129,10 +157,13 @@ public class PropertyController {
                     .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
                     .build()
         );
-        if(propertyOrErrors.hasValue())
+        if(propertyOrErrors.hasValue()){
             return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
-        else
+        }
+        else{
+            System.out.println(propertyOrErrors.alternative().toString());
             return create(propertyOrErrors.alternative());
+        }
     }
 
     private <T> Collection<T> generateObjects(long[] objectIds, LongFunction<T> function) {

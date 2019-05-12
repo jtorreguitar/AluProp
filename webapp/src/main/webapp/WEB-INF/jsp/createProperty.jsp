@@ -27,12 +27,12 @@
                     <h4 class="card-title mt-2">Create a new property</h4>
                 </header>
                 <article class="card-body">
-
                     <c:url value="/host/create/uploadPictures" var="postPath"/>
+                    <c:url value="${postPath}" var="postPath"/>
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
                         <label>Upload up to 4 pictures of the property:</label>
                         <c:choose>
-                            <c:when test="${uploadSuccessful == null}">
+                            <c:when test="${imagesUploaded == null}">
                                 <div class="form-group">
                                     Picture 1 to upload:
                                     <input id="uploadFile1" placeholder="Choose File" disabled="disabled" />
@@ -57,9 +57,13 @@
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                The pictures were successfully uploaded!
+                                ${imagesUploaded} pictures were successfully uploaded!
                             </c:otherwise>
                         </c:choose>
+                        <form:errors path="imageIds" cssClass="formError" element="p"/>
+                        <c:if test="${noImages == true}">
+                            <span class="formError">Please upload at least 1 picture of the property.</span>
+                        </c:if>
 
                         <div class="form-group">
                             <form:label path="description">Name</form:label>
@@ -71,30 +75,34 @@
                             <form:textarea path="caption" type="text" class="form-control"  style="resize:both;" placeholder="Include more details of the property..."></form:textarea>
                             <form:errors path="caption" cssClass="formError" element="p"/>
                         </div>
-                        <div class="col form-group">
-                            <form:label path="propertyType" class="form-check form-check-inline">Property type:</form:label>
+                        <div class="form-group">
+                            <form:label path="propertyType">Property type:</form:label>
                             <form:select path="propertyType">
-                                <form:option value="0">House</form:option>
-                                <form:option value="1">Apartment</form:option>
-                                <form:option value="2">Loft</form:option>
+                                <option value="-1">Please choose</option>
+                                <option value="0">House</option>
+                                <option value="1">Apartment</option>
+                                <option value="2">Loft</option>
                             </form:select>
+                            <form:errors path="propertyType" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
                             <form:label path="neighbourhoodId">Neighborhood:</form:label>
                             <form:select path="neighbourhoodId" id="select-neighbourhood" name="neighbourhoods">
-                                <option value="" selected>Please choose</option>
+                                <form:option value="-1">Please choose</form:option>
                                 <c:forEach var="neighbourhood" items="${neighbourhoods}">
                                     <form:option value="${neighbourhood.id}">${neighbourhood.name}</form:option>
                                 </c:forEach>
                             </form:select>
                             <form:errors path="neighbourhoodId" cssClass="formError" element="p"/>
                         </div>
-                        <div class="col form-group">
-                            <form:label path="privacyLevel" class="form-check form-check-inline">Privacy:</form:label>
+                        <div class="form-group">
+                            <form:label path="privacyLevel">Privacy:</form:label>
                             <form:select path="privacyLevel">
-                                <form:option value="false">Individual</form:option>
-                                <form:option value="true">Shared</form:option>
+                                <option value="-1">Please choose</option>
+                                <option value="0">Individual</option>
+                                <option value="1">Shared</option>
                             </form:select>
+                            <form:errors path="privacyLevel" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
                             <form:label path="capacity">Capacity:</form:label>

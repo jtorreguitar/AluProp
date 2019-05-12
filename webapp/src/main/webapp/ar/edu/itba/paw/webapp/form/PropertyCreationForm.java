@@ -4,37 +4,39 @@ import ar.edu.itba.paw.model.enums.PropertyType;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
 
 public class PropertyCreationForm {
-    @Size(min=1, max=100)
+    @NotBlank
+    @Size(max=100)
     private String caption;
-    @Size(min=1, max=2000)
+
+    @NotBlank
+    @Size(max=2000)
     private String description;
 
+    @Range(min=0)
     private int propertyType;
 
-    @NotNull
+    @Range(min=0)
     private int neighbourhoodId;
 
-    private boolean privacyLevel;
+    @Range(min=0)
+    private int privacyLevel;
 
     @Range(min=1, max=100)
     private int capacity;
 
+    @Range
     private float price;
     private long[] ruleIds;
     private long[] serviceIds;
+
     private long[] imageIds;
     private long mainImageId;
-
-    @AssertTrue
-    public boolean priceCheck() {
-        return price > 10.0;
-    }
-
 
     public String getCaption() {
         return caption;
@@ -68,11 +70,11 @@ public class PropertyCreationForm {
         this.neighbourhoodId = neighbourhoodId;
     }
 
-    public boolean getPrivacyLevel() {
+    public int getPrivacyLevel() {
         return privacyLevel;
     }
 
-    public void setPrivacyLevel(boolean privacyLevel) {
+    public void setPrivacyLevel(int privacyLevel) {
         this.privacyLevel = privacyLevel;
     }
 
@@ -113,7 +115,6 @@ public class PropertyCreationForm {
     }
 
     public void setImageIds(long[] imageIds) {
-        System.out.println("In form: " + Arrays.toString(imageIds));
         this.imageIds = imageIds;
     }
 
