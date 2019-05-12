@@ -2,28 +2,28 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.CareerService;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.interfaces.service.UniversityService;
 import ar.edu.itba.paw.interfaces.service.UserService;
+import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
-import ar.edu.itba.paw.webapp.form.LogInForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping("/user")
@@ -36,7 +36,11 @@ public class UserController {
     @Autowired
     private CareerService careerService;
     @Autowired
+    private PropertyService propertyService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    public JavaMailSender emailSender;
 
     @RequestMapping("/logIn")
     public ModelAndView login() {
@@ -94,5 +98,33 @@ public class UserController {
         return new ModelAndView("interested")
                         .addObject("users",
                                     userService.getUsersInterestedInProperty(propertyId, new PageRequest(pageNumber, pageSize)));
+    }
+
+    @RequestMapping(value = "/interestEmail/{propertyId}")
+    public ModelAndView interestEmail(@PathVariable long propertyId, @RequestParam String email) {
+        User currentUser = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        Property property = propertyService.get(propertyId);
+        String title = redactTitle(currentUser);
+        String body = redactBody(currentUser, property);
+        sendEmail(title, body, email);
+        return new ModelAndView("interestEmailSuccess");
+    }
+
+    private String redactTitle(User user) {
+        return "Mail de test de la funcionalidad de mail de aluprop";
+    }
+
+    private String redactBody(User user, Property property) {
+        return "Solo te envío este mail para checkear que funciona el enviado de mail." +
+                "Si te llega, sabés que anda y podés ponerte a trabajar en eso." +
+                "De paso te informo que sos re crack, que tengas un buen resto del día.";
+    }
+
+    private void sendEmail(String title, String body, String to) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(title);
+        message.setText(body);
+        emailSender.send(message);
     }
 }
