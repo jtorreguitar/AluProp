@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.interfaces.dao;
 
+import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.model.User;
 
 import java.util.Collection;
@@ -11,4 +13,6 @@ public interface UserDao {
     User getByEmail(String email);
     User getUserWithRelatedEntitiesByEmail(String email);
     User create(User user);
+    boolean userExistsByEmail(String email);
+    PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);
 }

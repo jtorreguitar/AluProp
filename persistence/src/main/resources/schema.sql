@@ -128,3 +128,6 @@ INSERT INTO careers(
     id, name)
 VALUES (1, 'Ingeniería informática')
 ON CONFLICT DO NOTHING;
+
+ALTER TABLE properties
+ADD COLUMN IF NOT EXISTS ownerId INTEGER REFERENCES users(id) ON DELETE CASCADE;

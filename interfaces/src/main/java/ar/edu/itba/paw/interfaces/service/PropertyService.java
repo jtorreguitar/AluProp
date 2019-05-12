@@ -12,6 +12,6 @@ public interface PropertyService {
     Collection<Property> getAll();
 	List<String> showInterestOrReturnErrors(long propertyId, String username);
     Property getPropertyWithRelatedEntities(long id);
-
     Either<Property, Collection<String>> create(Property property);
+    Collection<Property> getInterestsOfUser(long id);
 }

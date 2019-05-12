@@ -45,6 +45,8 @@ public class PropertyController {
     private NeighbourhoodService neighbourhoodService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -98,30 +100,19 @@ public class PropertyController {
 
     @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
     public @ResponseBody ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
-        ArrayList<Long> images = new ArrayList<>();
-        for (int i = 0; i < files.length; i++){
-            if (!files[i].isEmpty()){
-                images.add(imageService.create(files[i]));
-            }
-        }
-        long[] imageArray = new long[images.size()];
-        form.setMainImageId(images.get(0));
-        for (int i = 0; i < images.size(); i++){
-            imageArray[i] = images.get(i);
-        }
+        long[] imageArray = new long[files.length];
+        for (int i = 0; i < files.length; i++)
+            imageArray[i] = imageService.create(files[i]);
+        form.setMainImageId(imageArray[0]);
         form.setImageIds(imageArray);
-        System.out.println(Arrays.toString(imageArray));
-        System.out.println(form.getCaption());
         return create(form, errors);
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors) {
         if (errors.hasErrors()){
-            System.out.println("dsdsds");
             return create(propertyForm);
         }
-        System.out.println("In create: " + Arrays.toString(propertyForm.getImageIds()));
         Either<Property, Collection<String>> propertyOrErrors = propertyService.create(
                 new Property.Builder()
                     .withCaption(propertyForm.getCaption())
@@ -135,15 +126,13 @@ public class PropertyController {
                     .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
                     .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
                     .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
+                    .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
                     .build()
         );
-        if(propertyOrErrors.hasValue()){
+        if(propertyOrErrors.hasValue())
             return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
-        }
-        else{
-            System.out.println(propertyOrErrors.alternative().toString());
+        else
             return create(propertyOrErrors.alternative());
-        }
     }
 
     private <T> Collection<T> generateObjects(long[] objectIds, LongFunction<T> function) {
@@ -151,5 +140,11 @@ public class PropertyController {
             return Arrays.stream(objectIds).mapToObj(function).collect(Collectors.toList());
         else
             return new LinkedList<>();
+    }
+
+    @RequestMapping(value = "/interestsOfUser/{userId}")
+    public ModelAndView interestsOfUser(@PathVariable(value = "userId") long userId) {
+        return new ModelAndView("interestsOfUser")
+                    .addObject("interests", propertyService.getInterestsOfUser(userId));
     }
 }

@@ -31,13 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class APPropertyDao implements PropertyDao {
 
     private final String GET_INTERESTS_OF_USER_QUERY = "SELECT * FROM properties p WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.id AND userId = ?)";
-    private final String GET_INTERESTS_OF_USER_PAGED_QUERY =
-                        "SELECT SUBQ.*\n" +
-                        "FROM (SELECT ROW_NUMBER() OVER (ORDER BY id) AS row_num, * " +
-                                "FROM properties p" +
-                                "WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.Id AND userId = ?)" +
-                                "ORDER BY id) SUBQ\n" +
-                        "WHERE SUBQ.row_num > ? AND SUBQ.row_num < ?";
     private final RowMapper<Property> ROW_MAPPER = (rs, rowNum)
         -> new Property.Builder()
             .withId(rs.getLong("id"))
@@ -49,6 +42,7 @@ public class APPropertyDao implements PropertyDao {
             .withPrivacyLevel(rs.getBoolean("privacyLevel"))
             .withPropertyType(PropertyType.valueOf(rs.getString("propertyType")))
             .withMainImageId(rs.getLong("mainImageId"))
+            .withOwnerId(rs.getLong("ownerId"))
             .build();
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -60,8 +54,6 @@ public class APPropertyDao implements PropertyDao {
     private PropertyRuleDao propertyRuleDao;
     @Autowired
     private APRuleDao ruleDao;
-    @Autowired
-    private InterestDao interestDao;
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -117,7 +109,9 @@ public class APPropertyDao implements PropertyDao {
                     .withNeighbourhood(neighbourhoodDao.get(property.getNeighbourhoodId()))
                     .withRules(ruleDao.getRulesOfProperty(id))
                     .withServices(serviceDao.getServicesOfProperty(id))
+                    .withMainImage(imageDao.get(property.getMainImageId()))
                     .withImages(imageDao.getByProperty(property.getId()))
+                    .withOwner(userDao.get(property.getOwnerId()))
                     .build();
     }
 
@@ -143,6 +137,7 @@ public class APPropertyDao implements PropertyDao {
         args.put("neighbourhoodId", property.getNeighbourhoodId());
         args.put("privacyLevel", property.getPrivacyLevel());
         args.put("propertyType", property.getPropertyType().toString());
+        args.put("ownerId", property.getOwnerId());
         return args;
     }
 

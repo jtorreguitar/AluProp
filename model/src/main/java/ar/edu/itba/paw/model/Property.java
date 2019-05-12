@@ -21,7 +21,9 @@ public class Property {
     private Collection<Service> services;
     private Collection<Image> images;
     private long mainImageId;
-    private InputStream mainImage;
+    private Image mainImage;
+    private long ownerId;
+    private User owner;
 
     public long getId() {
         return id;
@@ -79,8 +81,16 @@ public class Property {
         return mainImageId;
     }
 
-    public InputStream getMainImage() {
+    public Image getMainImage() {
         return mainImage;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     public static class Builder {
@@ -106,6 +116,8 @@ public class Property {
             this.property.mainImage = property.mainImage;
             this.property.images = property.images;
             this.property.services = property.services;
+            this.property.ownerId = property.ownerId;
+            this.property.owner = property.owner;
             return this;
         }
 
@@ -123,6 +135,7 @@ public class Property {
             if(property.capacity < 1) throw new IllegalStateException("capacity must be provided.");
             if(property.price <= 0) throw new IllegalStateException("price must be provided.");
             if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
+            if(property.ownerId < 1 && property.owner == null) throw new IllegalStateException("owner must be provided");
         }
 
         private void initializeLists() {
@@ -191,7 +204,7 @@ public class Property {
             return this;
         }
 
-        public Builder withMainImage(InputStream mainImage) {
+        public Builder withMainImage(Image mainImage) {
             this.property.mainImage = mainImage;
             return this;
         }
@@ -203,6 +216,16 @@ public class Property {
 
         public Builder withImages(Collection<Image> images) {
             this.property.images = images;
+            return this;
+        }
+
+        public Builder withOwnerId(long ownerId) {
+            this.property.ownerId = ownerId;
+            return this;
+        }
+
+        public Builder withOwner(User owner) {
+            this.property.owner = owner;
             return this;
         }
     }

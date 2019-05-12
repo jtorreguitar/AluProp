@@ -118,4 +118,9 @@ public class APPropertyService implements PropertyService {
             errors.add("The neighbourhood specified does not exist");
         }
     }
+
+    @Override
+    public Collection<Property> getInterestsOfUser(long id) {
+        return propertyDao.getInterestsOfUser(id);
+    }
 }

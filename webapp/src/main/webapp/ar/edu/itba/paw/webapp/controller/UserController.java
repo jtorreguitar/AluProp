@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.CareerService;
 import ar.edu.itba.paw.interfaces.service.UniversityService;
 import ar.edu.itba.paw.interfaces.service.UserService;
@@ -16,9 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -86,5 +85,14 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
         return mav;
+    }
+
+    @RequestMapping(value = "/interested/{propertyId}")
+    public ModelAndView interested(@PathVariable long propertyId,
+                                   @RequestParam("pageNumber") int pageNumber,
+                                   @RequestParam("pageSize") int pageSize) {
+        return new ModelAndView("interested")
+                        .addObject("users",
+                                    userService.getUsersInterestedInProperty(propertyId, new PageRequest(pageNumber, pageSize)));
     }
 }
