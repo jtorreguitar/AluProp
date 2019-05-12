@@ -80,66 +80,61 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.GET)
-    public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form) {
-        System.out.println("1" + form.getMainImageId() + form.getDescription());
-//        model.addAttribute()
-        return ModelAndViewWithPropertyCreationAttributes();
+    public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form, long[] imageArray) {
+        if (imageArray != null && imageArray.length != 0)
+            return ModelAndViewWithPropertyCreationAttributes(imageArray);
+        return ModelAndViewWithPropertyCreationAttributes(new long[0]);
     }
 
     private ModelAndView create(Collection<String> errors) {
-        ModelAndView mav = ModelAndViewWithPropertyCreationAttributes();
+        ModelAndView mav = ModelAndViewWithPropertyCreationAttributes(null);
         mav.addObject("errors", errors);
         return mav;
     }
 
-    private ModelAndView ModelAndViewWithPropertyCreationAttributes() {
+    private ModelAndView ModelAndViewWithPropertyCreationAttributes(long[] imageArray) {
         ModelAndView mav = new ModelAndView("createProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        if (imageArray != null && imageArray.length != 0)
+            mav.addObject("imagesAlreadyUploaded", imageArray);
         return mav;
     }
 
     @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
     public ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @Valid @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
-        if (form.getImageIds() != null){
-            System.out.println("dsdsd");
-            System.out.println(form.getMainImageId());
-            System.out.println(form.getDescription());
-
-            return create(form);
-        }
-        System.out.println(form.getMainImageId());
-        System.out.println(form.getDescription());
+        if (form.getImageIds() != null)
+            if (errors.hasErrors())
+                return create(form, form.getImageIds());
+            else
+                return create(form, errors, new long[0]);
 
         ArrayList<Long> images = new ArrayList<>();
-        for (int i = 0; i < files.length; i++){
-            if (!files[i].isEmpty()){
+        for (int i = 0; i < files.length; i++)
+            if (!files[i].isEmpty())
                 images.add(imageService.create(files[i]));
-            }
-        }
-        if (images.size() == 0){
-            return create(form).addObject("noImages", true);
-        }
+
+        if (images.size() == 0)
+            return create(form, new long[0]).addObject("noImages", true);
+
         long[] imageArray = new long[images.size()];
-        form.setMainImageId(images.get(0));
-        for (int i = 0; i < images.size(); i++){
+        for (int i = 0; i < images.size(); i++)
             imageArray[i] = images.get(i);
-        }
+        form.setMainImageId(images.get(0));
         form.setImageIds(imageArray);
-        System.out.println("New array: " + Arrays.toString(form.getImageIds()));
-        return create(form).addObject("imagesUploaded", imageArray.length);
+        return create(form, errors, imageArray).addObject("imagesUploaded", imageArray.length);
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors) {
-        if (errors.hasErrors()){
-            System.out.println("dsdsds");
-            return create(propertyForm);
-        }
-        System.out.println("In create: " + Arrays.toString(propertyForm.getImageIds()));
+    public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors, long[] imageArray) {
+
+        if (errors.hasErrors())
+            return create(propertyForm, imageArray);
+
+        propertyForm.setMainImageId(propertyForm.getImageIds()[0]);
         Either<Property, Collection<String>> propertyOrErrors = propertyService.create(
                 new Property.Builder()
                     .withCaption(propertyForm.getCaption())
@@ -147,8 +142,7 @@ public class PropertyController {
                     .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
                     .withPrice(propertyForm.getPrice())
                     .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
-                    .withPrivacyLevel(propertyForm.getPrivacyLevel()>0
-                    )
+                    .withPrivacyLevel(propertyForm.getPrivacyLevel()>0)
                     .withCapacity(propertyForm.getCapacity())
                     .withMainImageId(propertyForm.getMainImageId())
                     .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
@@ -157,13 +151,11 @@ public class PropertyController {
                     .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
                     .build()
         );
-        if(propertyOrErrors.hasValue()){
+
+        if(propertyOrErrors.hasValue())
             return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
-        }
-        else{
-            System.out.println(propertyOrErrors.alternative().toString());
+        else
             return create(propertyOrErrors.alternative());
-        }
     }
 
     private <T> Collection<T> generateObjects(long[] objectIds, LongFunction<T> function) {

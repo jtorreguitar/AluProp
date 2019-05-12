@@ -95,3 +95,7 @@ img {
     opacity: 0;
     filter: alpha(opacity=0);
 }
+
+.gone {
+    visibility: hidden;
+}

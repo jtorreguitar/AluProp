@@ -32,7 +32,7 @@
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
                         <label>Upload up to 4 pictures of the property:</label>
                         <c:choose>
-                            <c:when test="${imagesUploaded == null}">
+                            <c:when test="${imagesAlreadyUploaded == null}">
                                 <div class="form-group">
                                     Picture 1 to upload:
                                     <input id="uploadFile1" placeholder="Choose File" disabled="disabled" />
@@ -57,7 +57,7 @@
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                ${imagesUploaded} pictures were successfully uploaded!
+                                The pictures were successfully uploaded!
                             </c:otherwise>
                         </c:choose>
                         <form:errors path="imageIds" cssClass="formError" element="p"/>
@@ -128,6 +128,16 @@
                             </c:forEach>
                             <form:errors path="serviceIds" cssClass="formError" element="p"/>
                         </div>
+
+                        <div class="gone">
+                            <c:if test="${imagesAlreadyUploaded != null}">
+                                <c:forEach var="image" items="${imagesAlreadyUploaded}">
+                                    <form:checkbox path="imageIds" value="${image}"/>$
+                                </c:forEach>
+                                <form:errors path="serviceIds" cssClass="formError" element="p"/>
+                            </c:if>
+                        </div>
+
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block">Create Property</button>
