@@ -46,6 +46,9 @@
                                 <input id="rememberme" name="rememberme" type="checkbox"/>
                             </div> <!-- checkbox .// -->
                         </div> <!-- form-group// -->
+                        <c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
+                            <span class="formError">Invalid username or password.</span>
+                        </c:if>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block"> Login  </button>
                         </div> <!-- form-group// -->
