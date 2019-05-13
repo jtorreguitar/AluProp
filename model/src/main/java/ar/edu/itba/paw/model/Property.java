@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.enums.PropertyType;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class Property {
     private long id;
@@ -18,10 +19,11 @@ public class Property {
     private Collection<Rule> rules;
     private Collection<User> interestedUsers;
     private Collection<Service> services;
+    private Collection<Image> images;
     private long mainImageId;
-    private InputStream mainImage;
-
-    private Property() { }
+    private Image mainImage;
+    private long ownerId;
+    private User owner;
 
     public long getId() {
         return id;
@@ -71,14 +73,27 @@ public class Property {
         return services;
     }
 
-    public InputStream getMainImage() {
+    public Collection<Image> getImages() {
+        return images;
+    }
+
+    public long getMainImageId() {
+        return mainImageId;
+    }
+
+    public Image getMainImage() {
         return mainImage;
     }
 
-    public long getMainImageId() { return mainImageId; }
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
 
     public static class Builder {
-        public static final String MUST_BE_PROVIDED = "must be provided.";
         private Property property;
 
         public Builder() {
@@ -111,7 +126,34 @@ public class Property {
             this.property.interestedUsers = property.interestedUsers;
             this.property.mainImageId = property.mainImageId;
             this.property.mainImage = property.mainImage;
+            this.property.images = property.images;
+            this.property.services = property.services;
+            this.property.ownerId = property.ownerId;
+            this.property.owner = property.owner;
             return this;
+        }
+
+        public Property build() {
+            checkStateLegality();
+            initializeLists();
+            return property;
+        }
+
+        private void checkStateLegality() {
+            if(property.caption == null || property.caption.equals("")) throw new IllegalStateException("caption must be provided.");
+            if(property.description == null || property.description.equals("")) throw new IllegalStateException("description must be provided.");
+            if(property.propertyType == null) throw new IllegalStateException("property type must be provided.");
+            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood must be provided.");
+            if(property.capacity < 1) throw new IllegalStateException("capacity must be provided.");
+            if(property.price <= 0) throw new IllegalStateException("price must be provided.");
+            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
+            if(property.ownerId < 1 && property.owner == null) throw new IllegalStateException("owner must be provided");
+        }
+
+        private void initializeLists() {
+            if(this.property.services == null) this.property.services = new LinkedList<>();
+            if(this.property.images == null) this.property.images = new LinkedList<>();
+            if(this.property.rules == null) this.property.rules = new LinkedList<>();
         }
 
         public Builder withId(long id) {
@@ -174,13 +216,28 @@ public class Property {
             return this;
         }
 
-        public Builder withMainImage(InputStream mainImage) {
+        public Builder withMainImage(Image mainImage) {
             this.property.mainImage = mainImage;
             return this;
         }
 
         public Builder withMainImageId(long mainImageId) {
             this.property.mainImageId = mainImageId;
+            return this;
+        }
+
+        public Builder withImages(Collection<Image> images) {
+            this.property.images = images;
+            return this;
+        }
+
+        public Builder withOwnerId(long ownerId) {
+            this.property.ownerId = ownerId;
+            return this;
+        }
+
+        public Builder withOwner(User owner) {
+            this.property.owner = owner;
             return this;
         }
     }

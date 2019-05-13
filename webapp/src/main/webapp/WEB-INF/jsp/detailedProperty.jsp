@@ -26,38 +26,42 @@
     <!-- #######################     PROPERTY     ####################### -->
 
     <div class="container">
-        <div id="myCarousel" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                <li data-target="#myCarousel" data-slide-to="1"></li>
-                <li data-target="#myCarousel" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="http://localhost:8080/webapp_war_exploded/images/${property.mainImageId}" class="d-block w-100 carousel-image">
+        <c:choose>
+            <c:when test="${not empty property.images}">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <c:forEach var="image" items="${property.images}" varStatus="loop">
+                        <li data-target="#myCarousel" data-slide-to="${loop.index}"></li>
+                    </c:forEach>
+
+                </ol>
+                <div class="carousel-inner">
+                    <c:forEach var="image" items="${property.images}">
+                        <div class="carousel-item active">
+                            <img src="http://${pageContext.request.localName}:${pageContext.request.serverPort}/images/${image.id}" class="d-block w-100 carousel-image">
+                        </div>
+                    </c:forEach>
                 </div>
-                <div class="carousel-item">
-                    <img src="https://apartmentsilike.files.wordpress.com/2014/04/warehouse-loft-room-of-the-week.jpg" class="d-block w-100 carousel-image" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://i.pinimg.com/736x/0b/d5/82/0bd58234bf3ec37c2e2d9e85ac35ec31.jpg" class="d-block w-100 carousel-image" alt="...">
-                </div>
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
+            </c:when>
+            <c:otherwise>
+                <h1> Oops, there are no images for this property </h1>
+            </c:otherwise>
+        </c:choose>
         <br>
         <div class="flex-container">
             <div>
                 <H2>${property.description}</H2>
-                <H6>${property.propertyType.toString()} en ${property.neighbourhood.name}</H6>
-                <H8>${property.capacity} huespedes | [privacidad]</H8>
+                <H6>${property.propertyType.toString()} in ${property.neighbourhood.name}</H6>
+                <H8>${property.capacity} huespedes | ${property.privacyLevel?"Shared":"Individual"}</H8>
             </div>
             <div class="interest-column">
                 <H4 class="price">$${property.price}</H4>
@@ -79,9 +83,16 @@
                         Reglas
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Cras justo odio</li>
-                        <li class="list-group-item">Dapibus ac facilisis in</li>
-                        <li class="list-group-item">Vestibulum at eros</li>
+                        <c:choose>
+                            <c:when test="${not empty property.rules}">
+                                <c:forEach var="rule" items="${property.rules}">
+                                    <li class="list-group-item">${rule.name}</li>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="list-group-item">This property has no special rules! </li>
+                            </c:otherwise>
+                        </c:choose>
                     </ul>
                 </div>
             </div>
@@ -91,9 +102,16 @@
                     Servicios
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
+                    <c:choose>
+                        <c:when test="${not empty property.services}">
+                            <c:forEach var="service" items="${property.services}">
+                                <li class="list-group-item">${service.name}</li>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="list-group-item"> This property has no special services! </li>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </div>
             </div>

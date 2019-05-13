@@ -26,6 +26,12 @@
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><a class="nav-link mr-1 bold active" href="#">Hi, ${pageContext.request.userPrincipal.name}!</a></li>
             </c:if>
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <li><a class="nav-link mr-1" href="/user/logOut">Log Out</a></li>
+            </c:if>
+            <c:if test="${userRole == '[ROLE_HOST]'}">
+                <li><a class="nav-link mr-1 bold active" href="/host/create">Publish a property</a></li>
+            </c:if>
             <li>
                 <a href="?lang=en"> <img src="<c:url value="../images/uk.svg"/>" class="flag" alt="English"> </a>
             </li>

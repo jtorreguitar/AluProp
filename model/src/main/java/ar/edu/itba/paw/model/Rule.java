@@ -9,6 +9,10 @@ public class Rule {
         this.name = name;
     }
 
+    public Rule(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

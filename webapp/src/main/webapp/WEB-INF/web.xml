@@ -13,6 +13,10 @@
         org.springframework.web.context.support.AnnotationConfigWebApplicationContext
       </param-value>
     </init-param>
+    <multipart-config>
+      <max-file-size>1000</max-file-size>
+      <max-request-size>1000</max-request-size>
+    </multipart-config>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
