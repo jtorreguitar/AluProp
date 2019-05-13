@@ -152,8 +152,8 @@ public class WebConfig implements WebMvcConfigurer {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
         registry.addInterceptor(localeChangeInterceptor);
-        return messageSource;
     }
+
 
     @Bean(name = "filterMultipartResolver")
     public CommonsMultipartResolver multiPartResolver(){

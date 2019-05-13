@@ -100,18 +100,6 @@ public class Property {
             this.property = new Property();
         }
 
-        public Property build() {
-            if(property.id < 1) throw new IllegalStateException("id" + MUST_BE_PROVIDED);
-            if(property.caption == null || property.caption.equals("")) throw new IllegalStateException("caption" + MUST_BE_PROVIDED);
-            if(property.description == null || property.description.equals("")) throw new IllegalStateException("description" + MUST_BE_PROVIDED);
-            if(property.propertyType == null) throw new IllegalStateException("property type" + MUST_BE_PROVIDED);
-            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood" + MUST_BE_PROVIDED);
-            if(property.capacity < 1) throw new IllegalStateException("capacity" + MUST_BE_PROVIDED);
-            if(property.price <= 0) throw new IllegalStateException("price" + MUST_BE_PROVIDED);
-            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
-            return property;
-        }
-
         public Builder fromProperty(Property property) {
             this.property.id = property.id;
             this.property.caption = property.caption;
