@@ -15,9 +15,10 @@ import java.util.List;
 public class APServiceDao implements ServiceDao {
 
     private RowMapper<Service> ROW_MAPPER = (rs, rowNum)
-        -> new Service(rs.getLong("id"), rs.getString("name"));
+            -> new Service(rs.getLong("id"), rs.getString("name"));
     private JdbcTemplate jdbcTemplate;
-    private String propertyServiceQuery = "SELECT * FROM services s WHERE EXISTS (SELECT * FROM propertyServices WHERE serviceId = s.id AND propertyId = ?)";
+
+    private String propertyServiceQuery = "SELECT * FROM services WHERE EXISTS (SELECT * FROM propertyServices WHERE serviceId = s.id AND propertyId = ?)";
 
     @Autowired
     public APServiceDao(DataSource ds) {
@@ -39,4 +40,6 @@ public class APServiceDao implements ServiceDao {
     public Collection<Service> getServicesOfProperty(long propertyId) {
         return jdbcTemplate.query(propertyServiceQuery, ROW_MAPPER, propertyId);
     }
+
 }
+
