@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@	taglib	prefix="spring"	uri="http://www.springframework.org/tags"%>
 
 <html>
 <head>
@@ -19,10 +20,7 @@
 
     <!-- #######################     NAV BAR     ####################### -->
 
-
     <%@include file="navigationBar.jsp"%>
-
-
 
     <!-- ####################### CARDS CONTAINING PROPERTIES  #######################-->
     <div class="elem-container">
@@ -34,13 +32,13 @@
                         <div class="card-body">
                             <h4 class="card-title">${property.description}</h4>
                             <p class="card-text">${property.caption}</p>
-                            <a href="/${property.id}" class="btn btn-primary stretched-link">Ver m&aacute;s</a>
+                            <a href="/${property.id}" class="btn btn-primary stretched-link"><spring:message code="label.properties.seeMore" /></a>
                         </div>
                     </div>
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <h1> Oops, there are no properties loaded </h1>
+                <h1><spring:message code="label.properties.noProperties" /></h1>
             </c:otherwise>
         </c:choose>
 

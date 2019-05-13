@@ -19,9 +19,9 @@
         </ul>
         <ul class="navbar-nav" style="float: right">
             <c:if test="${pageContext.request.userPrincipal.name == null}">
-                <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/signUp' ? 'active':''}" href="/user/signUp">Sign up</a></li>
-                <li><span class="nav-link mr-1">or</span></li>
-                <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" href="/user/logIn">Log in</a></li>
+                <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/signUp' ? 'active':''}" href="/user/signUp"><spring:message code="label.nav.signup" /></a></li>
+                <li><span class="nav-link mr-1"><spring:message code="label.nav.or" /></span></li>
+                <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" href="/user/logIn"><spring:message code="label.nav.login" /></a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><a class="nav-link mr-1 bold active" href="#">Hi, ${pageContext.request.userPrincipal.name}!</a></li>
@@ -32,6 +32,12 @@
             <c:if test="${userRole == '[ROLE_HOST]'}">
                 <li><a class="nav-link mr-1 bold active" href="/host/create">Publish a property</a></li>
             </c:if>
+            <li>
+                <a href="?lang=en"> <img src="<c:url value="../images/uk.svg"/>" class="flag" alt="English"> </a>
+            </li>
+            <li>
+                <a href="?lang=es"> <img src="<c:url value="/WEB-INF/images/spain.svg"/>" class="flag" alt="Spanish"> </a>
+            </li>
         </ul>
 
     </div>

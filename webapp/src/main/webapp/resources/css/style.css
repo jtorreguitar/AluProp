@@ -74,6 +74,11 @@ img {
     font-weight: bold;
 }
 
+.flag {
+    height: 40px;
+    width: 40px;
+}
+
 .formError{
     color: red;
 }
