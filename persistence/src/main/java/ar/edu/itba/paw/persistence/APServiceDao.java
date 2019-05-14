@@ -18,7 +18,7 @@ public class APServiceDao implements ServiceDao {
             -> new Service(rs.getLong("id"), rs.getString("name"));
     private JdbcTemplate jdbcTemplate;
 
-    private String propertyServiceQuery = "SELECT * FROM services WHERE EXISTS (SELECT * FROM propertyServices WHERE serviceId = s.id AND propertyId = ?)";
+    private String propertyServiceQuery = "SELECT * FROM services s WHERE EXISTS (SELECT * FROM propertyServices WHERE serviceId = s.id AND propertyId = ?)";
 
     @Autowired
     public APServiceDao(DataSource ds) {
