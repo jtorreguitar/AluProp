@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS properties (
     privacyLevel boolean,
     capacity integer,
     price float
-);|
+);
 
 CREATE TABLE IF NOT EXISTS images (
     id SERIAL PRIMARY KEY,
