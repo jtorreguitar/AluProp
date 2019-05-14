@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.List;
 
 import ar.edu.itba.paw.interfaces.Either;
+import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.model.Property;
 
 public interface PropertyService {
 
     Property get(long id);
-    Collection<Property> getAll();
+    PageResponse<Property> getAll(PageRequest pageRequest);
 	List<String> showInterestOrReturnErrors(long propertyId, String username);
     Property getPropertyWithRelatedEntities(long id);
     Either<Property, Collection<String>> create(Property property);

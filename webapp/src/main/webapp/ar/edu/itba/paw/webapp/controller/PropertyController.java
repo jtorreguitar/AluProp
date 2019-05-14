@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
@@ -52,11 +53,14 @@ public class PropertyController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView index() {
+    public ModelAndView index(@RequestParam int pageNumber, int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
-        mav.addObject("properties", propertyService.getAll());
+        PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
+        mav.addObject("properties", response.getResponseData());
+        mav.addObject("currentPage", response.getPageNumber());
+        mav.addObject("totalPages", response.getTotalPages());
         return mav;
     }
 

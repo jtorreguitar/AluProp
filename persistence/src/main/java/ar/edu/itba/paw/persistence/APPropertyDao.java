@@ -83,8 +83,11 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public Collection<Property> getAll() {
-        return jdbcTemplate.query("SELECT * FROM properties", ROW_MAPPER);
+    public Collection<Property> getAll(PageRequest pageRequest) {
+        return jdbcTemplate.query("SELECT * FROM properties LIMIT ? OFFSET ?",
+                            ROW_MAPPER,
+                            pageRequest.getPageSize(),
+                            pageRequest.getPageNumber()*pageRequest.getPageSize());
     }
 
     @Override
@@ -156,5 +159,12 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public PageResponse<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest) {
         return null;
+    }
+
+    // TODO: look up how to return queries which just return an int instead of a property
+    @Override
+    public Long count() {
+        RowMapper<Long> rowMapper = (rs, rowNum) -> rs.getLong("count");
+        return jdbcTemplate.query("SELECT COUNT(*) FROM properties", rowMapper).get(0);
     }
 }
