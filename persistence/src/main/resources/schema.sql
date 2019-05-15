@@ -124,8 +124,7 @@ INSERT INTO universities(
 VALUES (1, 'ITBA')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO careers(pe
-    id, name)
+INSERT INTO careers(id, name)
 VALUES (1, 'Ingeniería informática')
 ON CONFLICT DO NOTHING;
 
