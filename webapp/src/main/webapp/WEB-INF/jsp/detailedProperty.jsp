@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@	taglib	prefix="spring"	uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page isELIgnored="false" %>
 <html>
 <head>
@@ -100,13 +101,13 @@
                             </div>
                             <ul class="list-group list-group-flush">
                                 <c:choose>
-                                    <c:when test="${not empty property.rules}">
-                                        <c:forEach var="rule" items="${property.rules}">
-                                            <li class="list-group-item">${rule.name}</li>
+                                    <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
+                                        <c:forEach var="user" items="${interestedUsers}">
+                                            <li class="list-group-item"><input type="checkbox"/>  ${user.name}</li>
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
-                                        <li class="list-group-item">This property has no special rules! </li>
+                                        <li class="list-group-item">No other users have shown interest in this property!</li>
                                     </c:otherwise>
                                 </c:choose>
                             </ul>

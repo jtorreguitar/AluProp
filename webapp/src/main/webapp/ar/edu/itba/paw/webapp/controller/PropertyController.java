@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.Either;
+import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
@@ -65,8 +66,10 @@ public class PropertyController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
-        if (!auth.getName().equals("anonymousUser"))
+        if (!auth.getName().equals("anonymousUser")){
             mav.addObject("userInterested", userService.getUserIsInterestedInProperty(userService.getByEmail(auth.getName()).getId(), id));
+            mav.addObject("interestedUsers", userService.getUsersInterestedInProperty(id, new PageRequest(0, 10)).getResponseData());
+        }
         return mav;
     }
 
