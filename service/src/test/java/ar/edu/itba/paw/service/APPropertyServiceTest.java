@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.net.HttpURLConnection;
 import java.sql.Date;
 import java.util.*;
 
@@ -112,11 +113,7 @@ public class APPropertyServiceTest {
 
     @Test
     public void showInterestOrReturnErrorsWithoutErrorsTest() {
-        String test_email = APUserServiceTest.EMAIL;
         user = createDummyUser();
-
-        Mockito.when(userDao.getByEmail(test_email))
-                .thenReturn(user);
 
         Mockito.when(propertyDao.showInterest(PROPERTY_ID, user))
                 .thenReturn(true);
@@ -124,33 +121,14 @@ public class APPropertyServiceTest {
         Mockito.when(propertyDao.get(PROPERTY_ID))
                 .thenReturn(property);
 
-        List<String> errors = propertyService.showInterestOrReturnErrors(PROPERTY_ID, test_email);
+        int code = propertyService.showInterestOrReturnErrors(PROPERTY_ID, user);
 
-        Assert.assertEquals(0, errors.size());
-    }
-
-    @Test
-    public void showInterestOrReturnErrorsWithPropertyAndUserNotInDBTest(){
-        Mockito.when(userDao.getByEmail("Fails"))
-                .thenReturn(null);
-
-        Mockito.when(propertyDao.get(PROPERTY_ID))
-                .thenReturn(null);
-
-        List<String> errors = propertyService.showInterestOrReturnErrors(PROPERTY_ID, "Fails");
-
-        Assert.assertEquals(2, errors.size());
-        Assert.assertTrue(errors.contains(APPropertyService.USER_NOT_FOUND));
-        Assert.assertTrue(errors.contains(APPropertyService.PROPERTY_NOT_FOUND));
+        Assert.assertEquals(HttpURLConnection.HTTP_OK, code);
     }
 
     @Test
     public void showInterestOrReturnErrorsWithValidPropertyAndUserButShowInterestFailsTest(){
-        String test_email = APUserServiceTest.EMAIL;
         user = createDummyUser();
-
-        Mockito.when(userDao.getByEmail(test_email))
-                .thenReturn(user);
 
         Mockito.when(propertyDao.showInterest(PROPERTY_ID, user))
                 .thenReturn(false);
@@ -158,27 +136,19 @@ public class APPropertyServiceTest {
         Mockito.when(propertyDao.get(PROPERTY_ID))
                 .thenReturn(property);
 
-        List <String> errors = propertyService.showInterestOrReturnErrors(PROPERTY_ID, test_email);
-        Assert.assertEquals(1, errors.size());
-        Assert.assertTrue(errors.contains(APPropertyService.DATABASE_ERROR));
-
+        int code = propertyService.showInterestOrReturnErrors(PROPERTY_ID, user);
+        Assert.assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, code);
     }
 
     @Test
     public void showInterestOrReturnErrorsWithInvalidPropertyDoesntTryToShowInterestTest(){
-        String test_email = APUserServiceTest.EMAIL;
         user = createDummyUser();
-
-        Mockito.when(userDao.getByEmail(test_email))
-                .thenReturn(user);
 
         Mockito.when(propertyDao.get(PROPERTY_ID))
                 .thenReturn(null);
 
-        List <String> errors = propertyService.showInterestOrReturnErrors(PROPERTY_ID, test_email);
-        Assert.assertEquals(1, errors.size());
-        Assert.assertFalse(errors.contains(APPropertyService.DATABASE_ERROR));
-        Assert.assertTrue(errors.contains(APPropertyService.PROPERTY_NOT_FOUND));
+        int code = propertyService.showInterestOrReturnErrors(PROPERTY_ID, user);
+        Assert.assertEquals(HttpURLConnection.HTTP_NOT_FOUND, code);
 
     }
 
