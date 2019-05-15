@@ -3,6 +3,8 @@ package ar.edu.itba.paw.service;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.net.HttpURLConnection;
+import java.util.Optional;
 
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
@@ -56,23 +58,13 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public List<String> showInterestOrReturnErrors(long propertyId, String username) {
-        errors = new LinkedList<>();
-        User user = userDao.getByEmail(username);
-        CheckUserAndPropertyExist(propertyId, user);
-        if (!errors.isEmpty()) 
-            return errors;
+    public int showInterestOrReturnErrors(long propertyId, User user) {
+        if (propertyId < 1 || propertyDao.get(propertyId) == null)
+            return HttpURLConnection.HTTP_NOT_FOUND;
         boolean wasCreated = propertyDao.showInterest(propertyId, user);
         if(!wasCreated) 
-            errors.add(DATABASE_ERROR);
-        return errors;
-    }
-
-    private void CheckUserAndPropertyExist(long propertyId, User user) {
-        if (propertyDao.get(propertyId) == null)
-            errors.add(PROPERTY_NOT_FOUND);
-        if(user == null)
-            errors.add(USER_NOT_FOUND);
+            return HttpURLConnection.HTTP_INTERNAL_ERROR;
+        return HttpURLConnection.HTTP_OK;
     }
 
     @Override

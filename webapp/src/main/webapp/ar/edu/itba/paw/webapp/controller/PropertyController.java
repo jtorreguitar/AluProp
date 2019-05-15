@@ -1,14 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.Principal;
 import java.util.*;
-import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
-import java.util.function.LongSupplier;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.Either;
@@ -18,17 +11,14 @@ import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
-import ar.edu.itba.paw.webapp.form.SignUpForm;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -77,22 +67,12 @@ public class PropertyController {
         return mav;
     }
 
-    @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/guest/interest", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId) {
-        String currentUsername = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-        if (currentUsername.equals("anonymousUser")){
-            ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
-            mav.addObject("noLogin", true);
-            return mav;
-        }
-        final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, currentUsername);
-        if(errorsOrLackThereof.isEmpty())
-            return new ModelAndView("redirect:/" + propertyId);
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("errors", errorsOrLackThereof);
-        for (int i = 0; i < errorsOrLackThereof.size(); i++)
-            System.out.println(errorsOrLackThereof.get(i));
-        return mav;
+        User currentUser = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        final int code = propertyService.showInterestOrReturnErrors(propertyId, currentUser);
+        return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId)
+                .addObject("code", code);
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.GET)
@@ -181,9 +161,10 @@ public class PropertyController {
             return new LinkedList<>();
     }
 
-    @RequestMapping(value = "/interestsOfUser/{userId}")
-    public ModelAndView interestsOfUser(@PathVariable(value = "userId") long userId) {
+    @RequestMapping(value = "guest/interests")
+    public ModelAndView interestsOfUser() {
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         return new ModelAndView("interestsOfUser")
-                    .addObject("interests", propertyService.getInterestsOfUser(userId));
+                    .addObject("interests", propertyService.getInterestsOfUser(user.getId()));
     }
 }
