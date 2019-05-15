@@ -41,6 +41,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/logIn", "/user/signUp").anonymous()
                 .antMatchers("**/guest/**").hasRole("GUEST")
                 .antMatchers("**/host/**").hasRole("HOST")
+                .antMatchers("**/user/**").authenticated()
                 .antMatchers("/**").permitAll()
             .and().formLogin()
                 .usernameParameter("email")
