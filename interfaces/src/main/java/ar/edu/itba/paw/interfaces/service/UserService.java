@@ -13,4 +13,5 @@ public interface UserService {
     Either<User, List<String>> CreateUser(User user);
     User getUserWithRelatedEntitiesByEmail(String email);
     PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);
+    boolean getUserIsInterestedInProperty(long userId, long propertyId);
 }

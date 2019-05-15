@@ -68,7 +68,15 @@
             <div class="interest-column text-right">
                 <H4 class="price">$${property.price}</H4><br/>
                 <form action="${property.id}/interest" method="POST">
-                    <input type="submit" name="Me interesa" value="Me Interesa" class="btn btn-primary stretched-link"/>
+                    <c:choose>
+                        <c:when test="${userInterested == true}">
+                            <input type="submit" value="Ya no me Interesa" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="submit" value="Me Interesa" class="btn btn-primary stretched-link"/>
+                        </c:otherwise>
+                    </c:choose>
+
                 </form><br/>
                 <c:if test="${param.noLogin == true}">
                     <p class="formError">You must be logged in to show interest.</p>
@@ -83,6 +91,32 @@
                         ${property.caption}
                     </div>
                 </div>
+                <br/>
+                <c:choose>
+                    <c:when test="${userInterested == true}">
+                        <div class="card">
+                            <div class="card-header">
+                                Usuarios interesados
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <c:choose>
+                                    <c:when test="${not empty property.rules}">
+                                        <c:forEach var="rule" items="${property.rules}">
+                                            <li class="list-group-item">${rule.name}</li>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="list-group-item">This property has no special rules! </li>
+                                    </c:otherwise>
+                                </c:choose>
+                            </ul>
+                        </div>
+
+                    </c:when>
+                    <c:otherwise>
+
+                    </c:otherwise>
+                </c:choose>
             </div>
             <div class="col-md-3">
                 <div class="card">

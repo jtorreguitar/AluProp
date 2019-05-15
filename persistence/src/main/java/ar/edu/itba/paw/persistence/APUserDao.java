@@ -135,4 +135,11 @@ public class APUserDao implements UserDao {
         int totalUsers = jdbcTemplate.query("SELECT COUNT(*) AS c FROM users", integerRowMapper).get(0);
         return new PageResponse<>(pageRequest.getPageNumber(), pageRequest.getPageSize(), totalUsers, data);
     }
+
+    @Override
+    public boolean getUserIsInterestedInProperty(long userId, long propertyId){
+        RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt("c");
+        int totalUsers = jdbcTemplate.query("SELECT COUNT(*) AS c FROM interests WHERE propertyid = ? AND userid = ?", integerRowMapper, propertyId, userId).get(0);
+        return totalUsers > 0;
+    }
 }

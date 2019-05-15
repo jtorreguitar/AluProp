@@ -65,13 +65,14 @@ public class PropertyController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
+        if (!auth.getName().equals("anonymousUser"))
+            mav.addObject("userInterested", userService.getUserIsInterestedInProperty(userService.getByEmail(auth.getName()).getId(), id));
         return mav;
     }
 
     @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId) {
         String currentUsername = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-        System.out.println(currentUsername);
         if (currentUsername.equals("anonymousUser")){
             ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
             mav.addObject("noLogin", true);

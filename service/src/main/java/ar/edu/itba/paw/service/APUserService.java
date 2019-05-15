@@ -75,4 +75,9 @@ public class APUserService implements UserService {
     public PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest) {
         return userDao.getUsersInterestedInProperty(id, pageRequest);
     }
+
+    @Override
+    public boolean getUserIsInterestedInProperty(long userId, long propertyId) {
+        return userDao.getUserIsInterestedInProperty(userId, propertyId);
+    }
 }
