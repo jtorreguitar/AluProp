@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@	taglib	prefix="spring"	uri="http://www.springframework.org/tags"%>
+<%@ page isELIgnored="false" %>
 <html>
 <head>
     <head>
@@ -63,9 +65,14 @@
                 <H6>${property.propertyType.toString()} in ${property.neighbourhood.name}</H6>
                 <H8>${property.capacity} huespedes | ${property.privacyLevel?"Shared":"Individual"}</H8>
             </div>
-            <div class="interest-column">
-                <H4 class="price">$${property.price}</H4>
-                <a href="#" class="btn btn-primary stretched-link">Me interesa</a>
+            <div class="interest-column text-right">
+                <H4 class="price">$${property.price}</H4><br/>
+                <form action="${property.id}/interest" method="POST">
+                    <input type="submit" name="Me interesa" value="Me Interesa" class="btn btn-primary stretched-link"/>
+                </form><br/>
+                <c:if test="${param.noLogin == true}">
+                    <p class="formError">You must be logged in to show interest.</p>
+                </c:if>
             </div>
         </div>
         <br>

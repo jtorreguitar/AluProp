@@ -71,11 +71,19 @@ public class PropertyController {
     @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId) {
         String currentUsername = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+        System.out.println(currentUsername);
+        if (currentUsername.equals("anonymousUser")){
+            ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
+            mav.addObject("noLogin", true);
+            return mav;
+        }
         final List<String> errorsOrLackThereof = propertyService.showInterestOrReturnErrors(propertyId, currentUsername);
         if(errorsOrLackThereof.isEmpty())
             return new ModelAndView("redirect:/" + propertyId);
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("errors", errorsOrLackThereof);
+        for (int i = 0; i < errorsOrLackThereof.size(); i++)
+            System.out.println(errorsOrLackThereof.get(i));
         return mav;
     }
 
