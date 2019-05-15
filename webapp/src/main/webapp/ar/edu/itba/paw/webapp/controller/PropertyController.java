@@ -122,7 +122,7 @@ public class PropertyController {
                     .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
                     .withPrice(propertyForm.getPrice())
                     .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
-                    .withPrivacyLevel(propertyForm.getPrivacyLevel())
+                    .withPrivacyLevel(propertyForm.getPrivacyLevel() > 0)
                     .withCapacity(propertyForm.getCapacity())
                     .withMainImageId(propertyForm.getMainImageId())
                     .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
