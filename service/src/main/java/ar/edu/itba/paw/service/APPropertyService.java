@@ -14,9 +14,13 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 @org.springframework.stereotype.Service
 public class APPropertyService implements PropertyService {
 
-    private final String PROPERTY_NOT_FOUND = "desired property not found";
-    private final String USER_NOT_FOUND = "user not found";
-    private final String DATABASE_ERROR = "Database error";
+    /* package */ final static String PROPERTY_NOT_FOUND = "desired property not found";
+    /* package */ final static String USER_NOT_FOUND = "user not found";
+    /* package */ final static String DATABASE_ERROR = "Database error";
+    /* package */ final static String IMAGE_NOT_EXISTS = "One of the images specified does not exist";
+    /* package */ final static String SERVICE_NOT_EXISTS = "One of the services specified does not exist";
+    /* package */ final static String RULE_NOT_EXISTS ="One of the rules specified does not exist";
+    /* package */ final static String NEIGHBOURHOOD_NOT_EXISTS = "The neighbourhood specified does not exist";
 
     private List<String> errors;
 
@@ -89,7 +93,7 @@ public class APPropertyService implements PropertyService {
     private void checkImagesExist(Collection<Image> images) {
         for (Image image: images) {
             if(imageDao.get(image.getId()) == null) {
-                errors.add("One of the images specified does not exist");
+                errors.add(IMAGE_NOT_EXISTS);
                 return;
             }
         }
@@ -98,7 +102,7 @@ public class APPropertyService implements PropertyService {
     private void checkServicesExist(Collection<Service> services) {
         for (Service service: services) {
             if(serviceDao.get(service.getId()) == null) {
-                errors.add("One of the services specified does not exist");
+                errors.add(SERVICE_NOT_EXISTS);
                 return;
             }
         }
@@ -107,7 +111,7 @@ public class APPropertyService implements PropertyService {
     private void checkRulesExist(Collection<Rule> rules) {
         for (Rule rule:rules) {
             if(ruleDao.get(rule.getId()) == null) {
-                errors.add("One of the rules specified does not exist");
+                errors.add(RULE_NOT_EXISTS);
                 return;
             }
         }
@@ -115,7 +119,7 @@ public class APPropertyService implements PropertyService {
 
     private void checkNeighbourhoodExists(long id) {
         if(neighbourhoodDao.get(id) == null) {
-            errors.add("The neighbourhood specified does not exist");
+            errors.add(NEIGHBOURHOOD_NOT_EXISTS);
         }
     }
 
