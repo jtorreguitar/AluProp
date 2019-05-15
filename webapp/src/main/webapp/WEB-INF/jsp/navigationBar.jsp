@@ -1,3 +1,4 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="/">AluProp</a>
@@ -33,10 +34,10 @@
                 <li><a class="nav-link mr-1 bold active" href="/host/create">Publish a property</a></li>
             </c:if>
             <li>
-                <a href="?lang=en"> <img src="<c:url value="../images/uk.svg"/>" class="flag" alt="English"> </a>
+                <a href="?lang=en"> <img src="resources/images/uk.svg" class="flag" alt="English"> </a>
             </li>
             <li>
-                <a href="?lang=es"> <img src="<c:url value="/WEB-INF/images/spain.svg"/>" class="flag" alt="Spanish"> </a>
+                <a href="?lang=es"> <img src="resources/images/spain.svg" class="flag" alt="Spanish"> </a>
             </li>
         </ul>
 
