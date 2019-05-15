@@ -18,6 +18,8 @@ import java.util.List;
 public class APUserService implements UserService {
 
     private final String USER_EXISTS_BY_EMAIL = "A user with this email already exists";
+    /* package */ static final String UNIVERSITY_NOT_EXISTS = "The specified university does not exist";
+    /* package */ static final String CAREER_NOT_EXISTS = "The specified career does not exist";
 
     @Autowired
     private UserDao userDao;
@@ -56,12 +58,12 @@ public class APUserService implements UserService {
 
     private void checkUniversityExists(long universityId) {
         if(universityDao.get(universityId) == null)
-            errors.add("The specified university does not exist");
+            errors.add(UNIVERSITY_NOT_EXISTS);
     }
 
     private void checkCareerExists(long careerId) {
         if(careerDao.get(careerId) == null)
-            errors.add("The specified career does not exist");
+            errors.add(CAREER_NOT_EXISTS);
     }
 
     @Override
