@@ -95,6 +95,19 @@ CREATE TABLE IF NOT EXISTS propertyServices (
     serviceId INTEGER REFERENCES services(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS proposals (
+    id SERIAL PRIMARY KEY,
+    propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
+    creatorId INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS userProposals (
+    id SERIAL PRIMARY KEY,
+    userId INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    proposalId INTEGER REFERENCES proposals(id) ON DELETE CASCADE,
+    state integer
+);
+
 -- seeding database
 -- REMOVE WHEN MOVING ENVIRONMENT TO PROD
 -- INSERT ... ON CONFLICT DO NOTHING/UPDATE statement was added in 9.5, watch out for version to use

@@ -88,6 +88,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
+                    <div class="card-header">Description</div>
                     <div class="card-body">
                         ${property.caption}
                     </div>
@@ -95,24 +96,29 @@
                 <br/>
                 <c:choose>
                     <c:when test="${userInterested == true}">
-                        <div class="card">
-                            <div class="card-header">
-                                Usuarios interesados
+                        <c:url value="proposal/create/${property.id}" var="postPath"/>
+                        <form:form modelAttribute="proposalForm" action="${postPath}" method="post">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span>Usuarios interesados
+                                        <input type="submit" value="Crear propuesta" class="btn btn-primary stretched-link"/>
+                                    </span>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <c:choose>
+                                        <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
+                                            <c:forEach var="user" items="${interestedUsers}">
+                                                <li class="list-group-item"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</li>
+                                            </c:forEach>
+                                            <form:errors path="invitedUsersIds" cssClass="formError" element="p"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="list-group-item">No other users have shown interest in this property!</li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </ul>
                             </div>
-                            <ul class="list-group list-group-flush">
-                                <c:choose>
-                                    <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
-                                        <c:forEach var="user" items="${interestedUsers}">
-                                            <li class="list-group-item"><input type="checkbox"/>  ${user.name}</li>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <li class="list-group-item">No other users have shown interest in this property!</li>
-                                    </c:otherwise>
-                                </c:choose>
-                            </ul>
-                        </div>
-
+                        </form:form>
                     </c:when>
                     <c:otherwise>
 

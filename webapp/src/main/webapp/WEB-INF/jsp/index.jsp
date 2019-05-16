@@ -32,6 +32,8 @@
                         <div class="card-body">
                             <h4 class="card-title">${property.description}</h4>
                             <p class="card-text">${property.caption}</p>
+                            <p class="card-text bold">$${property.price}</p>
+                            <p class="card-text">${property.neighbourhood}</p>
                             <a href="/${property.id}" class="btn btn-primary stretched-link"><spring:message code="label.properties.seeMore" /></a>
                         </div>
                     </div>

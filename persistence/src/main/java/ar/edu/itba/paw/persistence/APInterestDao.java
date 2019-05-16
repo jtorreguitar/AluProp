@@ -14,7 +14,7 @@ import java.util.Collection;
 public class APInterestDao implements InterestDao {
 
     private RowMapper<Interest> ROW_MAPPER = (rs, rowNum)
-            -> new Interest(rs.getLong("id"), rs.getLong("propertyId"), rs.getLong("userId"));
+            -> new Interest(rs.getLong("id"), rs.getLong("propertyId"), rs.getLong("creatorId"));
     private JdbcTemplate jdbcTemplate;
 
     @Autowired

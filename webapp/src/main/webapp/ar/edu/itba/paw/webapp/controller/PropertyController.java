@@ -19,6 +19,7 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
+import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ModelAndView get(@PathVariable("id") long id) {
+    public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form, @PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
