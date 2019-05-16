@@ -131,9 +131,9 @@ public class APUserDao implements UserDao {
                                              id,
                                                     pageRequest.getPageSize(),
                                                     pageRequest.getPageNumber()*(pageRequest.getPageSize() + 1));
-        RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt("c");
-        int totalUsers = jdbcTemplate.query("SELECT COUNT(*) AS c FROM users", integerRowMapper).get(0);
-        return new PageResponse<>(pageRequest.getPageNumber(), pageRequest.getPageSize(), totalUsers, data);
+        RowMapper<Long> integerRowMapper = (rs, rowNum) -> rs.getLong("count");
+        Long totalUsers = jdbcTemplate.query("SELECT COUNT(*) AS c FROM users", integerRowMapper).get(0);
+        return new PageResponse<>(pageRequest, totalUsers, data);
     }
 
     @Override

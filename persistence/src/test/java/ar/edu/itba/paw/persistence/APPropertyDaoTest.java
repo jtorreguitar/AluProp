@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.model.Property;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class APPropertyDaoTest {
     @Test
     public void getAllPropertiesTest(){
         int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "properties");
-        int realRowCount = propertyDao.getAll().size();
+        int realRowCount = propertyDao.getAll(new PageRequest(0,0)).size();
 
         Assert.assertNotEquals(0, realRowCount);
         Assert.assertEquals(expectedRowCount, realRowCount);

@@ -64,7 +64,12 @@ public class UserController {
             form.setRepeatPassword("");
             return signUp(form).addObject("passwordMatch", false);
         }
-        userService.CreateUser(new User.Builder()
+        userService.CreateUser(buildUserFromForm(form));
+        return new ModelAndView("redirect:/");
+    }
+
+    private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {
+        return new User.Builder()
                                         .withEmail(form.getEmail())
                                         .withGender(Gender.valueOf(form.getGender()))
                                         .withName(form.getName())
@@ -76,8 +81,7 @@ public class UserController {
                                         .withBirthDate(Date.valueOf(form.getBirthDate()))
                                         .withContactNumber(form.getPhoneNumber())
                                         .withRole(Role.valueOf(form.getRole()))
-                                        .build());
-        return new ModelAndView("redirect:/");
+                                        .build();
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)

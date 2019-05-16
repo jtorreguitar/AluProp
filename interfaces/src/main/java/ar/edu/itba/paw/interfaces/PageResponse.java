@@ -5,13 +5,13 @@ import java.util.Collection;
 public class PageResponse<T> {
     private final int pageNumber;
     private final int pageSize;
-    private final int totalPages;
+    private final Long totalItems;
     private final Collection<T> responseData;
 
-    public PageResponse(int pageNumber, int pageSize, int totalPages, Collection<T> responseData) {
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
-        this.totalPages = totalPages;
+    public PageResponse(PageRequest pageRequest, Long totalItems, Collection<T> responseData) {
+        this.pageNumber = pageRequest.getPageNumber();
+        this.pageSize = pageRequest.getPageSize();
+        this.totalItems = totalItems;
         this.responseData = responseData;
     }
 
@@ -23,11 +23,15 @@ public class PageResponse<T> {
         return pageSize;
     }
 
-    public int getTotalPages() {
-        return totalPages;
+    public Long getTotalItems() {
+        return totalItems;
     }
 
     public Collection<T> getResponseData() {
         return responseData;
+    }
+
+    public long getTotalPages() {
+        return totalItems/pageSize;
     }
 }
