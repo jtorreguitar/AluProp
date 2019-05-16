@@ -4,11 +4,8 @@ import javax.sql.DataSource;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
-import ar.edu.itba.paw.interfaces.dao.InterestDao;
 import ar.edu.itba.paw.interfaces.dao.CareerDao;
-import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.interfaces.dao.UniversityDao;
-import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Repository
 public class APUserDao implements UserDao {

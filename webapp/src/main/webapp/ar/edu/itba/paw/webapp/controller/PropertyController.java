@@ -1,14 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.Principal;
 import java.util.*;
-import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
-import java.util.function.LongSupplier;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.Either;
@@ -22,8 +15,8 @@ import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
-import ar.edu.itba.paw.webapp.form.SignUpForm;
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +32,8 @@ import javax.validation.Valid;
 @RequestMapping("/")
 public class PropertyController {
 
+    private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
+
     @Autowired
     private PropertyService propertyService;
     @Autowired
@@ -53,7 +48,8 @@ public class PropertyController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView index(@RequestParam int pageNumber, int pageSize) {
+    public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
+                              @RequestParam(required = false, defaultValue = "0") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
