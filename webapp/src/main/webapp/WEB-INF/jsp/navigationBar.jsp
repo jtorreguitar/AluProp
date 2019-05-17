@@ -8,15 +8,6 @@
     <div class="navbar-collapse" id="navbarCollapse">
 
         <ul class="navbar-nav mr-auto">
-            <%--<li class="nav-item active">--%>
-            <%--<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>--%>
-            <%--</li>--%>
-            <%--<li class="nav-item">--%>
-            <%--<a class="nav-link" href="#">Link</a>--%>
-            <%--</li>--%>
-            <%--<li class="nav-item">--%>
-            <%--<a class="nav-link disabled" href="#">Disabled</a>--%>
-            <%--</li>--%>
         </ul>
         <ul class="navbar-nav" style="float: right">
             <c:if test="${pageContext.request.userPrincipal.name == null}">
@@ -25,7 +16,7 @@
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" href="/user/logIn"><spring:message code="label.nav.login" /></a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <li><a class="nav-link mr-1 bold active" href="#">Hi, ${pageContext.request.userPrincipal.name}!</a></li>
+                <li><a class="nav-link mr-1 bold active" href="/user/profile">Hi, ${pageContext.request.userPrincipal.name}!</a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><a class="nav-link mr-1" href="/user/logOut">Log Out</a></li>
