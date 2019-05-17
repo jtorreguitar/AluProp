@@ -112,3 +112,10 @@ img {
     background-color: red;
     border-color: red;
 }
+
+#answer {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
