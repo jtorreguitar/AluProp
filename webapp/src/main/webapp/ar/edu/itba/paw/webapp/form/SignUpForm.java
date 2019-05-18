@@ -33,7 +33,7 @@ public class SignUpForm {
     @Size(min=1, max = 400)
     private String bio;
 
-    @Range(min = 8, max = 15)
+    @Size(min = 8, max = 15)
     private String phoneNumber;
 
     @Range(min=0)
