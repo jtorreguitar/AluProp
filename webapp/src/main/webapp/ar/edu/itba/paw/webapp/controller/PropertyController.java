@@ -33,6 +33,7 @@ import javax.validation.Valid;
 public class PropertyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
+    private static final Integer MAX_SIZE = 9;
 
     @Autowired
     private PropertyService propertyService;
@@ -49,7 +50,7 @@ public class PropertyController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
-                              @RequestParam(required = false, defaultValue = "0") int pageSize) {
+                              @RequestParam(required = false, defaultValue = "9") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
@@ -57,6 +58,8 @@ public class PropertyController {
         mav.addObject("properties", response.getResponseData());
         mav.addObject("currentPage", response.getPageNumber());
         mav.addObject("totalPages", response.getTotalPages());
+        mav.addObject("totalElements", response.getTotalItems());
+        mav.addObject("maxItems",MAX_SIZE);
         return mav;
     }
 
