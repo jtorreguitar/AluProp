@@ -109,6 +109,7 @@ public class APPropertyDao implements PropertyDao {
         return rowsAffected == 1;
     }
 
+    //If the interest exists
     public boolean interestExists(long propertyId, User user) {
         RowMapper<Long> rowMapper = (rs, rowNum) -> rs.getLong("count");
         long count = jdbcTemplate.query("SELECT COUNT(*) FROM interests WHERE propertyid = ? AND userid = ?", rowMapper, propertyId, user.getId()).get(0);
