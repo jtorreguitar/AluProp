@@ -9,7 +9,9 @@ import java.util.Collection;
 
 public interface PropertyDao extends Dao<Property>{
 	boolean showInterest(long propertyId, User user);
-	Property getPropertyWithRelatedEntities(long id);
+	boolean undoInterest(long propertyId, User user);
+
+    Property getPropertyWithRelatedEntities(long id);
     Property create(Property property);
     Collection<Property> getInterestsOfUser(long id);
     PageResponse<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);

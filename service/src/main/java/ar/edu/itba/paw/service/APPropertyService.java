@@ -68,6 +68,16 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
+    public int undoInterestOrReturnErrors(long propertyId, User user) {
+        if (propertyId < 1 || propertyDao.get(propertyId) == null)
+            return HttpURLConnection.HTTP_NOT_FOUND;
+        boolean wasDeleted = propertyDao.undoInterest(propertyId, user);
+        if(!wasDeleted)
+            return HttpURLConnection.HTTP_INTERNAL_ERROR;
+        return HttpURLConnection.HTTP_OK;
+    }
+
+    @Override
     public Property getPropertyWithRelatedEntities(long id) {
         return propertyDao.getPropertyWithRelatedEntities(id);
     }

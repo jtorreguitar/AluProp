@@ -64,15 +64,32 @@ public class PropertyController {
     public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form, @PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
+
+        if (user != null){
+            mav.addObject("userInterested",userService.getUserIsInterestedInProperty(user.getId(), id));
+            mav.addObject("interestedUsers", userService.getUsersInterestedInProperty(id, new PageRequest(0, 100)).getResponseData());
+        }
         return mav;
     }
 
-    @RequestMapping(value = "{id}/interest", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/interest/", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId) {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
+        if (user != null){
+            final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
+            return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
+        }
+        return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true);
+
+    }
+
+    @RequestMapping(value = "{id}/deInterest", method = RequestMethod.POST)
+    public ModelAndView deInterest(@PathVariable(value = "id") int propertyId) {
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        final int code = propertyService.undoInterestOrReturnErrors(propertyId, user);
         return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
     }
 

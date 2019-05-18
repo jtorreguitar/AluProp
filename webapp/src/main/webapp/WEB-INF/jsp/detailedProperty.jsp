@@ -66,23 +66,25 @@
             <div>
                 <H2>${property.description}</H2>
                 <H6>${property.propertyType.toString()} in ${property.neighbourhood.name}</H6>
-                <H8>${property.capacity} huespedes | ${property.privacyLevel?"${privacy_shared}":"${privacy_individual}"}</H8>
+                <H8>${property.capacity} huespedes | ${property.privacyLevel?privacy_shared:privacy_individual}</H8>
             </div>
             <div class="interest-column text-right">
                 <H4 class="price">$${property.price}</H4><br/>
                 <spring:message code="user.interested" var="interested"/>
                 <spring:message code="user.not_interested" var="not_interested"/>
-                <form action="${property.id}/interest" method="POST">
-                    <c:choose>
-                        <c:when test="${userInterested == true}">
-                            <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
-                        </c:when>
-                        <c:otherwise>
-                            <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
-                        </c:otherwise>
-                    </c:choose>
 
-                </form><br/>
+                <c:choose>
+                    <c:when test="${userInterested == true}">
+                        <form action="/${property.id}/deInterest/" method="POST">
+                            <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
+                        </form><br/>
+                    </c:when>
+                    <c:otherwise>
+                        <form action="/${property.id}/interest/" method="POST">
+                            <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
+                        </form><br/>
+                    </c:otherwise>
+                </c:choose><br/>
                 <c:if test="${param.noLogin == true}">
                     <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
                 </c:if>

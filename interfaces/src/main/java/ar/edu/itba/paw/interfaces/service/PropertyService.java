@@ -14,7 +14,8 @@ public interface PropertyService {
 
     Property get(long id);
     PageResponse<Property> getAll(PageRequest pageRequest);
-	int showInterestOrReturnErrors(long propertyId, User user);
+    int showInterestOrReturnErrors(long propertyId, User user);
+	int undoInterestOrReturnErrors(long propertyId, User user);
     Property getPropertyWithRelatedEntities(long id);
     Either<Property, Collection<String>> create(Property property);
     Collection<Property> getInterestsOfUser(long id);

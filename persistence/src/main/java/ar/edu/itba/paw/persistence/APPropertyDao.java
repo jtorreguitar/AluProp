@@ -14,9 +14,7 @@ import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
-import ar.edu.itba.paw.model.Service;
-import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.Rule;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +22,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import ar.edu.itba.paw.model.Property;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
@@ -44,6 +41,10 @@ public class APPropertyDao implements PropertyDao {
             .withMainImageId(rs.getLong("mainImageId"))
             .withOwnerId(rs.getLong("ownerId"))
             .build();
+
+//    private final RowMapper<Interest> ROW_MAPPER_INTEREST = (rs, rowNum)
+//            -> new Interest(rs.getLong("id"), rs.getLong("propertyid"), rs.getLong("id"));
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert interestJdbcInsert;
@@ -72,6 +73,7 @@ public class APPropertyDao implements PropertyDao {
         interestJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                         .withTableName("interests")
                         .usingGeneratedKeyColumns("id");
+
     }
 
     @Override
@@ -92,9 +94,25 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public boolean showInterest(long propertyId, User user) {
+//        if (interestExists(propertyId, user))
+//            return false;
         final int rowsAffected = interestJdbcInsert
                 .execute(generateArgumentsForInterestCreation(propertyId, user));
         return rowsAffected == 1;
+    }
+
+    @Override
+    public boolean undoInterest(long propertyId, User user) {
+        if (!interestExists(propertyId, user))
+            return false;
+        int rowsAffected = jdbcTemplate.query("DELETE FROM interests WHERE propertyid = ? AND userid = ?", ROW_MAPPER, propertyId, user.getId()).size();
+        return rowsAffected == 1;
+    }
+
+    public boolean interestExists(long propertyId, User user) {
+        RowMapper<Long> rowMapper = (rs, rowNum) -> rs.getLong("count");
+        long count = jdbcTemplate.query("SELECT COUNT(*) FROM interests WHERE propertyid = ? AND userid = ?", rowMapper, propertyId, user.getId()).get(0);
+        return count > 0;
     }
 
     private Map<String, Object> generateArgumentsForInterestCreation(long propertyId, User user) {
