@@ -59,9 +59,6 @@ public class APProposalDao implements ProposalDao {
     }
 
     private void createRelatedEntities(Proposal proposal){
-        System.out.println("DSADASDASD");
-        for (User user:proposal.getUsers())
-            System.out.println(user.getId());
         proposal.getUsers().forEach(user -> userProposalDao.create(user.getId(), proposal.getId()));
     }
 

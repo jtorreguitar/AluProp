@@ -64,7 +64,6 @@ public class ProposalController {
         if(proposalOrErrors.hasValue()){
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {
-            System.out.println(proposalOrErrors.alternative());
             ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
             mav.addObject("proposalFailed", true);
             return mav;
@@ -75,11 +74,8 @@ public class ProposalController {
         Collection<User> list = new LinkedList<>();
         if (ids != null && ids.length > 0)
             for (long i = 0; i < ids.length; i++){
-                System.out.println(ids[(int)i]);
                 list.add(userService.get(ids[(int)i]));
             }
-        for (User user: list)
-            System.out.println(user.getName());
         return list;
     }
 

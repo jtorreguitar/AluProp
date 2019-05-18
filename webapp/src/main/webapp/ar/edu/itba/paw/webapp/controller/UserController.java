@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.CareerService;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
@@ -11,6 +12,8 @@ import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,10 +27,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.sql.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
 
     @Autowired
     private UserService userService;
@@ -52,6 +58,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView("signUpForm");
         mav.addObject("universities", universityService.getAll());
         mav.addObject("careers", careerService.getAll());
+
         return mav;
     }
 
@@ -64,8 +71,24 @@ public class UserController {
             form.setRepeatPassword("");
             return signUp(form).addObject("passwordMatch", false);
         }
-        userService.CreateUser(buildUserFromForm(form));
+        Either<User, List<String>> maybeUser= userService.CreateUser(buildUserFromForm(form));
+        if( maybeUser.hasValue()){
+            User user = maybeUser.value();
+            String title = redactConfirmationTitle(user);
+            String body = redactConfirmationBody();
+            sendEmail(title, body, user.getEmail());
+            logger.debug("Confirmation email sent to: " + user.getEmail());
+        }
+
         return new ModelAndView("redirect:/");
+    }
+
+    private String redactConfirmationTitle(User user) {
+        return "Hola " + user.getName() + " bienvenido a AluProp!!";
+    }
+
+    private String redactConfirmationBody() {
+        return "Muchas gracias por elegirnos! Entrá a http://pawserver.it.itba.edu.ar/paw-2019a-5/ y encontrá lo que buscás!";
     }
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {
