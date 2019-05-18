@@ -42,8 +42,8 @@ public class APPropertyDao implements PropertyDao {
             .withOwnerId(rs.getLong("ownerId"))
             .build();
 
-//    private final RowMapper<Interest> ROW_MAPPER_INTEREST = (rs, rowNum)
-//            -> new Interest(rs.getLong("id"), rs.getLong("propertyid"), rs.getLong("id"));
+    private final RowMapper<Interest> ROW_MAPPER_INTEREST = (rs, rowNum)
+            -> new Interest(rs.getLong("id"), rs.getLong("propertyid"), rs.getLong("userid"));
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -105,7 +105,7 @@ public class APPropertyDao implements PropertyDao {
     public boolean undoInterest(long propertyId, User user) {
         if (!interestExists(propertyId, user))
             return false;
-        int rowsAffected = jdbcTemplate.query("DELETE FROM interests WHERE propertyid = ? AND userid = ?", ROW_MAPPER, propertyId, user.getId()).size();
+        int rowsAffected = jdbcTemplate.update("DELETE FROM interests WHERE propertyid = ? AND userid = ?", propertyId, user.getId());
         return rowsAffected == 1;
     }
 
