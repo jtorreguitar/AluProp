@@ -91,6 +91,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
         return mav;
     }
 
