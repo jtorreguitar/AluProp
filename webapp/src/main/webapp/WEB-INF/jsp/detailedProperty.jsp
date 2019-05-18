@@ -66,7 +66,7 @@
             <div>
                 <H2>${property.description}</H2>
                 <H6>${property.propertyType.toString()} in ${property.neighbourhood.name}</H6>
-                <H8>${property.capacity} huespedes | ${property.privacyLevel?"${privacy_shared}":"${privacy_individual}"}</H8>
+                <H8>${property.capacity} huespedes | ${property.privacyLevel?privacy_shared:privacy_individual}</H8>
             </div>
             <div class="interest-column text-right">
                 <H4 class="price">$${property.price}</H4><br/>
