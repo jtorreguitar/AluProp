@@ -145,10 +145,19 @@ img {
     width: 30px;
     margin-left: 5px;
     margin-right: 0.5rem;
+}
 
 #answer {
     align-self: center;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.page {
+    margin: 0.3rem;
+}
+
+#page {
+    margin: 0.3rem;
 }

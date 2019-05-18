@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@	taglib	prefix="spring"	uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <head>
@@ -43,7 +44,75 @@
                 <h1><spring:message code="label.properties.noProperties" /></h1>
             </c:otherwise>
         </c:choose>
+    </div>
+    <div class="row">
+        <c:set var="total" value="${(totalElements%maxItems)>0? totalPages+1:totalPages}" />
+        <c:set var="current" value="${currentPage+1}" />
+        <c:choose>
+            <c:when test="${not empty properties}">
+                <ul class="pagination center">
+                    <c:choose>
+                        <c:when test="${current == 1}">
+                            <li class="disabled page">
+                                <a class="disabled">
+                                    <i class="material-icons disabled"><</i>
+                                </a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="waves-effect page">
+                                <a href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current - 2}"/> </c:url>">
+                                    <i class="material-icons"><</i>
+                                </a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:set var="just_one"
+                           value="${(current - 4) <= 0 || total <= 10}"/>
+                    <c:set var="no_more_prev"
+                           value="${(current + 5) > total}"/>
+                    <c:set var="the_first_ones"
+                           value="${(current + 5) < 10}"/>
+                    <c:set var="no_more_next"
+                           value="${total < 10 || (current + 5) >= total}"/>
+                    <c:forEach var="pageIt"
+                               begin="${just_one ? 1 : no_more_prev ? total - 9 : current - 4}"
+                               end="${no_more_next ? total : the_first_ones ? 10 : current + 5}">
+                        <li id="page" class=${pageIt == current ? "active" : "waves-effect"}>
+                            <c:choose>
+                                <c:when test="${pageIt == current}">
+                                    <a>
+                                            ${pageIt}
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${pageIt-1}"/> </c:url>">
+                                            ${pageIt}
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
 
+                        </li>
+                    </c:forEach>
+                    <c:choose>
+                        <c:when test="${current == total}">
+                            <li class="disabled page">
+                                <a class="disabled">
+                                    <i class="material-icons disabled">></i>
+                                </a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="waves-effect page">
+                                <a href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current}"/> </c:url>">
+                                    <i class="material-icons">></i>
+                                </a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </ul>
+            </c:when>
+        </c:choose>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
