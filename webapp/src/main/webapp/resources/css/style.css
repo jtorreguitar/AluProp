@@ -42,6 +42,10 @@ img {
     max-width: 30rem;
 }
 
+.profile-data {
+    display: flex;
+    flex-flow: column;
+}
 
 .carousel-image{
     height: 500px;
