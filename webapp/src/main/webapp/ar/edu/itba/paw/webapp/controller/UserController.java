@@ -77,17 +77,18 @@ public class UserController {
             String title = redactConfirmationTitle(user);
             String body = redactConfirmationBody();
             sendEmail(title, body, user.getEmail());
+            logger.debug("Confirmation email sent to: " + user.getEmail());
         }
 
         return new ModelAndView("redirect:/");
     }
 
     private String redactConfirmationTitle(User user) {
-        return "Hola " + user.getName() + " clickeá en el siguiente link para activar tu cuenta!";
+        return "Hola " + user.getName() + " bienvenido a AluProp!!";
     }
 
     private String redactConfirmationBody() {
-        return "Este es el <a href=\"www.google.com\"> link </a>";
+        return "Muchas gracias por elegirnos! Entrá a http://pawserver.it.itba.edu.ar/paw-2019a-5/ y encontrá lo que buscás!";
     }
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {
@@ -151,7 +152,6 @@ public class UserController {
         message.setTo(to);
         message.setSubject(title);
         message.setText(body);
-        logger.debug("HOLA NADA, ESTO ES PARA AVISARTE QUE MADNÉ EL EMAIL KPO   ");
         emailSender.send(message);
     }
 }
