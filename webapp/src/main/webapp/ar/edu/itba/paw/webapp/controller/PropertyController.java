@@ -98,7 +98,7 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
+    public @ResponseBody ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @Valid @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
         long[] imageArray = new long[files.length];
         for (int i = 0; i < files.length; i++)
             imageArray[i] = imageService.create(files[i]);

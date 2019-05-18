@@ -1,21 +1,16 @@
 package ar.edu.itba.paw.webapp.form;
 
-import ar.edu.itba.paw.model.enums.PropertyType;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
 
 public class PropertyCreationForm {
-    @NotBlank
-    @Size(max=100)
+    @Size(min=1, max=100)
     private String caption;
 
-    @NotBlank
-    @Size(max=2000)
+    @Size(min=1, max=2000)
     private String description;
 
     @Range(min=0)
@@ -30,8 +25,10 @@ public class PropertyCreationForm {
     @Range(min=1, max=100)
     private int capacity;
 
-    @Range
+    @DecimalMin("1")
+    @DecimalMax("9999999")
     private float price;
+
     private long[] ruleIds;
     private long[] serviceIds;
 
