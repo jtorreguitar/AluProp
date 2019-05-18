@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -29,23 +30,22 @@ public class SignUpForm {
     @Pattern(regexp = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")
     private String birthDate;
 
-    @NotBlank
-    @Size(max = 400)
+    @Size(min=1, max = 400)
     private String bio;
 
-    @Size(min = 8, max = 15)
+    @Range(min = 8, max = 15)
     private String phoneNumber;
 
-    @Size(min=0)
-    private Integer universityId;
+    @Range(min=0)
+    private int universityId;
 
-    @Size(min=0)
-    private Integer careerId;
+    @Range(min=0)
+    private int careerId;
 
-    @Size(min=0)
+    @Range(min=0)
     private int gender;
 
-    @Size(min=0)
+    @Range(min=0)
     private int role;
 
     public String getBirthDate() {
@@ -72,15 +72,15 @@ public class SignUpForm {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getUniversityId() {
+    public int getUniversityId() {
         return universityId;
     }
 
-    public void setUniversityId(Integer universityId) {
+    public void setUniversityId(int universityId) {
         this.universityId = universityId;
     }
 
-    public Integer getCareerId() {
+    public int getCareerId() {
         return careerId;
     }
 
