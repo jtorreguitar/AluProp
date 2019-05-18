@@ -28,7 +28,7 @@
                     <h4 class="card-title mt-2"><spring:message code="host.publish_property"/></h4>
                 </header>
                 <article class="card-body">
-                    <c:url value="/host/create/uploadPictures" var="postPath"/>
+                    <c:url value="/host/create" var="postPath"/>
                     <c:url value="${postPath}" var="postPath"/>
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
                         <label><spring:message code="forms.image_upload_instructions"/></label>
@@ -40,17 +40,17 @@
                                     <input id="uploadFile1" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn1" type="file" class="upload" name="file"/>
-                                    </div>
+                                    </div></br>
                                     <spring:message code="forms.upload_picture" arguments="2"/>
                                     <input id="uploadFile2" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn2" type="file" class="upload" name="file"/>
-                                    </div>
+                                    </div></br>
                                     <spring:message code="forms.upload_picture" arguments="3"/>
                                     <input id="uploadFile3" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn3" type="file" class="upload" name="file"/>
-                                    </div>
+                                    </div></br>
                                     <spring:message code="forms.upload_picture" arguments="4"/>
                                     <input id="uploadFile4" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
@@ -80,11 +80,11 @@
                         </div>
                         <div class="form-group">
                             <form:label path="propertyType"><spring:message code="forms.property_type"/></form:label>
-                            <form:select path="propertyType">
-                                <option value="-1"><spring:message code="forms.choose"/></option>
-                                <option value="0"><spring:message code="forms.house"/></option>
-                                <option value="1"><spring:message code="forms.apartment"/></option>
-                                <option value="2"><spring:message code="forms.loft"/></option>
+                            <form:select path="propertyType" id="select-property-type" name="propertyTypes">
+                                <form:option value="-1"><spring:message code="forms.choose"/></form:option>
+                                <c:forEach var="type" items="${propertyTypes}">
+                                    <form:option value="${type.id}"><spring:message code="${type.name}"/></form:option>
+                                </c:forEach>
                             </form:select>
                             <form:errors path="propertyType" cssClass="formError" element="p"/>
                         </div>
@@ -100,12 +100,12 @@
                         </div>
                         <div class="form-group">
                             <form:label path="privacyLevel"><spring:message code="forms.privacy"/></form:label>
-                            <form:select path="privacyLevel">
-                                <option value="-1"><spring:message code="forms.choose"/></option>
-                                <option value="0"><spring:message code="forms.privacy.individual"/></option>
-                                <option value="1"><spring:message code="forms.privacy.shared"/></option>
+                            <form:select path="privacyLevel" id="select-privacy-level" name="provacyLevels">
+                                <form:option value="-1"><spring:message code="forms.choose"/></form:option>
+                                <c:forEach var="level" items="${privacyLevels}">
+                                    <form:option value="${level.id}"><spring:message code="${level.name}"/></form:option>
+                                </c:forEach>
                             </form:select>
-                            <form:errors path="privacyLevel" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
                             <form:label path="capacity"><spring:message code="forms.capacity"/></form:label>

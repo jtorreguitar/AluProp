@@ -110,25 +110,38 @@ public class PropertyController {
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
+
+        mav.addObject("propertyTypes", new Pair[]{new Pair(0, "forms.house"),new Pair(1, "forms.apartment"),new Pair(2, "forms.loft")});
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("privacyLevels", new Pair[]{new Pair(0, "forms.privacy.individual"),new Pair(1, "forms.privacy.shared")});
         return mav;
     }
 
-    @RequestMapping(value = "/host/create/uploadPictures", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView uploadPictures(@RequestParam("file") MultipartFile[] files, @Valid @ModelAttribute PropertyCreationForm form, final BindingResult errors) {
-        long[] imageArray = new long[files.length];
+
+    private long[] loadImagesToDatabase(MultipartFile[] files){
+        ArrayList<Long> images = new ArrayList<>();
         for (int i = 0; i < files.length; i++)
-            imageArray[i] = imageService.create(files[i]);
-        form.setMainImageId(imageArray[0]);
-        form.setImageIds(imageArray);
-        return create(form, errors);
+            if (!files[i].isEmpty())
+                images.add(imageService.create(files[i]));
+
+        long[] imageArray = new long[images.size()];
+        for (int i = 0; i < images.size(); i++)
+            imageArray[i] = images.get(i);
+        return imageArray;
     }
 
     @RequestMapping(value = "/host/create", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors) {
-        if (errors.hasErrors()){
+    public ModelAndView create(@RequestParam("file") MultipartFile[] files, @Valid @ModelAttribute PropertyCreationForm propertyForm, final BindingResult errors) {
+        int numFiles = 0;
+        for (int i = 0; i < files.length; i++)
+            if (!files[i].isEmpty()) numFiles++;
+        if (numFiles == 0)
+            return create(propertyForm).addObject("noImages", true);
+        if (errors.hasErrors())
             return create(propertyForm);
-        }
+        long[] uploadedFiles = loadImagesToDatabase(files);
+        propertyForm.setMainImageId(uploadedFiles[0]);
+        propertyForm.setImageIds(uploadedFiles);
         Either<Property, Collection<String>> propertyOrErrors = propertyService.create(
                 new Property.Builder()
                     .withCaption(propertyForm.getCaption())
@@ -145,6 +158,7 @@ public class PropertyController {
                     .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
                     .build()
         );
+
         if(propertyOrErrors.hasValue())
             return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
         else
