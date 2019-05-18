@@ -2,10 +2,9 @@ package ar.edu.itba.paw.webapp.form;
 
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
-import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -37,16 +36,16 @@ public class SignUpForm {
     @Size(min = 8, max = 15)
     private String phoneNumber;
 
-    @Range(min=0)
+    @Size(min=0)
     private Integer universityId;
 
-    @Range(min=0)
+    @Size(min=0)
     private Integer careerId;
 
-    @Range(min=0)
+    @Size(min=0)
     private int gender;
 
-    @Range(min=0)
+    @Size(min=0)
     private int role;
 
     public String getBirthDate() {

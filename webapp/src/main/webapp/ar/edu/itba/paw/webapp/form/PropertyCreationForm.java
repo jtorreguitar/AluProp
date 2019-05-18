@@ -4,18 +4,15 @@ import ar.edu.itba.paw.model.enums.PropertyType;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
 
 public class PropertyCreationForm {
-    @NotBlank
-    @Size(max=100)
+    @Size(min=1, max=100)
     private String caption;
 
-    @NotBlank
-    @Size(max=2000)
+    @Size(min=1, max=2000)
     private String description;
 
     @Range(min=0)

@@ -14,8 +14,8 @@
     <org.postgresql.version>42.2.5</org.postgresql.version>
     <spring-security.version>4.0.4.RELEASE</spring-security.version>
     <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
-    <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
-    <org.hibernate.validator>6.0.16.Final</org.hibernate.validator>
+    <javax.validation-api.version>1.1.0.Final</javax.validation-api.version>
+    <org.hibernate.validator>5.0.3.Final</org.hibernate.validator>
     <org.hsqldb.version> 2.3.1 </org.hsqldb.version>
     <org.junit.version>4.12</org.junit.version>
     <org.mockito.version> 2.27.0 </org.mockito.version>
