@@ -36,6 +36,9 @@
                             <form:label path="email"><spring:message code="signup.email"/></form:label>
                             <form:input path="email" type="email" class="form-control" placeholder=""></form:input>
                             <form:errors path="email" cssClass="formError" element="p"/>
+                            <c:if test="${uniqueEmail == false}">
+                                <span class="formError">There's already an account with that email</span>
+                            </c:if>
                           </div>
                           <div class="form-group">
                               <form:label path="password"><spring:message code="signup.password"/></form:label>

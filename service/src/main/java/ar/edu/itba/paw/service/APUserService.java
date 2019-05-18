@@ -44,10 +44,12 @@ public class APUserService implements UserService {
     public Either<User, List<String>> CreateUser(User user) {
         errors = new LinkedList<>();
         checkRelatedEntitiesExist(user);
-        if(!errors.isEmpty())
-            return Either.alternativeFrom(errors);
         if(userDao.userExistsByEmail(user.getEmail()))
             errors.add(USER_EXISTS_BY_EMAIL);
+
+        if(!errors.isEmpty())
+            return Either.alternativeFrom(errors);
+        
         return Either.valueFrom(userDao.create(user));
     }
     

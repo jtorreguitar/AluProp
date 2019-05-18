@@ -72,13 +72,17 @@ public class UserController {
             return signUp(form).addObject("passwordMatch", false);
         }
         Either<User, List<String>> maybeUser= userService.CreateUser(buildUserFromForm(form));
-        if( maybeUser.hasValue()){
-            User user = maybeUser.value();
-            String title = redactConfirmationTitle(user);
-            String body = redactConfirmationBody();
-            sendEmail(title, body, user.getEmail());
-            logger.debug("Confirmation email sent to: " + user.getEmail());
+
+        if(!maybeUser.hasValue()){
+            form.setEmail("");
+            logger.debug("NOT A UNIQUE EMAIL");
+            return signUp(form).addObject("uniqueEmail", false);
         }
+        User user = maybeUser.value();
+        String title = redactConfirmationTitle(user);
+        String body = redactConfirmationBody();
+        sendEmail(title, body, user.getEmail());
+        logger.debug("Confirmation email sent to: " + user.getEmail());
 
         return new ModelAndView("redirect:/");
     }
