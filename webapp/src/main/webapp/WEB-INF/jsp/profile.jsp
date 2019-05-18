@@ -20,36 +20,44 @@
 
         <%@include file="navigationBar.jsp"%>
 
-        <h1 class="display-4">Name Surname</h1>
-        <h5 class="text-muted">University</h5>
-        <h6 class="text-muted">dd/mm/yyyy</h6>
+        <h1 class="display-4">${user.name} ${user.lastName}</h1>
+        <div>
+            <h5 class="text-muted"><img src="/resources/images/studies.svg" class="studies" alt="English">${user.university.name}</h5>
+        </div>
+        <h6 class="text-muted"><img src="/resources/images/birthday-date.svg" class="birthday-date" alt="English">${user.birthDate.toString()}</h6>
         <div>
         <br>
         </div>
         <div class="profile-data">
             <div class="card">
-                <div class="card-header">Bio</div>
-                <div class="card-body"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vehicula, massa nec condimentum imperdiet, massa est convallis dolor, et mollis nisl magna eu massa. Suspendisse et elit non magna tempus dignissim. Praesent justo purus, consectetur a eleifend eu, cursus eu diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed placerat tortor, vel tempor lectus. Integer vel dui sit amet dui molestie commodo vel ac dolor. Aenean quis fringilla est. Pellentesque ac pellentesque ipsum. Duis at consequat libero. Nunc pharetra vehicula tortor, nec sodales elit semper quis. Cras venenatis magna ac dignissim maximus. Nulla condimentum vestibulum lacus, ut tincidunt. </div>
+                <div class="card-header"><spring:message code="label.profile.bio"/></div>
+                <div class="card-body">${user.bio}</div>
             </div>
             <br>
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            Interests
+                            <spring:message code="label.profile.interests"/>
                         </div>
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                            <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                            <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-                            <a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
+                            <c:choose>
+                                <c:when test="${not empty interests}">
+                                    <c:forEach var="interest" items="${interests}">
+                                        <a href="/${interest.id}" class="list-group-item list-group-item-action">${interest.description}</a>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <h1><spring:message code="label.profile.noInterests" /></h1>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            Proposals
+                            <spring:message code="label.profile.proposals"/>
                         </div>
                         <div class="list-group">
                             <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Lel this is a proposal</span></div><div class="proposal-badge"><span class="badge badge-secondary">Pending</span></div></a>
