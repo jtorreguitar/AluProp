@@ -13,7 +13,6 @@ body {
     padding-top: 4.5rem;
     background-color: #EDF5E1 !important;
     align-items: center;
-
 }
 
 img {
@@ -40,11 +39,6 @@ img {
     margin: 1rem;
     width: 100%;
     max-width: 30rem;
-}
-
-.profile-data {
-    display: flex;
-    flex-flow: column;
 }
 
 .carousel-image{
@@ -115,4 +109,26 @@ img {
     color: white;
     background-color: red;
     border-color: red;
+}
+
+
+.profile-data {
+    width: 80%;
+}
+
+.proposal-state {
+    display: flex;
+    align-self: end;
+}
+
+.proposal-list {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.proposal-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -20,24 +20,45 @@
 
         <%@include file="navigationBar.jsp"%>
 
+        <h1 class="display-4">Name Surname</h1>
+        <h5 class="text-muted">University</h5>
+        <h6 class="text-muted">dd/mm/yyyy</h6>
         <div>
-            <h1 class="profile-name"> IGNACIO VIDAURRETA </h1>
+        <br>
         </div>
         <div class="profile-data">
             <div class="card">
-                <div class="card-header"> BIO: </div>
+                <div class="card-header">Bio</div>
                 <div class="card-body"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vehicula, massa nec condimentum imperdiet, massa est convallis dolor, et mollis nisl magna eu massa. Suspendisse et elit non magna tempus dignissim. Praesent justo purus, consectetur a eleifend eu, cursus eu diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed placerat tortor, vel tempor lectus. Integer vel dui sit amet dui molestie commodo vel ac dolor. Aenean quis fringilla est. Pellentesque ac pellentesque ipsum. Duis at consequat libero. Nunc pharetra vehicula tortor, nec sodales elit semper quis. Cras venenatis magna ac dignissim maximus. Nulla condimentum vestibulum lacus, ut tincidunt. </div>
             </div>
-            <div class="card">
-                <div class="card-header"> Interested in: </div>
-                <div class="card-body">
-                    <ul>
-                        <li> THIS HOUSE WHICH IS AWESOME </li>
-                        <li> THIS OTHER HOUSE THAT IS AMAZING </li>
-                        <li> DON'T EVEN GET ME STARTED WITH THIS HOUSE </li>
-                    </ul>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Interests
+                        </div>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                            <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                            <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                            <a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Proposals
+                        </div>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Lel this is a proposal</span></div><div class="proposal-badge"><span class="badge badge-secondary">Pending</span></div></a>
+                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">This house is really cool</span></div><div class="proposal-badge"><span class="badge badge-success">Sent</span></div></a>
+                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Loft as cool as the office</span></div><div class="proposal-badge"><span class="badge badge-secondary">Pending</span></div></a>
+                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Dopest property ever</span></div><div class="proposal-badge"><span class="badge badge-success">Sent</span></div></a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
     </body>
 </html>
