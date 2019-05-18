@@ -40,7 +40,6 @@ public class APPropertyServiceDaoTest {
         public void getAllPropertyServiceTest() {
         int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "propertyServices");
         int realRowCount = propertyServiceDao.getAll().size();
-        System.out.println(expectedRowCount);
 
         Assert.assertNotEquals(0, realRowCount);
         Assert.assertEquals(expectedRowCount, realRowCount);
