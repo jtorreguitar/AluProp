@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
@@ -7,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <title>Create a Property</title>
+    <title><spring:message code="host.publish_property"/></title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
@@ -24,71 +25,73 @@
         <div class="col-md-6">
             <div class="card">
                 <header class="card-header">
-                    <h4 class="card-title mt-2">Create a new property</h4>
+                    <h4 class="card-title mt-2"><spring:message code="host.publish_property"/></h4>
                 </header>
                 <article class="card-body">
                     <c:url value="/host/create/uploadPictures" var="postPath"/>
                     <c:url value="${postPath}" var="postPath"/>
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
-                        <label>Upload up to 4 pictures of the property:</label>
+                        <label><spring:message code="forms.image_upload_instructions"/></label>
                         <c:choose>
                             <c:when test="${imagesAlreadyUploaded == null}">
+                                <spring:message code="placeholder.choose_file" var="chooseFilePlaceholder"/>
                                 <div class="form-group">
-                                    Picture 1 to upload:
-                                    <input id="uploadFile1" placeholder="Choose File" disabled="disabled" />
-                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                    <spring:message code="forms.upload_picture" arguments="1"/>
+                                    <input id="uploadFile1" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn1" type="file" class="upload" name="file"/>
                                     </div>
-                                    Picture 2 to upload:
-                                    <input id="uploadFile2" placeholder="Choose File" disabled="disabled" />
-                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                    <spring:message code="forms.upload_picture" arguments="2"/>
+                                    <input id="uploadFile2" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn2" type="file" class="upload" name="file"/>
                                     </div>
-                                    Picture 3 to upload:
-                                    <input id="uploadFile3" placeholder="Choose File" disabled="disabled" />
-                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                    <spring:message code="forms.upload_picture" arguments="3"/>
+                                    <input id="uploadFile3" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn3" type="file" class="upload" name="file"/>
                                     </div>
-                                    Picture 4 to upload:
-                                    <input id="uploadFile4" placeholder="Choose File" disabled="disabled" />
-                                    <div class="fileUpload btn btn-primary"><span>Upload</span>
+                                    <spring:message code="forms.upload_picture" arguments="4"/>
+                                    <input id="uploadFile4" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn4" type="file" class="upload" name="file"/>
                                     </div>
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                The pictures were successfully uploaded!
+                                <spring:message code="system.successfully_uploaded"/>
                             </c:otherwise>
                         </c:choose>
                         <form:errors path="imageIds" cssClass="formError" element="p"/>
                         <c:if test="${noImages == true}">
-                            <span class="formError">Please upload at least 1 picture of the property.</span>
+                            <span class="formError"><spring:message code="system.upload_error"/></span>
                         </c:if>
 
                         <div class="form-group">
-                            <form:label path="description">Name</form:label>
+                            <form:label path="description"><spring:message code="forms.name"/> </form:label>
                             <form:input path="description" type="text" class="form-control" placeholder=""></form:input>
                             <form:errors path="description" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="caption">Description</form:label>
-                            <form:textarea path="caption" type="text" class="form-control"  style="resize:both;" placeholder="Include more details of the property..."></form:textarea>
+                            <form:label path="caption"> <spring:message code="forms.description"/> </form:label>
+                            <spring:message code="placeholder.include_details" var="includeDetailsPlaceholder"/>
+                            <form:textarea path="caption" type="text" class="form-control"  style="resize:both;" placeholder="${includeDetailsPlaceholder}"></form:textarea>
                             <form:errors path="caption" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="propertyType">Property type:</form:label>
+                            <form:label path="propertyType"><spring:message code="forms.property_type"/></form:label>
                             <form:select path="propertyType">
-                                <option value="-1">Please choose</option>
-                                <option value="0">House</option>
-                                <option value="1">Apartment</option>
-                                <option value="2">Loft</option>
+                                <option value="-1"><spring:message code="forms.choose"/></option>
+                                <option value="0"><spring:message code="forms.house"/></option>
+                                <option value="1"><spring:message code="forms.apartment"/></option>
+                                <option value="2"><spring:message code="forms.loft"/></option>
                             </form:select>
                             <form:errors path="propertyType" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="neighbourhoodId">Neighborhood:</form:label>
+                            <form:label path="neighbourhoodId"><spring:message code="forms.neighborhood"/></form:label>
                             <form:select path="neighbourhoodId" id="select-neighbourhood" name="neighbourhoods">
-                                <form:option value="-1">Please choose</form:option>
+                                <form:option value="-1"><spring:message code="forms.choose"/></form:option>
                                 <c:forEach var="neighbourhood" items="${neighbourhoods}">
                                     <form:option value="${neighbourhood.id}">${neighbourhood.name}</form:option>
                                 </c:forEach>
@@ -96,33 +99,33 @@
                             <form:errors path="neighbourhoodId" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="privacyLevel">Privacy:</form:label>
+                            <form:label path="privacyLevel"><spring:message code="forms.privacy"/></form:label>
                             <form:select path="privacyLevel">
-                                <option value="-1">Please choose</option>
-                                <option value="0">Individual</option>
-                                <option value="1">Shared</option>
+                                <option value="-1"><spring:message code="forms.choose"/></option>
+                                <option value="0"><spring:message code="forms.privacy.individual"/></option>
+                                <option value="1"><spring:message code="forms.privacy.shared"/></option>
                             </form:select>
                             <form:errors path="privacyLevel" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="capacity">Capacity:</form:label>
+                            <form:label path="capacity"><spring:message code="forms.capacity"/></form:label>
                             <form:input path="capacity" type="text" class="form-control" placeholder=""></form:input>
                             <form:errors path="capacity" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="price">Rent per month:</form:label>
+                            <form:label path="price"><spring:message code="forms.rent_per_month"/></form:label>
                             <form:input path="price" type="text" class="form-control" placeholder=""></form:input>
                             <form:errors path="price" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="ruleIds">Rules:</form:label>
+                            <form:label path="ruleIds"><spring:message code="forms.rules"/></form:label>
                                 <c:forEach var="rule" items="${rules}">
                                     <form:checkbox path="ruleIds" value="${rule.id}"/>${rule.name}
                                 </c:forEach>
                             <form:errors path="ruleIds" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
-                            <form:label path="serviceIds">Services:</form:label>
+                            <form:label path="serviceIds"><spring:message code="forms.services"/></form:label>
                             <c:forEach var="service" items="${services}">
                                 <form:checkbox path="serviceIds" value="${service.id}"/>${service.name}
                             </c:forEach>

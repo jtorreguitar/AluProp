@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
-        <title><spring:message code="label.proposal.proposal"/></title>
+        <title><spring:message code="label.property"/></title>
 
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
@@ -24,7 +24,7 @@
 
 <div class="card" style="width: 80%;">
     <div class="card-header">
-        <spring:message code="label.proposal.proposal"/>
+        <spring:message code="user.interested_users"/>
     </div>
     <img class="card-img-top" src="..." alt="Card image cap">
     <div class="card-body">
@@ -38,7 +38,9 @@
                     <li class="list-group-item">${user.name}</li>
                 </c:forEach>
             </c:when>
-        </c:choose>
+            <c:otherwise>
+                <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>
+
     </ul>
     <div class="card-body" id="answer">
         <div class="row">

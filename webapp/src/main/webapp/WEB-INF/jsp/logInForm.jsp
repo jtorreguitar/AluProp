@@ -1,5 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+    <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
 <html>
@@ -25,32 +25,32 @@
         <aside class="col-md-6">
             <div class="card">
                 <header class="card-header">
-                    <a href="/user/signUp" class="float-right btn btn-outline-primary mt-1">Sign up</a>
-                    <h4 class="card-title mt-2">Log in</h4>
+                    <a href="/user/signUp" class="float-right btn btn-outline-primary mt-1"><spring:message code="label.signup"/></a>
+                    <h4 class="card-title mt-2"><spring:message code="label.signup"/></h4>
                 </header>
                 <article class="card-body">
                     <c:url value="/user/logIn" var="loginUrl" />
                     <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
                         <div class="form-group">
-                            <label for="email">Your email</label>
+                            <label for="email"> <spring:message code="forms.email"/></label>
                             <input id="email" name="email" class="form-control" placeholder="Email" type="email"/>
                         </div> <!-- form-group// -->
                         <div class="form-group">
-                            <a class="float-right" href="#">Forgot?</a>
-                            <label for="password">Your password</label>
+                            <a class="float-right" href="#"><spring:message code="label.forgot_password"/></a>
+                            <label for="password"><spring:message code="label.password"/></label>
                             <input id="password" name="password" class="form-control" placeholder="******" type="password"/>
                         </div> <!-- form-group// -->
                         <div class="form-group">
                             <div class="checkbox">
-                                <label for="rememberme">Remember me </label>
+                                <label for="rememberme"><spring:message code="label.remember_me"/></label>
                                 <input id="rememberme" name="rememberme" type="checkbox"/>
                             </div> <!-- checkbox .// -->
                         </div> <!-- form-group// -->
                         <c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
-                            <span class="formError">Invalid username or password.</span>
+                            <span class="formError"> <spring:message code="system.invalid_user_or_pass"/></span>
                         </c:if>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block"> Login  </button>
+                            <button type="submit" class="btn btn-primary btn-block"> <spring:message code="label.login"/> </button>
                         </div> <!-- form-group// -->
                     </form>
                 </article>

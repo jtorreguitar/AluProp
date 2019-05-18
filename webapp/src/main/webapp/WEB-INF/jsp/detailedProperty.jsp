@@ -9,7 +9,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
-        <title>Property</title>
+        <title><spring:message code="label.property"/></title>
 
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
@@ -56,31 +56,35 @@
             </div>
             </c:when>
             <c:otherwise>
-                <h1> Oops, there are no images for this property </h1>
+                <h1> <spring:message code="system.property.no_images_error"/> </h1>
             </c:otherwise>
         </c:choose>
         <br>
         <div class="flex-container">
+            <spring:message code="forms.privacy.shared" var="privacy_shared"/>
+            <spring:message code="forms.privacy.individual" var="privacy_individual"/>
             <div>
                 <H2>${property.description}</H2>
                 <H6>${property.propertyType.toString()} in ${property.neighbourhood.name}</H6>
-                <H8>${property.capacity} huespedes | ${property.privacyLevel?"Shared":"Individual"}</H8>
+                <H8>${property.capacity} huespedes | ${property.privacyLevel?"${privacy_shared}":"${privacy_individual}"}</H8>
             </div>
             <div class="interest-column text-right">
                 <H4 class="price">$${property.price}</H4><br/>
+                <spring:message code="user.interested" var="interested"/>
+                <spring:message code="user.not_interested" var="not_interested"/>
                 <form action="${property.id}/interest" method="POST">
                     <c:choose>
                         <c:when test="${userInterested == true}">
-                            <input type="submit" value="Ya no me Interesa" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
+                            <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
                         </c:when>
                         <c:otherwise>
-                            <input type="submit" value="Me Interesa" class="btn btn-primary stretched-link"/>
+                            <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
                         </c:otherwise>
                     </c:choose>
 
                 </form><br/>
                 <c:if test="${param.noLogin == true}">
-                    <p class="formError">You must be logged in to show interest.</p>
+                    <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
                 </c:if>
             </div>
         </div>
@@ -88,7 +92,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">Description</div>
+                    <div class="card-header"><spring:message code="forms.description"/></div>
                     <div class="card-body">
                         ${property.caption}
                     </div>
@@ -100,8 +104,9 @@
                         <form:form modelAttribute="proposalForm" action="${postPath}" method="post">
                             <div class="card">
                                 <div class="card-header">
-                                    <span>Usuarios interesados
-                                        <input type="submit" value="Crear propuesta" class="btn btn-primary stretched-link"/>
+                                    <spring:message code="user.create_proposal" var="createProposal"/>
+                                    <span> <spring:message code="user.interested_users"/>
+                                        <input type="submit" value="${createProposal}" class="btn btn-primary stretched-link"/>
                                     </span>
                                 </div>
                                 <ul class="list-group list-group-flush">
@@ -113,7 +118,7 @@
                                             <form:errors path="invitedUsersIds" cssClass="formError" element="p"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <li class="list-group-item">No other users have shown interest in this property!</li>
+                                            <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>
                                         </c:otherwise>
                                     </c:choose>
                                 </ul>
@@ -128,7 +133,7 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        Reglas
+                        <spring:message code="forms.rules"/>
                     </div>
                     <ul class="list-group list-group-flush">
                         <c:choose>
@@ -138,7 +143,7 @@
                                 </c:forEach>
                             </c:when>
                             <c:otherwise>
-                                <li class="list-group-item">This property has no special rules! </li>
+                                <li class="list-group-item"> <spring:message code="property.no_special_rules"/> </li>
                             </c:otherwise>
                         </c:choose>
                     </ul>
@@ -147,7 +152,7 @@
             <div class="col-md-3">
             <div class="card">
                 <div class="card-header">
-                    Servicios
+                    <spring:message code="forms.services"/>
                 </div>
                 <ul class="list-group list-group-flush">
                     <c:choose>
@@ -157,7 +162,7 @@
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <li class="list-group-item"> This property has no special services! </li>
+                            <li class="list-group-item"> <spring:message code="property.no_special_services"/> </li>
                         </c:otherwise>
                     </c:choose>
                 </ul>
