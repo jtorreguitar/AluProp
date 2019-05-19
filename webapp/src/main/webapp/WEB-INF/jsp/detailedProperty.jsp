@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
         <!-- Bootstrap core css -->
-        <link href="resources/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     </head>
@@ -75,18 +75,18 @@
 
                 <c:choose>
                     <c:when test="${userRole == '[ROLE_HOST]'}">
+
                     </c:when>
-                    <c:when test="${!(userRole == '[ROLE_HOST]') && userInterested == true}">
+                    <c:when test="${userRole == '[ROLE_GUEST]' && userInterested == true}">
                         <form action="/${property.id}/deInterest/" method="POST">
-                            <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
+                            <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
                         </form><br/>
                     </c:when>
-                    <c:when test="${userRole == '[ROLE_HOST]'}">
+                    <c:otherwise>
                         <form action="/${property.id}/interest/" method="POST">
                             <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
                         </form><br/>
-                    </c:when>
-                    <c:otherwise></c:otherwise>
+                    </c:otherwise>
                 </c:choose><br/>
                 <c:if test="${param.noLogin == true}">
                     <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
@@ -104,23 +104,29 @@
                 </div>
                 <br/>
                 <c:choose>
-                    <c:when test="${userInterested == true}">
-                        <c:url value="proposal/create/${property.id}" var="postPath"/>
+                    <c:when test="${userInterested == true || userRole == '[ROLE_HOST]'}">
+                        <c:url value="/proposal/create/${property.id}" var="postPath"/>
                         <form:form modelAttribute="proposalForm" action="${postPath}" method="post">
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header" style="display: flex;justify-content: space-between;">
                                     <spring:message code="user.create_proposal" var="createProposal"/>
                                     <span> <spring:message code="user.interested_users"/>
-                                        <input type="submit" value="${createProposal}" class="btn btn-primary stretched-link"/>
+                                        <c:if test="${userRole != '[ROLE_HOST]' && interestedUsers.size() > 1}">
+                                            <input type="submit" value="${createProposal}" class="btn btn-primary stretched-link"/>
+                                        </c:if>
                                     </span>
+                                    <c:if test="${maxPeople != null}">
+                                        <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
+                                    </c:if>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <c:choose>
                                         <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
                                             <c:forEach var="user" items="${interestedUsers}">
-                                                <li class="list-group-item"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</li>
+                                                <c:if test="${user.id != currentUser.id}">
+                                                    <li class="list-group-item"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</li>
+                                                </c:if>
                                             </c:forEach>
-                                            <form:errors path="invitedUsersIds" cssClass="formError" element="p"/>
                                         </c:when>
                                         <c:otherwise>
                                             <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>

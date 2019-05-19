@@ -15,6 +15,7 @@ import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
+import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class PropertyController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProposalService proposalService;
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @RequestParam(required = false, defaultValue = "9") int pageSize) {
@@ -69,6 +73,7 @@ public class PropertyController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("currentUser", user);
         mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
 
         if (user != null){
@@ -179,5 +184,38 @@ public class PropertyController {
     public ModelAndView interestsOfUser(@PathVariable(value = "userId") long userId) {
         return new ModelAndView("interestsOfUser")
                     .addObject("interests", propertyService.getInterestsOfUser(userId));
+    }
+
+    @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST )
+    public ModelAndView create(@PathVariable(value = "propertyId") int propertyId, @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+        Property prop = propertyService.get(propertyId);
+        if (form.getInvitedUsersIds().length  < 1 || form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
+            return get(form, propertyId).addObject("maxPeople", prop.getCapacity()-1);
+
+        String userEmail = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+        long userId = userService.getByEmail(userEmail).getId();
+
+        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(new Proposal.Builder()
+                .withCreatorId(userId)
+                .withPropertyId(propertyId)
+                .withUsers(getUsersByIds(form.getInvitedUsersIds()))
+                .build());
+
+        if(proposalOrErrors.hasValue()){
+            return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
+        } else {
+            ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
+            mav.addObject("proposalFailed", true);
+            return mav;
+        }
+    }
+
+    private Collection<User> getUsersByIds(long[] ids){
+        Collection<User> list = new LinkedList<>();
+        if (ids != null && ids.length > 0)
+            for (long i = 0; i < ids.length; i++){
+                list.add(userService.get(ids[(int)i]));
+            }
+        return list;
     }
 }
