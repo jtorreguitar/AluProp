@@ -110,6 +110,43 @@ CREATE TABLE IF NOT EXISTS userProposals (
     state integer
 );
 
+INSERT INTO universities(id, name)
+VALUES(1, 'ITBA')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO universities(id, name)
+VALUES(2, 'UBA')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO universities(id, name)
+VALUES(3, 'UTN')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO universities(id, name)
+VALUES(4, 'Universidad 3 de Febrero')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO universities(id, name)
+VALUES(5, 'Universidad de La Matanza')
+ON CONFLICT DO NOTHING;
+
+
+INSERT INTO careers(id, name)
+VALUES(1, 'Ingeniería Informática')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO careers(id, name)
+VALUES(2, 'Abogacía')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO careers(id, name)
+VALUES(3, 'Traductorado público')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO careers(id, name)
+VALUES(4, 'Ingeniería Electrónica')
+ON CONFLICT DO NOTHING;
+
 INSERT INTO countries(
     id, name)
 VALUES (1, 'Argentina')
