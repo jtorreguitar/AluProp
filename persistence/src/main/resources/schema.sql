@@ -109,3 +109,46 @@ CREATE TABLE IF NOT EXISTS userProposals (
     proposalId INTEGER REFERENCES proposals(id) ON DELETE CASCADE,
     state integer
 );
+
+INSERT INTO countries(
+    id, name)
+VALUES (1, 'Argentina')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO cities(
+    id, name, countryid, provinceid)
+VALUES (1, 'CABA', 1, null)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO neighbourhoods(
+    id, name, cityid)
+VALUES (1, 'Palermo', 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO services(id, name)
+VALUES(1, 'Internet')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO services(id, name)
+VALUES(2, 'Lavarropas')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO services(id, name)
+VALUES(3, 'Cocina')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO rules (id, name)
+VALUES(1, 'No fumar')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO rules (id, name)
+VALUES(2, 'No mascotas')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO rules (id, name)
+VALUES(3, 'Sólo hombres')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO rules (id, name)
+VALUES(4, 'Sólo mujeres')
+ON CONFLICT DO NOTHING;
