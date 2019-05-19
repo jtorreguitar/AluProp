@@ -43,7 +43,7 @@ public class APProposalService implements ProposalService {
 
     @Override
     public long delete(long id) {
-        return 1;
+        return proposalDao.delete(id);
     }
 
     private void checkRelatedEntitiesExist(Proposal proposal) {

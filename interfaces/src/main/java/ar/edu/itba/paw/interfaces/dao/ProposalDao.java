@@ -6,6 +6,7 @@ import java.util.Collection;
 
 public interface ProposalDao {
     Proposal create(Proposal proposal);
+    long delete(long id);
     Proposal getById(long id);
 
     Collection<Proposal> getAllProposalForUserId(long id);

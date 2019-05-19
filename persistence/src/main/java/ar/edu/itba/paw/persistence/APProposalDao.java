@@ -54,6 +54,11 @@ public class APProposalDao implements ProposalDao {
         return ret;
     }
 
+    @Override
+    public long delete(long id) {
+        return jdbcTemplate.update("DELETE FROM proposals WHERE id=?", id);
+    }
+
     private Map<String, Object> generateArgumentsForProposalCreation(Proposal proposal){
         Map<String, Object> map = new HashMap<>();
         map.put("propertyId", proposal.getPropertyId());

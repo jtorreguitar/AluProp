@@ -76,18 +76,18 @@
         <div class="row">
             <c:choose>
                 <c:when test="${proposal.creatorId == currentUser.id}">
-                    <form action="/proposal/delete/${property.id}" method="post">
-                    <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
+                    <form action="/proposal/delete/${proposal.id}" method="post">
+                        <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
                     </form>
                 </c:when>
                 <c:when test="${proposal.invitedUserStates.contains(currentUser.id)}">
                     <div class="col-6">
-                        <form action="/proposal/accept/${property.id}" method="post">
+                        <form action="/proposal/accept/${proposal.id}" method="post">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
                         </form>
                     </div>
                     <div class="col-6">
-                        <form action="/proposal/decline/${property.id}" method="post">
+                        <form action="/proposal/decline/${proposal.id}" method="post">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>
                     </div>
