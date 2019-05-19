@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
@@ -37,10 +41,42 @@ public class ProposalController {
     public ModelAndView get(@PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("proposal");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(id);
         Property property = propertyService.get(proposal.getPropertyId());
+        if (proposal.getCreatorId() != u.getId() && !proposal.getUsers().contains(u) && property.getOwnerId() != u.getId())
+            return new ModelAndView("404");
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
+        mav.addObject("currentUser", u);
         return mav;
+    }
+
+    @RequestMapping(value = "/delete/{proposalId}", method = RequestMethod.POST )
+    public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Proposal proposal = proposalService.getById(proposalId);
+        if (proposal.getCreatorId() != u.getId())
+            return new ModelAndView("404");
+        proposalService.delete(proposalId);
+        return new ModelAndView("successfulDelete");
+    }
+
+    @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
+    public ModelAndView accept(@PathVariable(value = "proposalId") int proposalId,
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+        return new ModelAndView("successfulDelete");
+    }
+
+    @RequestMapping(value = "/decline/{proposalId}", method = RequestMethod.POST )
+    public ModelAndView decline(@PathVariable(value = "proposalId") int proposalId,
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+        return new ModelAndView("successfulDelete");
     }
 }

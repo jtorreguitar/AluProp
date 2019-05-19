@@ -10,6 +10,7 @@ import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +41,11 @@ public class APProposalService implements ProposalService {
         return Either.valueFrom(proposalDao.create(proposal));
     }
 
+    @Override
+    public long delete(long id) {
+        return 1;
+    }
+
     private void checkRelatedEntitiesExist(Proposal proposal) {
         checkPropertyExists(proposal.getPropertyId());
         checkCreatorExists(proposal.getCreatorId());
@@ -58,5 +64,10 @@ public class APProposalService implements ProposalService {
     @Override
     public Proposal getById(long id) {
         return proposalDao.getById(id);
+    }
+
+    @Override
+    public Collection<Proposal> getAllProposalForUserId(long id){
+        return proposalDao.getAllProposalForUserId(id);
     }
 }

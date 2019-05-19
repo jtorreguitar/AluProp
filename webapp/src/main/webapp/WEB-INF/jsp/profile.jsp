@@ -22,9 +22,9 @@
 
         <h1 class="display-4">${user.name} ${user.lastName}</h1>
         <div>
-            <h5 class="text-muted"><img src="/resources/images/studies.svg" class="studies" alt="English">${user.university.name}</h5>
+            <h5 class="text-muted"><img src="<c:url value="/resources/images/studies.svg"/>" class="studies" alt="English">${user.university.name}</h5>
         </div>
-        <h6 class="text-muted"><img src="/resources/images/birthday-date.svg" class="birthday-date" alt="English">${user.birthDate.toString()}</h6>
+        <h6 class="text-muted"><img src="<c:url value="/resources/images/birthday-date.svg"/>" class="birthday-date" alt="English">${user.birthDate.toString()}</h6>
         <div>
         <br>
         </div>
@@ -60,10 +60,16 @@
                             <spring:message code="label.profile.proposals"/>
                         </div>
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Lel this is a proposal</span></div><div class="proposal-badge"><span class="badge badge-secondary">Pending</span></div></a>
-                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">This house is really cool</span></div><div class="proposal-badge"><span class="badge badge-success">Sent</span></div></a>
-                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Loft as cool as the office</span></div><div class="proposal-badge"><span class="badge badge-secondary">Pending</span></div></a>
-                            <a href="#" class="list-group-item list-group-item-action proposal-list"><div><span class="title">Dopest property ever</span></div><div class="proposal-badge"><span class="badge badge-success">Sent</span></div></a>
+                            <c:choose>
+                                <c:when test="${not empty proposals}">
+                                    <c:forEach var="proposal" items="${proposals}" varStatus="i">
+                                        <a href="/proposal/${proposal.id}" class="list-group-item list-group-item-action">${proposalNames[i.index]}</a>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <h1><spring:message code="label.profile.noInterests" /></h1>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>

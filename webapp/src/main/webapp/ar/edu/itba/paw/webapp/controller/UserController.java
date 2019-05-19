@@ -2,11 +2,9 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
-import ar.edu.itba.paw.interfaces.service.CareerService;
-import ar.edu.itba.paw.interfaces.service.PropertyService;
-import ar.edu.itba.paw.interfaces.service.UniversityService;
-import ar.edu.itba.paw.interfaces.service.UserService;
+import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
@@ -27,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -43,6 +42,8 @@ public class UserController {
     private CareerService careerService;
     @Autowired
     private PropertyService propertyService;
+    @Autowired
+    private ProposalService proposalService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -117,8 +118,12 @@ public class UserController {
         User u = userService.getUserWithRelatedEntitiesByEmail(email);
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
+        mav.addObject("proposals", proposals);
+        mav.addObject("proposalNames", generatePropertyNames(proposals));
+
         return mav;
     }
 
@@ -157,5 +162,13 @@ public class UserController {
         message.setSubject(title);
         message.setText(body);
         emailSender.send(message);
+    }
+
+
+    private List<String> generatePropertyNames(List<Proposal> list){
+        List<String> result = new ArrayList<>();
+        for (Proposal prop: list)
+            result.add(propertyService.get(prop.getPropertyId()).getDescription());
+        return result;
     }
 }

@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.dao.ImageDao;
-import ar.edu.itba.paw.interfaces.dao.ProposalDao;
-import ar.edu.itba.paw.interfaces.dao.UserDao;
-import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
+import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
@@ -37,6 +34,9 @@ public class APProposalDao implements ProposalDao {
     private UserDao userDao;
 
     @Autowired
+    private PropertyDao propertyDao;
+
+    @Autowired
     public APProposalDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
@@ -65,11 +65,6 @@ public class APProposalDao implements ProposalDao {
         proposal.getUsers().forEach(user -> userProposalDao.create(user.getId(), proposal.getId()));
     }
 
-//    private List<User> getInvitedUsers(Proposal proposal){
-//
-//
-//    }
-
     @Override
     public Proposal getById(long id) {
         List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals  WHERE proposals.id=? ", ROW_MAPPER, id);
@@ -84,6 +79,16 @@ public class APProposalDao implements ProposalDao {
             }
             return list.get(0);
         }
+        return null;
+    }
+
+    @Override
+    public Collection<Proposal> getAllProposalForUserId(long id){
+        RowMapper<Proposal> mapper = (rs, rowNum) -> new Proposal.Builder()
+                        .withCreatorId(rs.getLong("creatorid")).withPropertyId(rs.getLong("propertyid")).withId(rs.getLong("id")).build();
+        List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals WHERE creatorid=? ", mapper, id);
+        if (list.size() > 0)
+            return list;
         return null;
     }
 
