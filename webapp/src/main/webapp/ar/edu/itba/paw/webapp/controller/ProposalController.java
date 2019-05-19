@@ -10,6 +10,8 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -22,11 +24,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
+    private final static String DELETE_SUBJECT= "Someone has declined the offer";
+    private final static String DELETE_BODY = "Unfortunately, since someone has declined the proposal, this proposal has been deleted";
 
     @Autowired
     ProposalService proposalService;
@@ -36,6 +41,9 @@ public class ProposalController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    public JavaMailSender emailSender;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id) {
@@ -67,6 +75,10 @@ public class ProposalController {
         if (proposal.getCreatorId() != u.getId())
             return new ModelAndView("404");
         proposalService.delete(proposalId);
+
+        Collection<User> retrieveUsers = proposal.getUsers();
+
+        sendEmail(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
         return new ModelAndView("successfulDelete");
     }
 
@@ -103,5 +115,18 @@ public class ProposalController {
             if (invitedUser.getId() == user.getId())
                 return true;
         return false;
+    }
+
+    private void sendEmail(String title, String body, Collection<User> users) {
+        String[] to = new String[users.size()];
+        int index=0;
+        for(User u : users){
+            to[index++] = u.getEmail();
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(title);
+        message.setText(body);
+        emailSender.send(message);
     }
 }
