@@ -29,10 +29,10 @@
             <spring:message code="label.english" var="language_en"/>
             <spring:message code="label.spanish" var="language_es"/>
             <li>
-                <a href="?lang=en"> <img src="<c:url value="resources/images/uk.svg"/>" class="flag" alt="${language_en}"> </a>
+                <a href="?lang=en"> <img src="<c:url value="/resources/images/uk.svg"/>" class="flag" alt="${language_en}"> </a>
             </li>
             <li>
-                <a href="?lang=es"> <img src="<c:url value="resources/images/spain.svg"/>" class="flag" alt="${language_es}"> </a>
+                <a href="?lang=es"> <img src="<c:url value="/resources/images/spain.svg"/>" class="flag" alt="${language_es}"> </a>
             </li>
         </ul>
 
