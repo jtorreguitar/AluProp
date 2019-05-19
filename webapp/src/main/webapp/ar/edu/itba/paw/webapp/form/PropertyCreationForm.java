@@ -7,10 +7,10 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Size;
 
 public class PropertyCreationForm {
-    @Size(min=1, max=100)
+    @Size(min=1, max=700)
     private String caption;
 
-    @Size(min=1, max=2000)
+    @Size(min=1, max=50)
     private String description;
 
     @Range(min=0)

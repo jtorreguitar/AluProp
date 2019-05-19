@@ -37,7 +37,7 @@
                             <form:input path="email" type="email" class="form-control" placeholder=""></form:input>
                             <form:errors path="email" cssClass="formError" element="p"/>
                             <c:if test="${uniqueEmail == false}">
-                                <span class="formError">There's already an account with that email</span>
+                                <span class="formError"><spring:message code="errors.duplicate_email"/></span>
                             </c:if>
                           </div>
                           <div class="form-group">
@@ -48,7 +48,7 @@
                           <form:label path="repeatPassword"><spring:message code="signup.re_password"/> </form:label>
                           <form:input path="repeatPassword" class="form-control" type="password"></form:input>
                           <c:if test="${passwordMatch == false}">
-                                  <span class="formError">Please make sure that the passwords match.</span>
+                                  <span class="formError"><spring:message code="errors.password_mismatch"/></span>
                           </c:if>
                           <form:errors path="repeatPassword" cssClass="formError" element="p"/>
                           </div>
