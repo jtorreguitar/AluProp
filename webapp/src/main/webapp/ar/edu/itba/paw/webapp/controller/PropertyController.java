@@ -195,12 +195,15 @@ public class PropertyController {
         String userEmail = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         long userId = userService.getByEmail(userEmail).getId();
 
-        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(new Proposal.Builder()
+        Proposal proposal = new Proposal.Builder()
                 .withCreatorId(userId)
                 .withPropertyId(propertyId)
                 .withUsers(getUsersByIds(form.getInvitedUsersIds()))
-                .build());
-
+                .withInvitedUserStates(new ArrayList<>())
+                .build();
+        for (Long id: form.getInvitedUsersIds())
+            proposal.getInvitedUserStates().add(0);
+        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal);
         if(proposalOrErrors.hasValue()){
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {

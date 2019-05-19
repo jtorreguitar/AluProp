@@ -2,11 +2,13 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.ImageDao;
 import ar.edu.itba.paw.interfaces.dao.ProposalDao;
+import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
 import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,9 +16,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class APProposalDao implements ProposalDao {
@@ -32,6 +32,9 @@ public class APProposalDao implements ProposalDao {
 
     @Autowired
     private UserProposalDao userProposalDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     public APProposalDao(DataSource ds) {
@@ -62,11 +65,25 @@ public class APProposalDao implements ProposalDao {
         proposal.getUsers().forEach(user -> userProposalDao.create(user.getId(), proposal.getId()));
     }
 
+//    private List<User> getInvitedUsers(Proposal proposal){
+//
+//
+//    }
+
     @Override
     public Proposal getById(long id) {
-        List<Proposal> list = jdbcTemplate.query("SELECT * FROM properties WHERE id = ?", ROW_MAPPER, id);
-        if(!list.isEmpty())
+        List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals  WHERE proposals.id=? ", ROW_MAPPER, id);
+        if(!list.isEmpty()){
+            RowMapper<Pair<Long, Integer>> mapper = (rs, rowNum) -> new Pair<>(rs.getLong("userid"), rs.getInt("state"));
+            List<Pair<Long, Integer>> invitedList = jdbcTemplate.query("SELECT * FROM userProposals  WHERE proposalid=? ", mapper, list.get(0).getId());
+            list.get(0).setUsers(new ArrayList<>());
+            list.get(0).setInvitedUserStates(new ArrayList<>());
+            for (Pair<Long, Integer> pair: invitedList){
+                list.get(0).getUsers().add(userDao.get(pair.getKey()));
+                list.get(0).getInvitedUserStates().add(pair.getValue());
+            }
             return list.get(0);
+        }
         return null;
     }
 

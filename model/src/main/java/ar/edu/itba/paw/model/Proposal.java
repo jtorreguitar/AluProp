@@ -8,6 +8,7 @@ public class Proposal {
     private long propertyId;
     private long creatorId;
     private Collection<User> users;
+    private Collection<Integer> invitedUserStates;
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
@@ -21,6 +22,14 @@ public class Proposal {
     public Collection<User> getUsers() { return users; }
     public void setUsers(Collection<User> users) { this.users = users; }
 
+    public Collection<Integer> getInvitedUserStates() {
+        return invitedUserStates;
+    }
+
+    public void setInvitedUserStates(Collection<Integer> invitedUserStates) {
+        this.invitedUserStates = invitedUserStates;
+    }
+
     public static class Builder {
         private Proposal proposal;
 
@@ -33,6 +42,8 @@ public class Proposal {
         public Builder withCreatorId(long creatorId){proposal.creatorId = creatorId;return this;}
 
         public Builder withUsers(Collection<User> users){proposal.users = users;return this;}
+
+        public Builder withInvitedUserStates(Collection<Integer> userStates){proposal.invitedUserStates = userStates;return this;}
 
         public Builder fromProposal(Proposal proposal){
             this.proposal.id = proposal.id;

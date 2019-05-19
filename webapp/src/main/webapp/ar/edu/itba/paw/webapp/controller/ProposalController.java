@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.interfaces.service.UserService;
+import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
@@ -26,12 +28,19 @@ public class ProposalController {
     ProposalService proposalService;
 
     @Autowired
+    PropertyService propertyService;
+
+    @Autowired
     UserService userService;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("proposal");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Proposal proposal = proposalService.getById(id);
+        Property property = propertyService.get(proposal.getPropertyId());
+        mav.addObject("property", property);
+        mav.addObject("proposal", proposal);
         return mav;
     }
 }

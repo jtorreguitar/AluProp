@@ -57,6 +57,6 @@ public class APProposalService implements ProposalService {
 
     @Override
     public Proposal getById(long id) {
-        return null;
+        return proposalDao.getById(id);
     }
 }
