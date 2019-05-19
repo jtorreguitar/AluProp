@@ -74,16 +74,19 @@
                 <spring:message code="user.not_interested" var="not_interested"/>
 
                 <c:choose>
-                    <c:when test="${userInterested == true}">
+                    <c:when test="${userRole == '[ROLE_HOST]'}">
+                    </c:when>
+                    <c:when test="${!(userRole == '[ROLE_HOST]') && userInterested == true}">
                         <form action="/${property.id}/deInterest/" method="POST">
                             <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn stretched-link"/>
                         </form><br/>
                     </c:when>
-                    <c:otherwise>
+                    <c:when test="${userRole == '[ROLE_HOST]'}">
                         <form action="/${property.id}/interest/" method="POST">
                             <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
                         </form><br/>
-                    </c:otherwise>
+                    </c:when>
+                    <c:otherwise></c:otherwise>
                 </c:choose><br/>
                 <c:if test="${param.noLogin == true}">
                     <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
