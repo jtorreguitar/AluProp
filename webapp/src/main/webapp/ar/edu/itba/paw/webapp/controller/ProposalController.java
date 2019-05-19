@@ -46,8 +46,10 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(id);
         Property property = propertyService.get(proposal.getPropertyId());
-        if (proposal.getCreatorId() != u.getId() && !proposal.getUsers().contains(u) && property.getOwnerId() != u.getId())
+        if (proposal.getCreatorId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
             return new ModelAndView("404");
+        if (userIsInvitedToProposal(u, proposal));
+            mav.addObject("isInvited", true);
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
         mav.addObject("currentUser", u);
@@ -71,12 +73,35 @@ public class ProposalController {
     @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
     public ModelAndView accept(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-        return new ModelAndView("successfulDelete");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Proposal proposal = proposalService.getById(proposalId);
+        if (!userIsInvitedToProposal(u, proposal))
+            return new ModelAndView("404");
+        long affectedRows = proposalService.setAccept(u.getId(), proposalId);
+        return new ModelAndView("redirect:/proposal/" + proposalId);
     }
 
     @RequestMapping(value = "/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView decline(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-        return new ModelAndView("successfulDelete");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Proposal proposal = proposalService.getById(proposalId);
+        if (!userIsInvitedToProposal(u, proposal))
+            return new ModelAndView("404");
+        long affectedRows = proposalService.setDecline(u.getId(), proposalId);
+        return new ModelAndView("redirect:/proposal/" + proposalId);
+    }
+
+    private boolean userIsInvitedToProposal(User user, Proposal proposal){
+        for (User invitedUser: proposal.getUsers())
+            if (invitedUser.getId() == user.getId())
+                return true;
+        return false;
     }
 }

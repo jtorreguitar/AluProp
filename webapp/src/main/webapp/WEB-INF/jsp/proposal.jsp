@@ -80,7 +80,7 @@
                         <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
                     </form>
                 </c:when>
-                <c:when test="${proposal.invitedUserStates.contains(currentUser.id)}">
+                <c:when test="${isInvited == true}">
                     <div class="col-6">
                         <form action="/proposal/accept/${proposal.id}" method="post">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>

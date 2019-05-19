@@ -70,4 +70,14 @@ public class APProposalService implements ProposalService {
     public Collection<Proposal> getAllProposalForUserId(long id){
         return proposalDao.getAllProposalForUserId(id);
     }
+
+    @Override
+    public long setAccept(long userId, long proposalId) {
+        return proposalDao.setAccept(userId, proposalId);
+    }
+
+    @Override
+    public long setDecline(long userId, long proposalId) {
+        return proposalDao.setDecline(userId, proposalId);
+    }
 }

@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 public interface UserDao {
     Collection<User> getAll();
     User get(long id);
+
+    User getWithRelatedEntities(long id);
+
     User getByEmail(String email);
     User getUserWithRelatedEntitiesByEmail(String email);
     User create(User user);

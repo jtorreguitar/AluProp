@@ -79,7 +79,7 @@ public class APProposalDao implements ProposalDao {
             list.get(0).setUsers(new ArrayList<>());
             list.get(0).setInvitedUserStates(new ArrayList<>());
             for (Pair<Long, Integer> pair: invitedList){
-                list.get(0).getUsers().add(userDao.get(pair.getKey()));
+                list.get(0).getUsers().add(userDao.getWithRelatedEntities(pair.getKey()));
                 list.get(0).getInvitedUserStates().add(pair.getValue());
             }
             return list.get(0);
@@ -97,5 +97,13 @@ public class APProposalDao implements ProposalDao {
         return null;
     }
 
+    @Override
+    public long setAccept(long userId, long proposalId) {
+        return jdbcTemplate.update("UPDATE userProposals SET state=1 WHERE proposalid=? AND userid=?", proposalId, userId);
+    }
 
+    @Override
+    public long setDecline(long userId, long proposalId) {
+        return jdbcTemplate.update("UPDATE userProposals SET state=2 WHERE proposalid=? AND userid=?", proposalId, userId);
+    }
 }

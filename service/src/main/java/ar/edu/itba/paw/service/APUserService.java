@@ -36,6 +36,11 @@ public class APUserService implements UserService {
     }
 
     @Override
+    public User getWithRelatedEntities(long id) {
+        return userDao.getWithRelatedEntities(id);
+    }
+
+    @Override
     public User getByEmail(String username) {
         return userDao.getByEmail(username);
     }

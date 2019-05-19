@@ -10,4 +10,8 @@ public interface ProposalDao {
     Proposal getById(long id);
 
     Collection<Proposal> getAllProposalForUserId(long id);
+
+    long setAccept(long userId, long proposalId);
+
+    long setDecline(long userId, long proposalId);
 }

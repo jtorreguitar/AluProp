@@ -68,6 +68,17 @@ public class APUserDao implements UserDao {
     }
 
     @Override
+    public User getWithRelatedEntities(long id){
+        User incompleteUser = get(id);
+        return new User.Builder()
+                .fromUser(incompleteUser)
+                .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
+                .withCareer(careerDao.get(incompleteUser.getCareerId()))
+                .build();
+    }
+
+
+    @Override
     public User getByEmail(String email) {
         final List<User> list = jdbcTemplate
                 .query("SELECT * FROM users WHERE email = ?", ROW_MAPPER, email);
