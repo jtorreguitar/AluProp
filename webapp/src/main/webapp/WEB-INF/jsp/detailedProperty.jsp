@@ -41,7 +41,8 @@
                 <div class="carousel-inner">
                     <c:forEach var="image" items="${property.images}">
                         <div class="carousel-item active">
-                            <img src="http://${pageContext.request.localName}:${pageContext.request.serverPort}/images/${image.id}" class="d-block w-100 carousel-image">
+                            <c:url value="/images/" var="imageUrl"/>
+                            <img src="${imageUrl}/${image.id}" class="d-block w-100 carousel-image">
                         </div>
                     </c:forEach>
                 </div>
