@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/")
 public class PropertyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
@@ -58,7 +57,7 @@ public class PropertyController {
     @Autowired
     public JavaMailSender emailSender;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @RequestParam(required = false, defaultValue = "9") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
@@ -73,7 +72,7 @@ public class PropertyController {
         return mav;
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form, @PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -89,7 +88,7 @@ public class PropertyController {
         return mav;
     }
 
-    @RequestMapping(value = "{id}/interest/", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/interest/", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId) {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         if (user != null){
@@ -100,14 +99,14 @@ public class PropertyController {
 
     }
 
-    @RequestMapping(value = "{id}/deInterest", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/deInterest", method = RequestMethod.POST)
     public ModelAndView deInterest(@PathVariable(value = "id") int propertyId) {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         final int code = propertyService.undoInterestOrReturnErrors(propertyId, user);
         return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
     }
 
-    @RequestMapping(value = "host/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/host/create", method = RequestMethod.GET)
     public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form) {
         return ModelAndViewWithPropertyCreationAttributes();
     }

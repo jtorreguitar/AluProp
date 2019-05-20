@@ -25,8 +25,9 @@
       <div class="row justify-content-center">
           <div class="col-md-6">
               <div class="card">
+                  <c:url value="/user/logIn" var="loginUrl" />
                   <header class="card-header">
-                      <a href="/user/logIn" class="float-right btn btn-outline-primary mt-1"><spring:message code="label.login"/></a>
+                      <a href="${loginUrl}" class="float-right btn btn-outline-primary mt-1"><spring:message code="label.login"/></a>
                       <h4 class="card-title mt-2"><spring:message code="label.signup"/></h4>
                   </header>
                   <article class="card-body">

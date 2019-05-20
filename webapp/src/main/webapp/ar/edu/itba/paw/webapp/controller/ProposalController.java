@@ -56,7 +56,7 @@ public class ProposalController {
     @Autowired
     public JavaMailSender emailSender;
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id) {
         final ModelAndView mav = new ModelAndView("proposal");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
