@@ -1,26 +1,40 @@
 package ar.edu.itba.paw.model;
 
-public class Pair {
-    private int id;
-    private String name;
-    public Pair(int id, String name) {
-        this.name = name;
-        this.id = id;
+public class Pair<K,V>{
+    private K key;
+
+    public K getKey() { return key; }
+
+    private V value;
+
+    public V getValue() { return value; }
+
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return key + "=" + value;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public int hashCode() {
+        return key.hashCode() * 13 + (value == null ? 0 : value.hashCode());
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o instanceof Pair) {
+            Pair pair = (Pair) o;
+            if (key != null ? !key.equals(pair.key) : pair.key != null) return false;
+            if (value != null ? !value.equals(pair.value) : pair.value != null) return false;
+            return true;
+        }
+        return false;
     }
 }
+
+

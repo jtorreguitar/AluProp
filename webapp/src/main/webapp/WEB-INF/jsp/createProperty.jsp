@@ -29,7 +29,6 @@
                 </header>
                 <article class="card-body">
                     <c:url value="/host/create" var="postPath"/>
-                    <c:url value="${postPath}" var="postPath"/>
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
                         <label><spring:message code="forms.image_upload_instructions"/></label>
                         <c:choose>

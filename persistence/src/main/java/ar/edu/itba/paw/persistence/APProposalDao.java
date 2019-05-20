@@ -1,11 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.*;
-import ar.edu.itba.paw.model.Interest;
-import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.model.Proposal;
-import ar.edu.itba.paw.model.User;
-import javafx.util.Pair;
+import ar.edu.itba.paw.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

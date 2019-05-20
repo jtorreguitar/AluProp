@@ -16,7 +16,6 @@ import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
-import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +107,7 @@ public class PropertyController {
         return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
     }
 
-    @RequestMapping(value = "/host/create", method = RequestMethod.GET)
+    @RequestMapping(value = "host/create", method = RequestMethod.GET)
     public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form) {
         return ModelAndViewWithPropertyCreationAttributes();
     }
@@ -126,9 +125,9 @@ public class PropertyController {
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
 
-        mav.addObject("propertyTypes", new Pair[]{new Pair(0, "forms.house"),new Pair(1, "forms.apartment"),new Pair(2, "forms.loft")});
+        mav.addObject("propertyTypes", new IdNamePair[]{new IdNamePair(0, "forms.house"),new IdNamePair(1, "forms.apartment"),new IdNamePair(2, "forms.loft")});
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("privacyLevels", new Pair[]{new Pair(0, "forms.privacy.individual"),new Pair(1, "forms.privacy.shared")});
+        mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         return mav;
     }
 
