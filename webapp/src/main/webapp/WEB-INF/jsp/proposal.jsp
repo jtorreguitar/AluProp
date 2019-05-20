@@ -8,7 +8,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
-        <title><spring:message code="label.property"/></title>
+        <title><spring:message code="label.proposal.proposal"/></title>
 
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
@@ -38,40 +38,29 @@
         <c:choose>
             <c:when test="${not empty proposal.users}">
                 <c:forEach var="user" items="${proposal.users}" varStatus="i">
-                    <li class="list-group-item"><div style="display: flex;justify-content: space-between">${user.name}<span>
-                        <c:choose>
-                            <%--//TODO: FIX THE ICONS GODDAMMIT--%>
-                            <c:when test="${proposal.invitedUserStates[i.index] == 0 }">
-                                <img src="<c:url value="/resources/images/clock.png"/>"class="flag" alt="${language_en}">
-                            </c:when>
-                            <c:when test=" ${proposal.invitedUserStates[i.index] == 1}">
-                                <img src="<c:url value="/resources/images/tick.png"/>" class="flag" alt="${language_en}">
-                            </c:when>
-                            <c:otherwise>
-                                ${proposal.invitedUserStates[i.index]}
-                                <img src="<c:url value="/resources/images/cross.png"/>" class="flag" alt="${language_en}">
-                            </c:otherwise>
-                        </c:choose>
-                    </span></div></li>
+                    <li class="list-group-item">
+                        <div style="display: flex;justify-content: space-between">${user.name}
+                            <span>
+                                <c:choose>
+                                    <c:when test="${proposal.invitedUserStates[i.index] == 0 }">
+                                        <img src="<c:url value="/resources/images/clock.png"/>" class="flag" alt="${language_en}">
+                                    </c:when>
+                                    <c:when test="${proposal.invitedUserStates[i.index] == 1}">
+                                        <img src="<c:url value="/resources/images/check.png"/>" class="flag" alt="${language_en}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="<c:url value="/resources/images/cross.png"/>" class="flag" alt="${language_en}">
+                                    </c:otherwise>
+                                </c:choose>
+                            </span>
+                        </div></li>
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>
+                <li class="list-group-item"><spring:message code="proposal.no_users_in_proposal"/></li>
             </c:otherwise>
         </c:choose>
     </ul>
-    <c:choose>
-        <c:when test="${proposal.invitedUserStates[0] == 0 }">
-            <img src="<c:url value="/resources/images/clock.png"/>" class="flag" alt="${language_en}">
-        </c:when>
-        <c:when test=" ${proposal.invitedUserStates[0] == 1}">
-            <img src="<c:url value="/resources/images/tick.png"/>" class="flag" alt="${language_en}">
-        </c:when>
-        <c:otherwise>
-            ${proposal.invitedUserStates[0]}
-            <img src="<c:url value="/resources/images/cross.png"/>" class="flag" alt="${language_en}">
-        </c:otherwise>
-    </c:choose>
     <div class="card-body" id="answer">
         <div class="row">
             <c:choose>
@@ -80,7 +69,7 @@
                         <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
                     </form>
                 </c:when>
-                <c:when test="${isInvited == true}">
+                <c:when test="${isInvited == true && !hasReplied}">
                     <div class="col-6">
                         <form action="/proposal/accept/${proposal.id}" method="post">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
@@ -91,6 +80,9 @@
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>
                     </div>
+                </c:when>
+                <c:when test="${isInvited == true && hasReplied}">
+                    <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
                     This is your property lol

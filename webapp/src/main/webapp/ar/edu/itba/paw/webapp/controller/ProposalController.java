@@ -30,8 +30,11 @@ import java.util.List;
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
-    private final static String DELETE_SUBJECT= "Someone has declined the offer";
-    private final static String DELETE_BODY = "Unfortunately, since someone has declined the proposal, this proposal has been deleted";
+    private final static String DELETE_SUBJECT= "AluProp - A proposal has been dropped.";
+    private final static String DELETE_BODY = "Unfortunately, the creator of the proposal has dropped it, and it has been deleted.";
+
+    private final static String DECLINE_SUBJECT= "AluProp - A proposal has been dropped.";
+    private final static String DECLINE_BODY = "Unfortunately, since someone has declined the proposal, the proposal has been dropped";
 
     @Autowired
     ProposalService proposalService;
@@ -53,11 +56,15 @@ public class ProposalController {
             return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(id);
+        if (proposal == null)
+            return new ModelAndView("404");
         Property property = propertyService.get(proposal.getPropertyId());
         if (proposal.getCreatorId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
             return new ModelAndView("404");
-        if (userIsInvitedToProposal(u, proposal));
+        if (userIsInvitedToProposal(u, proposal)){
             mav.addObject("isInvited", true);
+            mav.addObject("hasReplied", userHasRepliedToProposal(u, proposal));
+        }
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
         mav.addObject("currentUser", u);
@@ -104,9 +111,16 @@ public class ProposalController {
             return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
-        if (!userIsInvitedToProposal(u, proposal))
+        if (proposal == null || !userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404");
+        User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
+        proposal.getUsers().add(creator);
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
+        if (affectedRows > 0){
+            proposalService.delete(proposalId);
+            sendEmail(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
+        }
+
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
 
@@ -115,6 +129,17 @@ public class ProposalController {
             if (invitedUser.getId() == user.getId())
                 return true;
         return false;
+    }
+
+    private boolean userHasRepliedToProposal(User user, Proposal proposal){
+        int userIndex = 0;
+        for (int i = 0; i< proposal.getUsers().size(); i++){
+            if (proposal.getUsers().get(i).getId() == user.getId()){
+                userIndex = i;
+                break;
+            }
+        }
+        return proposal.getInvitedUserStates().get(userIndex) != 0;
     }
 
     private void sendEmail(String title, String body, Collection<User> users) {

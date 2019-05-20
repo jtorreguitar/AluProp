@@ -62,12 +62,14 @@
                         <div class="list-group">
                             <c:choose>
                                 <c:when test="${not empty proposals}">
-                                    <c:forEach var="proposal" items="${proposals}" varStatus="i">
-                                        <a href="/proposal/${proposal.id}" class="list-group-item list-group-item-action">${proposalNames[i.index]}</a>
-                                    </c:forEach>
+                                    <div class="card-body">
+                                        <c:forEach var="proposal" items="${proposals}" varStatus="i">
+                                            <a href="/proposal/${proposal.id}" class="list-group-item list-group-item-action">${proposalPropertyNames[i.index]}</a>
+                                        </c:forEach>
+                                    </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <h1><spring:message code="label.profile.noInterests" /></h1>
+                                    <div class="card-body"><spring:message code="label.profile.no_proposals" /></div>
                                 </c:otherwise>
                             </c:choose>
                         </div>

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import java.net.URI;
 import java.util.*;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -51,6 +55,9 @@ public class PropertyController {
 
     @Autowired
     private ProposalService proposalService;
+
+    @Autowired
+    public JavaMailSender emailSender;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
@@ -186,8 +193,8 @@ public class PropertyController {
                     .addObject("interests", propertyService.getInterestsOfUser(userId));
     }
 
-    @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST )
-    public ModelAndView create(@PathVariable(value = "propertyId") int propertyId, @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+    @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
+    public ModelAndView create(HttpServletRequest request, @PathVariable(value = "propertyId") int propertyId, @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
         Property prop = propertyService.get(propertyId);
         if (form.getInvitedUsersIds().length  < 1 || form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, propertyId).addObject("maxPeople", prop.getCapacity()-1);
@@ -205,6 +212,7 @@ public class PropertyController {
             proposal.getInvitedUserStates().add(0);
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal);
         if(proposalOrErrors.hasValue()){
+            sendEmail("AluProp - You have been invited to a proposal!", "You can reply to the proposal using the following link: \n" + generateProposalUrl(proposalOrErrors.value(), request), proposalOrErrors.value().getUsers());
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {
             ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
@@ -213,12 +221,31 @@ public class PropertyController {
         }
     }
 
-    private Collection<User> getUsersByIds(long[] ids){
-        Collection<User> list = new LinkedList<>();
+    private List<User> getUsersByIds(long[] ids){
+        List<User> list = new LinkedList<>();
         if (ids != null && ids.length > 0)
             for (long i = 0; i < ids.length; i++){
                 list.add(userService.get(ids[(int)i]));
             }
         return list;
+    }
+
+    private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
+        URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
+
+        return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
+    }
+
+    private void sendEmail(String title, String body, Collection<User> users) {
+        String[] to = new String[users.size()];
+        int index=0;
+        for(User u : users){
+            to[index++] = u.getEmail();
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(title);
+        message.setText(body);
+        emailSender.send(message);
     }
 }

@@ -122,7 +122,8 @@ public class UserController {
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
         mav.addObject("proposals", proposals);
-        mav.addObject("proposalNames", generatePropertyNames(proposals));
+        if (proposals != null)
+            mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
 
         return mav;
     }
