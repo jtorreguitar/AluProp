@@ -31,6 +31,13 @@ public class Proposal {
         this.invitedUserStates = invitedUserStates;
     }
 
+    public boolean isCompletelyAccepted(){
+        for (Integer state: invitedUserStates)
+            if (state != 1)
+                return false;
+        return true;
+    }
+
     public static class Builder {
         private Proposal proposal;
 

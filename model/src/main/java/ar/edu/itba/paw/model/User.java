@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.utilities.ArgumentUtility;
 import java.util.Date;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class User {
     private long id;
@@ -87,6 +88,13 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getFullName(){
+        StringBuilder builder = new StringBuilder(name);
+        builder.append(' ');
+        builder.append(lastName);
+        return builder.toString();
     }
 
     public static class Builder {

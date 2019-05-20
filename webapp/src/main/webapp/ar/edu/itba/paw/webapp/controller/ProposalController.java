@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +37,12 @@ public class ProposalController {
 
     private final static String DECLINE_SUBJECT= "AluProp - A proposal has been dropped.";
     private final static String DECLINE_BODY = "Unfortunately, since someone has declined the proposal, the proposal has been dropped";
+
+    private final static String SENT_SUBJECT= "AluProp - A proposal has been sent.";
+    private final static String SENT_BODY = "Every member in the proposal has accepted, so it has been sent to the property's host.";
+
+    private final static String SENT_HOST_SUBJECT= "AluProp - There's a new proposal for your property!";
+
 
     @Autowired
     ProposalService proposalService;
@@ -90,7 +98,7 @@ public class ProposalController {
     }
 
     @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
-    public ModelAndView accept(@PathVariable(value = "proposalId") int proposalId,
+    public ModelAndView accept(HttpServletRequest request, @PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getName().equals("anonymousUser"))
@@ -100,6 +108,14 @@ public class ProposalController {
         if (!userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404");
         long affectedRows = proposalService.setAccept(u.getId(), proposalId);
+        proposal = proposalService.getById(proposalId);
+        if (proposal.isCompletelyAccepted()){
+            User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
+            proposal.getUsers().add(creator);
+            sendEmail(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
+            Property property = propertyService.getPropertyWithRelatedEntities(proposal.getPropertyId());
+            sendEmail(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
+        }
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
 
@@ -153,5 +169,39 @@ public class ProposalController {
         message.setSubject(title);
         message.setText(body);
         emailSender.send(message);
+    }
+
+    private void sendEmail(String title, String body, User recipient){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipient.getEmail());
+        message.setSubject(title);
+        message.setText(body);
+        emailSender.send(message);
+    }
+
+    private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){
+        Property property = propertyService.get(proposal.getPropertyId());
+        StringBuilder builder = new StringBuilder("Hello ");
+        builder.append(host.getName());
+        builder.append('!');
+        builder.append("The following students are interested in your property ");
+        builder.append(property.getDescription());
+        builder.append(": \n");
+        for (User student: proposal.getUsers()){
+            builder.append('•');
+            builder.append(student.getFullName());
+            builder.append(": ");
+            builder.append(student.getEmail());
+            builder.append('\n');
+        }
+        builder.append("You can now contact them to complete the offer!\n");
+        builder.append("The can be found on the following link: ");
+        builder.append(generateProposalUrl(proposal, request));
+        return  builder.toString();
+    }
+
+    private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
+        URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
+        return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
     }
 }

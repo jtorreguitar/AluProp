@@ -232,7 +232,6 @@ public class PropertyController {
 
     private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
         URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
-
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
     }
 
