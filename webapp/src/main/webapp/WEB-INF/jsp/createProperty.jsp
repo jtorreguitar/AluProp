@@ -28,7 +28,7 @@
                     <h4 class="card-title mt-2"><spring:message code="host.publish_property"/></h4>
                 </header>
                 <article class="card-body">
-                    <c:url value="/host/create" var="postPath"/>
+                    <c:url value="${pageContext.request.contextPath}/host/create" var="postPath"/>
                     <form:form modelAttribute="propertyCreationForm" action="${postPath}" method="post" enctype="multipart/form-data">
                         <label><spring:message code="forms.image_upload_instructions"/></label>
                         <c:choose>
