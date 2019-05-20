@@ -183,7 +183,7 @@ public class ProposalController {
         Property property = propertyService.get(proposal.getPropertyId());
         StringBuilder builder = new StringBuilder("Hello ");
         builder.append(host.getName());
-        builder.append('!');
+        builder.append("! ");
         builder.append("The following students are interested in your property ");
         builder.append(property.getDescription());
         builder.append(": \n");
