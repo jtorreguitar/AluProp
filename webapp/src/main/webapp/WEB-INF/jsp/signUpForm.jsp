@@ -134,7 +134,10 @@
                           <small class="text-muted"><spring:message code="label.terms_of_use" arguments="${signUpButton}"/> </small>
                       </form:form>
                   </article> <!-- card-body end .// -->
-                  <div class="border-top card-body text-center"><spring:message code="label.have_account" arguments="${logInButton}"/> </div>
+                  <div class="border-top card-body text-center">
+                      <spring:message code="label.have_account"/>
+                      <a href="${loginUrl}"><spring:message code="label.login"/></a>
+                  </div>
               </div> <!-- card.// -->
           </div> <!-- col.//-->
 
