@@ -11,7 +11,7 @@ body {
     flex-flow: column wrap;
     min-height: 75rem;
     padding-top: 4.5rem;
-    background-color: #EDF5E1 !important;
+    background-color: #5cc4b94d !important;
     align-items: center;
 }
 
@@ -160,4 +160,21 @@ img {
 
 #page {
     margin: 0.3rem;
+}
+
+#welcome {
+    margin-top: 30%;
+    margin-bottom: 10%;
+}
+
+#home-page {
+    background: url('https://wallpaperaccess.com/full/568265.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+.go-button {
+    border-radius: 7px;
 }
