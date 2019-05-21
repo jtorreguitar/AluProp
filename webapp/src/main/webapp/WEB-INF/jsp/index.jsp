@@ -45,7 +45,14 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <h1><spring:message code="label.properties.noProperties" /></h1>
+                <c:choose>
+                    <c:when test="${isSearch == true}">
+                        <h1><spring:message code="label.search.no_properties" /></h1>
+                    </c:when>
+                    <c:otherwise>
+                        <h1><spring:message code="label.properties.noProperties" /></h1>
+                    </c:otherwise>
+                </c:choose>
             </c:otherwise>
         </c:choose>
     </div>

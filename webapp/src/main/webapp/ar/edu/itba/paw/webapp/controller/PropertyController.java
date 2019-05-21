@@ -249,6 +249,11 @@ public class PropertyController {
 //        }
 //    }
 
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ModelAndView search(@ModelAttribute FilteredSearchForm searchForm){
+        return index(0, searchForm, 9);
+    }
+
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
