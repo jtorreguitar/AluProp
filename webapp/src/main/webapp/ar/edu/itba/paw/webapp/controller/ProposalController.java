@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -54,7 +55,7 @@ public class ProposalController {
     public APJavaMailSender emailSender;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView get(@PathVariable("id") long id) {
+    public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getName().equals("anonymousUser"))
