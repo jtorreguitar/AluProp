@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS userProposals (
     state integer
 );
 
+
 INSERT INTO universities(id, name)
 VALUES(1, 'ITBA')
 ON CONFLICT DO NOTHING;

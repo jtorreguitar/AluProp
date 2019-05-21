@@ -14,6 +14,7 @@ import ar.edu.itba.paw.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ar.edu.itba.paw.interfaces.service.PropertyService;
+import org.springframework.lang.Nullable;
 
 @org.springframework.stereotype.Service
 public class APPropertyService implements PropertyService {
@@ -55,6 +56,33 @@ public class APPropertyService implements PropertyService {
         return new PageResponse<>(pageRequest,
                                 propertyDao.count(),
                                 propertyDao.getAll(pageRequest));
+    }
+
+    @Override
+    public PageResponse<Property> getByDescription(PageRequest pageRequest, String description){
+        if(pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() < 1)
+            pageRequest = new PageRequest(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+
+        return new PageResponse<>(pageRequest,
+                                  propertyDao.count(),
+                                  propertyDao.getPropertyByDescription(pageRequest, description));
+    }
+
+    @Override
+    public PageResponse<Property> advancedSearch(PageRequest pageRequest,
+                                          String description,
+                                          @Nullable Integer propertyType,
+                                          @Nullable int neighborhood,
+                                          @Nullable Integer privacyLevel,
+                                          @Nullable Integer capacity,
+                                          @Nullable float minPrice,
+                                          @Nullable float maxPrice,
+                                          @Nullable long[] rules,
+                                          @Nullable long[] services){
+
+        return new PageResponse<>(pageRequest,
+                                  propertyDao.count(),
+                                  propertyDao.advancedSearch(pageRequest, description, propertyType, neighborhood, privacyLevel, capacity, minPrice, maxPrice, rules, services));
     }
 
     @Override

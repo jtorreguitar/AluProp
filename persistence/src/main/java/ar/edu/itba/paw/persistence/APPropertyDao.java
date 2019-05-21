@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -66,6 +63,7 @@ public class APPropertyDao implements PropertyDao {
 
     @Autowired
     public APPropertyDao(DataSource ds) {
+
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
                         .withTableName("properties")
@@ -85,6 +83,22 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    public Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description){
+
+        if(description.equals("")){
+            //No search needed.
+            return getAll(pageRequest);
+        }
+        String search_like = '%' + description + '%';
+        return jdbcTemplate.query("SELECT * FROM properties WHERE description LIKE ? LIMIT ? OFFSET ?",
+                                                ROW_MAPPER,
+                                                search_like,
+                                                pageRequest.getPageSize(),
+                                                pageRequest.getPageNumber()*pageRequest.getPageSize());
+
+    }
+
+    @Override
     public Collection<Property> getAll(PageRequest pageRequest) {
         return jdbcTemplate.query("SELECT * FROM properties LIMIT ? OFFSET ?",
                             ROW_MAPPER,
@@ -92,6 +106,128 @@ public class APPropertyDao implements PropertyDao {
                             pageRequest.getPageNumber()*pageRequest.getPageSize());
     }
 
+    @Override
+    public Collection<Property> advancedSearch(PageRequest pageRequest, String description, Integer propertyType, Integer neighborhood, Integer privacyLevel, Integer capacity, Float minPrice, Float maxPrice, long[] rules, long[] services) {
+        if ( propertyType == -1 && neighborhood == -1
+                && privacyLevel == -1 && capacity == 0
+                && (minPrice == 0 && maxPrice == 0)
+                && (rules == null || rules.length == 0)
+                && (services == null || services.length== 0)){ //No advanced search needed. Just do plain search.
+            return getPropertyByDescription(pageRequest, description);
+        }
+
+
+        StringBuilder SEARCH_CONDITION = new StringBuilder();
+        boolean shouldAddAnd = false;
+
+        if(description!=null && !description.equals("")){
+            SEARCH_CONDITION.append("description LIKE '%" + description + "%'");
+            shouldAddAnd = true;
+        }
+
+        if(propertyType != -1){
+            if(shouldAddAnd){
+                SEARCH_CONDITION.append(" AND ");
+            }
+
+            String prop;
+
+            switch(propertyType.valueOf(propertyType)){
+                case 0:
+                    prop = "HOUSE";
+                    break;
+                case 1:
+                    prop = "APARTMENT";
+                    break;
+                default:
+                case 2:
+                    prop= "LOFT";
+
+            }
+            SEARCH_CONDITION.append("propertyType= '" + prop + "'");
+            shouldAddAnd = true;
+        }
+
+        if(neighborhood != -1){
+            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
+
+            SEARCH_CONDITION.append("neighbourhoodid=" + neighborhood);
+            shouldAddAnd=true;
+        }
+
+        if(privacyLevel!= null && privacyLevel != -1){
+            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
+            boolean privacyLevelBool;
+            privacyLevelBool = privacyLevel != 0;
+
+            SEARCH_CONDITION.append("privacylevel=" + privacyLevelBool);
+            shouldAddAnd = true;
+        }
+
+        if( capacity != null && capacity != 0){
+            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
+
+            SEARCH_CONDITION.append("capacity=" + capacity);
+            shouldAddAnd=true;
+        }
+
+        if(minPrice != null && maxPrice != null && minPrice != 0 && maxPrice != 0){
+            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
+
+            SEARCH_CONDITION.append("price > " + minPrice + " AND price < " + maxPrice);
+            shouldAddAnd = true;
+        }
+
+        if(rules != null && rules.length != 0){
+            for(Long ruleID : rules){
+                if(shouldAddAnd){
+                    SEARCH_CONDITION.append(" AND ");
+                }
+                SEARCH_CONDITION.append("ruleid=" + ruleID);
+                shouldAddAnd = true;
+            }
+        }
+
+        if(services != null && services.length != 0){
+            for(Long serviceID : services){
+                if(shouldAddAnd){
+                    SEARCH_CONDITION.append(" AND ");
+                }
+                SEARCH_CONDITION.append("serviceid=" + serviceID);
+                shouldAddAnd = true;
+            }
+        }
+        StringBuilder QUERY = new StringBuilder();
+        QUERY.append("SELECT * FROM properties ");
+
+        if (services != null && services.length != 0){
+            QUERY.append("INNER JOIN propertyServices on properties.id=propertyServices.propertyid ");
+        }
+        if(services != null && rules.length != 0){
+            QUERY.append("INNER JOIN propertyRules on properties.id = propertyRules.propertyid ");
+        }
+        QUERY.append("WHERE " + SEARCH_CONDITION + " LIMIT ? OFFSET ?");
+
+
+        System.out.println("FOR SPARTA : " + QUERY);
+
+        List<Property> result= jdbcTemplate.query(QUERY.toString(),
+                ROW_MAPPER,
+                pageRequest.getPageSize(),
+                pageRequest.getPageNumber()*pageRequest.getPageSize());
+
+        HashSet<Long> id_set = new HashSet<>();
+
+        List<Property> result_unique = new LinkedList<>();
+        for( Property prop : result){
+            if(!id_set.contains(prop.getId())){
+                id_set.add(prop.getId());
+                result_unique.add(prop);
+            }
+        }
+
+        return result_unique;
+    }
     @Override
     public boolean showInterest(long propertyId, User user) {
 //        if (interestExists(propertyId, user))
@@ -186,4 +322,6 @@ public class APPropertyDao implements PropertyDao {
         RowMapper<Long> rowMapper = (rs, rowNum) -> rs.getLong("count");
         return jdbcTemplate.query("SELECT COUNT(*) FROM properties", rowMapper).get(0);
     }
+
+
 }

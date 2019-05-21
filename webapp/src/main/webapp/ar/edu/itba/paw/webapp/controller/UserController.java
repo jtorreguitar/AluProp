@@ -12,6 +12,7 @@ import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
+import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,29 +51,41 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     public APJavaMailSender emailSender;
+    @Autowired
+    public NeighbourhoodService neighbourhoodService;
+    @Autowired
+    public RuleService ruleService;
+    @Autowired
+    public ServiceService serviceService;
 
     @RequestMapping("/logIn")
-    public ModelAndView login() {
+    public ModelAndView login(@ModelAttribute FilteredSearchForm searchForm) {
         return new ModelAndView("logInForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
-    public ModelAndView signUp(@ModelAttribute("signUpForm") final SignUpForm form) {
+    public ModelAndView signUp(@ModelAttribute("signUpForm") final SignUpForm form,
+                               @ModelAttribute FilteredSearchForm searchForm) {
         ModelAndView mav = new ModelAndView("signUpForm");
         mav.addObject("universities", universityService.getAll());
         mav.addObject("careers", careerService.getAll());
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
 
         return mav;
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
-    public ModelAndView register(@Valid @ModelAttribute("signUpForm") SignUpForm form, final BindingResult errors) {
+    public ModelAndView register(@Valid @ModelAttribute("signUpForm") SignUpForm form,
+                                 final BindingResult errors,
+                                 @ModelAttribute FilteredSearchForm searchForm) {
         if(errors.hasErrors()){
-            return signUp(form);
+            return signUp(form, searchForm);
         }
         else if (!form.getRepeatPassword().equals(form.getPassword())){
             form.setRepeatPassword("");
-            return signUp(form).addObject("passwordMatch", false);
+            return signUp(form, searchForm).addObject("passwordMatch", false);
         }
 
         try {
@@ -80,7 +93,7 @@ public class UserController {
             if(!maybeUser.hasValue()){
                 form.setEmail("");
                 logger.debug("NOT A UNIQUE EMAIL");
-                return signUp(form).addObject("uniqueEmail", false);
+                return signUp(form, searchForm).addObject("uniqueEmail", false);
             }
             User user = maybeUser.value();
             String title = redactConfirmationTitle(user);
@@ -92,6 +105,7 @@ public class UserController {
         }
         catch(IllegalUserStateException e) {
             return new ModelAndView("404");
+
         }
     }
 
@@ -120,14 +134,19 @@ public class UserController {
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile() {
+    public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         User u = userService.getUserWithRelatedEntitiesByEmail(email);
+        if (u == null)
+            return new ModelAndView("404");
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
         mav.addObject("proposals", proposals);
         if (proposals != null)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
