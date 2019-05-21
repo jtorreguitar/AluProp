@@ -267,6 +267,7 @@ public class PropertyController {
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("isSearch", true);
         return mav;
     }
 

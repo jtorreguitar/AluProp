@@ -25,6 +25,9 @@
     <%@include file="navigationBar.jsp"%>
 
     <!-- ####################### CARDS CONTAINING PROPERTIES  #######################-->
+    <c:if test="${isSearch == true}">
+        <H1><spring:message code="label.search_results"/></H1>
+    </c:if>
     <div class="elem-container">
         <c:choose>
             <c:when test="${not empty properties}">
