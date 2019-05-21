@@ -14,6 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 @Sql("classpath:schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,6 +62,29 @@ public class APPropertyDaoTest {
         Assert.assertNotEquals(0, realRowCount);
         Assert.assertEquals(expectedRowCount, realRowCount);
     }
+//
+//    @Test
+//    public void advancedSearchTest(){
+//        int expectedCount =1;
+//        List<Long> rules = new LinkedList<>();
+//        rules.add(Long.valueOf(1));
+//
+//        List<Long> services = new LinkedList<>();
+//        services.add(Long.valueOf(1));
+//        int realCount = propertyDao.advancedSearch(new PageRequest(0, 0), "",rules, services, null, null).size();
+//
+//        Assert.assertEquals(expectedCount, realCount);
+//
+//    }
+
+
+    /* TODO[IV]
+    @Test
+    public void getPropertyByDescriptionTest(){
+
+    }
+    */
+
 
     @Test
     public void getPropertyWithRelatedEntitiesHasAllRelatedEntitiesTest(){
@@ -73,7 +99,7 @@ public class APPropertyDaoTest {
         Assert.assertNotNull(maybeProperty.getRules());
     }
 
-    /* TODO: Should use a Mock User w/Mockito
+    /* TODO[IV]: Should use a Mock User w/Mockito???
     @Test
     public void showInterestCreatesRelationshipUserPropertyTest(){
         boolean columnsWhereChanged = propertyDao.showInterest(1, 1);
