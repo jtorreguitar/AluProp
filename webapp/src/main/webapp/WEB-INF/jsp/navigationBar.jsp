@@ -18,7 +18,7 @@
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" href="<c:url value="/user/logIn"/>"><spring:message code="label.login" /></a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <li><a class="nav-link mr-1 bold active" href="<c:url value="/user/profile"/>"><spring:message code="user.greeting" arguments="${pageContext.request.userPrincipal.name}"/> </a></li>
+                <li><a class="nav-link mr-1 bold active" href="<c:url value="/user/profile"/>"><spring:message code="user.greeting" arguments="${currentUser.name}"/> </a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><a class="nav-link mr-1" href="<c:url value="/user/logOut"/>"> <spring:message code="user.logout"/> </a></li>

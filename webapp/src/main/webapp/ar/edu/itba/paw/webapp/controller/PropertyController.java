@@ -63,7 +63,9 @@ public class PropertyController {
                               @RequestParam(required = false, defaultValue = "9") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("currentUser", user);
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
         mav.addObject("properties", response.getResponseData());
         mav.addObject("currentPage", response.getPageNumber());
@@ -78,9 +80,12 @@ public class PropertyController {
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        Property prop = propertyService.getPropertyWithRelatedEntities(id);
+        if (prop == null)
+            return new ModelAndView("404");
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("currentUser", user);
-        mav.addObject("property", propertyService.getPropertyWithRelatedEntities(id));
+        mav.addObject("property", prop);
 
         if (user != null){
             mav.addObject("userInterested",userService.getUserIsInterestedInProperty(user.getId(), id));
@@ -121,6 +126,8 @@ public class PropertyController {
     private ModelAndView ModelAndViewWithPropertyCreationAttributes() {
         ModelAndView mav = new ModelAndView("createProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        mav.addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());

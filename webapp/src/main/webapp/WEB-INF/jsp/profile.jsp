@@ -48,7 +48,7 @@
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <h1><spring:message code="label.profile.noInterests" /></h1>
+                                <div class="card-body"><spring:message code="label.profile.noInterests" /></div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
