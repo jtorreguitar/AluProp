@@ -1,13 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.Either;
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,9 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Controller
 @RequestMapping("/proposal")
@@ -54,7 +51,7 @@ public class ProposalController {
     UserService userService;
 
     @Autowired
-    public JavaMailSender emailSender;
+    public APJavaMailSender emailSender;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id) {
@@ -93,7 +90,7 @@ public class ProposalController {
 
         Collection<User> retrieveUsers = proposal.getUsers();
 
-        sendEmail(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
+        emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
         return new ModelAndView("successfulDelete");
     }
 
@@ -112,9 +109,9 @@ public class ProposalController {
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
             proposal.getUsers().add(creator);
-            sendEmail(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
+            emailSender.sendEmailToUsers(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
             Property property = propertyService.getPropertyWithRelatedEntities(proposal.getPropertyId());
-            sendEmail(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
+            emailSender.sendEmailToSingleUser(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
         }
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
@@ -134,7 +131,7 @@ public class ProposalController {
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
         if (affectedRows > 0){
             proposalService.delete(proposalId);
-            sendEmail(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
+            emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
         }
 
         return new ModelAndView("redirect:/proposal/" + proposalId);
@@ -156,27 +153,6 @@ public class ProposalController {
             }
         }
         return proposal.getInvitedUserStates().get(userIndex) != 0;
-    }
-
-    private void sendEmail(String title, String body, Collection<User> users) {
-        String[] to = new String[users.size()];
-        int index=0;
-        for(User u : users){
-            to[index++] = u.getEmail();
-        }
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(title);
-        message.setText(body);
-        emailSender.send(message);
-    }
-
-    private void sendEmail(String title, String body, User recipient){
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(recipient.getEmail());
-        message.setSubject(title);
-        message.setText(body);
-        emailSender.send(message);
     }
 
     private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){

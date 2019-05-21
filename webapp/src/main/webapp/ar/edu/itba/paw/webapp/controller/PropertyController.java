@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
@@ -12,6 +13,7 @@ import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
@@ -19,7 +21,6 @@ import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,7 +56,7 @@ public class PropertyController {
     private ProposalService proposalService;
 
     @Autowired
-    public JavaMailSender emailSender;
+    public APJavaMailSender emailSender;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
@@ -155,27 +156,33 @@ public class PropertyController {
         long[] uploadedFiles = loadImagesToDatabase(files);
         propertyForm.setMainImageId(uploadedFiles[0]);
         propertyForm.setImageIds(uploadedFiles);
-        Either<Property, Collection<String>> propertyOrErrors = propertyService.create(
-                new Property.Builder()
-                    .withCaption(propertyForm.getCaption())
-                    .withDescription(propertyForm.getDescription())
-                    .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
-                    .withPrice(propertyForm.getPrice())
-                    .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
-                    .withPrivacyLevel(propertyForm.getPrivacyLevel() > 0)
-                    .withCapacity(propertyForm.getCapacity())
-                    .withMainImageId(propertyForm.getMainImageId())
-                    .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
-                    .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
-                    .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
-                    .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
-                    .build()
-        );
+        try {
+            Either<Property, Collection<String>> propertyOrErrors = propertyService.create(buildPropertyForCreation(propertyForm));
+            if(propertyOrErrors.hasValue())
+                return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
+            else
+                return create(propertyOrErrors.alternative());
+        }
+        catch(IllegalPropertyStateException e) {
+            return new ModelAndView("404");
+        }
+    }
 
-        if(propertyOrErrors.hasValue())
-            return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
-        else
-            return create(propertyOrErrors.alternative());
+    private Property buildPropertyForCreation(@ModelAttribute @Valid PropertyCreationForm propertyForm) {
+        return new Property.Builder()
+            .withCaption(propertyForm.getCaption())
+            .withDescription(propertyForm.getDescription())
+            .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
+            .withPrice(propertyForm.getPrice())
+            .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
+            .withPrivacyLevel(propertyForm.getPrivacyLevel() > 0)
+            .withCapacity(propertyForm.getCapacity())
+            .withMainImageId(propertyForm.getMainImageId())
+            .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
+            .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
+            .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
+            .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
+            .build();
     }
 
     private <T> Collection<T> generateObjects(long[] objectIds, LongFunction<T> function) {
@@ -210,7 +217,7 @@ public class PropertyController {
             proposal.getInvitedUserStates().add(0);
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal);
         if(proposalOrErrors.hasValue()){
-            sendEmail("AluProp - You have been invited to a proposal!", "You can reply to the proposal using the following link: \n" + generateProposalUrl(proposalOrErrors.value(), request), proposalOrErrors.value().getUsers());
+            emailSender.sendEmailToUsers("AluProp - You have been invited to a proposal!", "You can reply to the proposal using the following link: \n" + generateProposalUrl(proposalOrErrors.value(), request), proposalOrErrors.value().getUsers());
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {
             ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
@@ -231,18 +238,5 @@ public class PropertyController {
     private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
         URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
-    }
-
-    private void sendEmail(String title, String body, Collection<User> users) {
-        String[] to = new String[users.size()];
-        int index=0;
-        for(User u : users){
-            to[index++] = u.getEmail();
-        }
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(title);
-        message.setText(body);
-        emailSender.send(message);
     }
 }

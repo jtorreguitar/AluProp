@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
@@ -8,6 +9,7 @@ import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
+import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.slf4j.Logger;
@@ -47,7 +49,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    public JavaMailSender emailSender;
+    public APJavaMailSender emailSender;
 
     @RequestMapping("/logIn")
     public ModelAndView login() {
@@ -72,20 +74,25 @@ public class UserController {
             form.setRepeatPassword("");
             return signUp(form).addObject("passwordMatch", false);
         }
-        Either<User, List<String>> maybeUser= userService.CreateUser(buildUserFromForm(form));
 
-        if(!maybeUser.hasValue()){
-            form.setEmail("");
-            logger.debug("NOT A UNIQUE EMAIL");
-            return signUp(form).addObject("uniqueEmail", false);
+        try {
+            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form));
+            if(!maybeUser.hasValue()){
+                form.setEmail("");
+                logger.debug("NOT A UNIQUE EMAIL");
+                return signUp(form).addObject("uniqueEmail", false);
+            }
+            User user = maybeUser.value();
+            String title = redactConfirmationTitle(user);
+            String body = redactConfirmationBody();
+            emailSender.sendEmailToSingleUser(title, body, user);
+            logger.debug("Confirmation email sent to: " + user.getEmail());
+
+            return new ModelAndView("redirect:/");
         }
-        User user = maybeUser.value();
-        String title = redactConfirmationTitle(user);
-        String body = redactConfirmationBody();
-        sendEmail(title, body, user.getEmail());
-        logger.debug("Confirmation email sent to: " + user.getEmail());
-
-        return new ModelAndView("redirect:/");
+        catch(IllegalUserStateException e) {
+            return new ModelAndView("404");
+        }
     }
 
     private String redactConfirmationTitle(User user) {
@@ -141,9 +148,7 @@ public class UserController {
     public ModelAndView interestEmail(@PathVariable long propertyId, @RequestParam String email) {
         User currentUser = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Property property = propertyService.get(propertyId);
-        String title = redactTitle(currentUser);
-        String body = redactBody(currentUser, property);
-        sendEmail(title, body, email);
+        emailSender.sendEmailToSingleUser(redactTitle(currentUser), redactBody(currentUser, property), currentUser);
         return new ModelAndView("interestEmailSuccess");
     }
 
@@ -155,14 +160,6 @@ public class UserController {
         return "Solo te envío este mail para checkear que funciona el enviado de mail." +
                 "Si te llega, sabés que anda y podés ponerte a trabajar en eso." +
                 "De paso te informo que sos re crack, que tengas un buen resto del día.";
-    }
-
-    private void sendEmail(String title, String body, String to) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(title);
-        message.setText(body);
-        emailSender.send(message);
     }
 
 

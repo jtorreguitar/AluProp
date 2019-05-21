@@ -189,3 +189,12 @@ ON CONFLICT DO NOTHING;
 INSERT INTO rules (id, name)
 VALUES(4, 'Sólo mujeres')
 ON CONFLICT DO NOTHING;
+
+ALTER TABLE properties
+ALTER COLUMN caption TYPE varchar(700);
+
+ALTER TABLE properties
+ALTER COLUMN description TYPE varchar(50);
+
+ALTER TABLE properties
+ALTER COLUMN caption TYPE varchar(700);

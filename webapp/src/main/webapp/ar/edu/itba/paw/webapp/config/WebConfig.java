@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.config;
 
 import javax.sql.DataSource;
 
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
+import ar.edu.itba.paw.webapp.beans.APMailSenderBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -161,7 +163,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public JavaMailSender getJavaMailSender() {
+    public APJavaMailSender getAPJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
@@ -175,6 +177,6 @@ public class WebConfig implements WebMvcConfigurer {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
 
-        return mailSender;
+        return new APMailSenderBean(mailSender);
     }
 }

@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.model;
 
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -128,14 +128,46 @@ public class Property {
         }
 
         private void checkStateLegality() {
-            if(property.caption == null || property.caption.equals("")) throw new IllegalStateException("caption must be provided.");
-            if(property.description == null || property.description.equals("")) throw new IllegalStateException("description must be provided.");
-            if(property.propertyType == null) throw new IllegalStateException("property type must be provided.");
-            if(property.neighbourhoodId < 1 && property.neighbourhood == null) throw new IllegalStateException("neighbourhood must be provided.");
-            if(property.capacity < 1) throw new IllegalStateException("capacity must be provided.");
-            if(property.price <= 0) throw new IllegalStateException("price must be provided.");
-            if(property.mainImage == null && property.mainImageId < 0) throw new IllegalStateException("image must be provided");
-            if(property.ownerId < 1 && property.owner == null) throw new IllegalStateException("owner must be provided");
+            if(!captionIsValid()) throw new IllegalPropertyStateException("caption must be provided.");
+            if(!descriptionIsValid()) throw new IllegalPropertyStateException("description must be provided.");
+            if(!propertyTypeIsValid()) throw new IllegalPropertyStateException("property type must be provided.");
+            if(!propertyNeighbourhoodIsValid()) throw new IllegalPropertyStateException("neighbourhood must be provided.");
+            if(!capacityIsValid()) throw new IllegalPropertyStateException("capacity must be provided.");
+            if(!priceIsValid()) throw new IllegalPropertyStateException("price must be provided.");
+            if(!mainImageIsValid()) throw new IllegalPropertyStateException("image must be provided");
+            if(!ownerIsValid()) throw new IllegalPropertyStateException("owner must be provided");
+        }
+
+        private boolean captionIsValid() {
+            return !(property.caption == null || property.caption.length() < 1 || property.caption.length() > 700);
+        }
+
+        private boolean descriptionIsValid() {
+            return !(property.description == null || property.description.length() < 1 || property.description.length() > 50);
+        }
+
+        private boolean propertyTypeIsValid() {
+            return !(property.propertyType == null);
+        }
+
+        private boolean propertyNeighbourhoodIsValid() {
+            return !(property.neighbourhoodId < 1 && property.neighbourhood == null);
+        }
+
+        private boolean capacityIsValid() {
+            return !(property.capacity < 1 || property.capacity > 100);
+        }
+
+        private boolean priceIsValid() {
+            return !(property.price < 1 || property.price > 9999999);
+        }
+
+        private boolean mainImageIsValid() {
+            return !(property.mainImage == null && property.mainImageId < 1);
+        }
+
+        private boolean ownerIsValid() {
+            return !(property.ownerId < 1 && property.owner == null);
         }
 
         private void initializeLists() {

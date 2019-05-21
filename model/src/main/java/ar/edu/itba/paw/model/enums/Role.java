@@ -10,7 +10,7 @@ public enum Role {
     private int value;
     private static Map<Integer, Role> map = new HashMap<>();
 
-    private Role(int value) {
+    Role(int value) {
         this.value = value;
     }
 

@@ -2,14 +2,16 @@ package ar.edu.itba.paw.model;
 
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
-import ar.edu.itba.paw.model.utilities.ArgumentUtility;
+import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
 
 import java.util.Date;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class User {
+
     private long id;
     private String email;
     private String name;
@@ -98,6 +100,9 @@ public class User {
     }
 
     public static class Builder {
+
+        private final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+
         private User user;
 
         public Builder() {
@@ -105,18 +110,71 @@ public class User {
         }
 
         public User build(){
-            ArgumentUtility.stringIsNotNullOrEmpty(user.email, "email must be provided.");
-            ArgumentUtility.stringIsNotNullOrEmpty(user.name, "name must be provided.");
-            ArgumentUtility.stringIsNotNullOrEmpty(user.lastName, "last name must be provided.");
-            ArgumentUtility.isNotNull(user.birthDate, "birth date must be provided.");
-            ArgumentUtility.isNotNull(user.gender, "gender must be provided");
-            ArgumentUtility.stringIsNotNullOrEmpty(user.passwordHash, "password must be provided");
-            if(user.universityId < 1 && user.university == null) throw new IllegalArgumentException("university must be provided");
-            if(user.careerId < 1 && user.career == null) throw new IllegalArgumentException("university must be provided");
-            ArgumentUtility.stringIsNotNullOrEmpty(user.bio, "bio must be provided");
-            ArgumentUtility.stringIsNotNullOrEmpty(user.contactNumber, "contact number must be provided");
-            ArgumentUtility.isNotNull(user.role, "role must be provided");
+            checkStateLegallity();
+            initializeLists();
             return user;
+        }
+
+        private void checkStateLegallity() {
+            if(!emailIsValid()) throw new IllegalUserStateException("email must be provided.");
+            if(!nameIsValid()) throw new IllegalUserStateException("name must be provided.");
+            if(!lastNameIsValid()) throw new IllegalUserStateException("last name must be provided.");
+            if(!birthDateIsValid()) throw new IllegalUserStateException("birth date must be provided.");
+            if(!genderIsValid()) throw new IllegalUserStateException("gender must be provided");
+            if(!passwordHashIsValid()) throw new IllegalUserStateException("password must be provided");
+            if(!universityIsValid()) throw new IllegalUserStateException("university must be provided");
+            if(!careerIsValid()) throw new IllegalUserStateException("career must be provided");
+            if(!bioIsValid()) throw new IllegalUserStateException("bio must be provided");
+            if(!contactNumberIsValid()) throw new IllegalUserStateException("contact number must be provided");
+            if(!roleIsValid()) throw new IllegalUserStateException("role must be provided");
+        }
+
+        private boolean emailIsValid() {
+            return user.email != null && Pattern.compile(EMAIL_REGEX).matcher(user.email).matches();
+        }
+
+        private boolean nameIsValid() {
+            return user.name != null && !user.name.equals("");
+        }
+
+        private boolean lastNameIsValid() {
+            return user.lastName != null && !user.name.equals("");
+        }
+
+        private boolean birthDateIsValid() {
+            return user.birthDate != null;
+        }
+
+        private boolean genderIsValid() {
+            return user.gender != null;
+        }
+
+        private boolean passwordHashIsValid() {
+            return user.passwordHash != null && !user.passwordHash.equals("");
+        }
+
+        private boolean universityIsValid() {
+            return user.universityId > 0 || user.university != null;
+        }
+
+        private boolean careerIsValid() {
+            return user.careerId > 0 || user.career != null;
+        }
+
+        private boolean bioIsValid() {
+            return user.bio != null && !user.bio.equals("");
+        }
+
+        private boolean contactNumberIsValid() {
+            return user.contactNumber != null && !user.contactNumber.equals("");
+        }
+
+        private boolean roleIsValid() {
+            return user.role != null;
+        }
+
+        private void initializeLists() {
+            if(user.interestedProperties == null) user.interestedProperties = new LinkedList<>();
         }
 
         public Builder fromUser(User u) {
