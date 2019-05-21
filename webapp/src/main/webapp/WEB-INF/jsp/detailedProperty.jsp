@@ -39,8 +39,8 @@
 
                 </ol>
                 <div class="carousel-inner">
-                    <c:forEach var="image" items="${property.images}">
-                        <div class="carousel-item active">
+                    <c:forEach var="image" items="${property.images}" varStatus="i">
+                        <div class="carousel-item ${i.index == 0?"active":""}">
                             <c:url value="/images/" var="imageUrl"/>
                             <img src="${imageUrl}/${image.id}" class="d-block w-100 carousel-image">
                         </div>
