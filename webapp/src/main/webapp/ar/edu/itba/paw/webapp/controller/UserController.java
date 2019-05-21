@@ -111,11 +111,11 @@ public class UserController {
     }
 
     private String redactConfirmationTitle(User user) {
-        return "Hola " + user.getName() + " bienvenido a AluProp!!";
+        return "Hola " + user.getName() + ", bienvenido a AluProp!";
     }
 
     private String redactConfirmationBody() {
-        return "Muchas gracias por elegirnos! Entrá a http://pawserver.it.itba.edu.ar/paw-2019a-5/ y encontrá lo que buscás!";
+        return "Muchas gracias por elegirnos!\n Ingresa a http://pawserver.it.itba.edu.ar/paw-2019a-5/ para ver las propiedades disponibles, mostrar tu intere y crear propuestas, o bien publicar tus propiedades!\n Saludos,\nEl equipo de AluProp.";
     }
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {
@@ -164,25 +164,6 @@ public class UserController {
                         .addObject("users",
                                     userService.getUsersInterestedInProperty(propertyId, new PageRequest(pageNumber, pageSize)));
     }
-
-    @RequestMapping(value = "/interestEmail/{propertyId}")
-    public ModelAndView interestEmail(@PathVariable long propertyId, @RequestParam String email) {
-        User currentUser = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        Property property = propertyService.get(propertyId);
-        emailSender.sendEmailToSingleUser(redactTitle(currentUser), redactBody(currentUser, property), currentUser);
-        return new ModelAndView("interestEmailSuccess");
-    }
-
-    private String redactTitle(User user) {
-        return "Mail de test de la funcionalidad de mail de aluprop";
-    }
-
-    private String redactBody(User user, Property property) {
-        return "Solo te envío este mail para checkear que funciona el enviado de mail." +
-                "Si te llega, sabés que anda y podés ponerte a trabajar en eso." +
-                "De paso te informo que sos re crack, que tengas un buen resto del día.";
-    }
-
 
     private List<String> generatePropertyNames(List<Proposal> list){
         List<String> result = new ArrayList<>();

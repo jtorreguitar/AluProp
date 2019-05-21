@@ -30,16 +30,27 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
-    private final static String DELETE_SUBJECT= "AluProp - A proposal has been dropped.";
-    private final static String DELETE_BODY = "Unfortunately, the creator of the proposal has dropped it, and it has been deleted.";
+//    private final static String DELETE_SUBJECT= "AluProp - A proposal has been dropped.";
+//    private final static String DELETE_BODY = "Unfortunately, the creator of the proposal has dropped it, and it has been deleted.";
+//
+//    private final static String DECLINE_SUBJECT= "AluProp - A proposal has been dropped.";
+//    private final static String DECLINE_BODY = "Unfortunately, since someone has declined the proposal, the proposal has been dropped";
+//
+//    private final static String SENT_SUBJECT= "AluProp - A proposal has been sent.";
+//    private final static String SENT_BODY = "Every member in the proposal has accepted, so it has been sent to the property's owner.";
+//
+//    private final static String SENT_HOST_SUBJECT= "AluProp - There's a new proposal for your property!";
 
-    private final static String DECLINE_SUBJECT= "AluProp - A proposal has been dropped.";
-    private final static String DECLINE_BODY = "Unfortunately, since someone has declined the proposal, the proposal has been dropped";
+    private final static String DELETE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
+    private final static String DELETE_BODY = "Lamentablemente, el creador de la propuesta la ha cancelado.\n Saludos,\nEl equipo de AluProp.";
 
-    private final static String SENT_SUBJECT= "AluProp - A proposal has been sent.";
-    private final static String SENT_BODY = "Every member in the proposal has accepted, so it has been sent to the property's host.";
+    private final static String DECLINE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
+    private final static String DECLINE_BODY = "Lamentablemente, alguien ha rechazado la propuesta y por lo tanto se ha cancelado.\n Saludos,\nEl equipo de AluProp.";
 
-    private final static String SENT_HOST_SUBJECT= "AluProp - There's a new proposal for your property!";
+    private final static String SENT_SUBJECT= "AluProp - Una propuesta ha sido enviada!";
+    private final static String SENT_BODY = "Todos los miembros de la propuesta han aceptado, así que fue enviada al dueño de la propiedad!\n Saludos,\nEl equipo de AluProp.";
+
+    private final static String SENT_HOST_SUBJECT= "AluProp - Hay una propuesta nueva para tu propiedad!";
 
 
     @Autowired
@@ -161,7 +172,7 @@ public class ProposalController {
         StringBuilder builder = new StringBuilder("Hello ");
         builder.append(host.getName());
         builder.append("! ");
-        builder.append("The following students are interested in your property ");
+        builder.append("Los siguientes estudiantes están interesados en tu propiedad ");
         builder.append(property.getDescription());
         builder.append(": \n");
         for (User student: proposal.getUsers()){
@@ -171,9 +182,10 @@ public class ProposalController {
             builder.append(student.getEmail());
             builder.append('\n');
         }
-        builder.append("You can now contact them to complete the offer!\n");
-        builder.append("The can be found on the following link: ");
+        builder.append("Puedes contactarlos para completar la oferta!\n");
+        builder.append("Puedes ver la propuesta usando el siguiente enlace: ");
         builder.append(generateProposalUrl(proposal, request));
+        builder.append("\nSaludos,\nEl equipo de AluProp.");
         return  builder.toString();
     }
 
@@ -181,4 +193,26 @@ public class ProposalController {
         URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
     }
+
+    //English text
+//    private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){
+//        Property property = propertyService.get(proposal.getPropertyId());
+//        StringBuilder builder = new StringBuilder("Hello ");
+//        builder.append(host.getName());
+//        builder.append("! ");
+//        builder.append("The following students are interested in your property ");
+//        builder.append(property.getDescription());
+//        builder.append(": \n");
+//        for (User student: proposal.getUsers()){
+//            builder.append('•');
+//            builder.append(student.getFullName());
+//            builder.append(": ");
+//            builder.append(student.getEmail());
+//            builder.append('\n');
+//        }
+//        builder.append("You can now contact them to complete the offer!\n");
+//        builder.append("The can be found on the following link: ");
+//        builder.append(generateProposalUrl(proposal, request));
+//        return  builder.toString();
+//    }
 }

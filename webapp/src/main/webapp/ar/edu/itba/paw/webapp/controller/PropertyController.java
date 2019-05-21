@@ -222,33 +222,6 @@ public class PropertyController {
                 .addObject("interests", propertyService.getInterestsOfUser(userId));
     }
 
-//    @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST )
-//    public ModelAndView create(@PathVariable(value = "propertyId") int propertyId, @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-//        Property prop = propertyService.get(propertyId);
-//        if (form.getInvitedUsersIds().length  < 1 || form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
-//            return get(form, propertyId).addObject("maxPeople", prop.getCapacity()-1);
-//
-//        String userEmail = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-//        long userId = userService.getByEmail(userEmail).getId();
-//
-//        Proposal proposal = new Proposal.Builder()
-//                .withCreatorId(userId)
-//                .withPropertyId(propertyId)
-//                .withUsers(getUsersByIds(form.getInvitedUsersIds()))
-//                .withInvitedUserStates(new ArrayList<>())
-//                .build();
-//        for (Long id: form.getInvitedUsersIds())
-//            proposal.getInvitedUserStates().add(0);
-//        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal);
-//        if(proposalOrErrors.hasValue()){
-//            return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
-//        } else {
-//            ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
-//            mav.addObject("proposalFailed", true);
-//            return mav;
-//        }
-//    }
-
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView search(@ModelAttribute FilteredSearchForm searchForm){
         return index(0, searchForm, 9);
@@ -299,7 +272,16 @@ public class PropertyController {
             proposal.getInvitedUserStates().add(0);
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal);
         if(proposalOrErrors.hasValue()){
-            emailSender.sendEmailToUsers("AluProp - You have been invited to a proposal!", "You can reply to the proposal using the following link: \n" + generateProposalUrl(proposalOrErrors.value(), request), proposalOrErrors.value().getUsers());
+//            emailSender.sendEmailToUsers("AluProp - You have been invited to a proposal!",
+//                    "You can reply to the proposal using the following link: \n" +
+//                            generateProposalUrl(proposalOrErrors.value(), request) +
+//                            "\nIf you can't see the proposal, remember to log in!\n Cheers!",
+//                    proposalOrErrors.value().getUsers());
+            emailSender.sendEmailToUsers("AluProp - Te han invitado a una propuesta!",
+                    "Puedes responder a la propuesta usando el siguiente enlace: \n" +
+                            generateProposalUrl(proposalOrErrors.value(), request) +
+                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\n Saludos,\nEl equipo de AluProp.",
+                    proposalOrErrors.value().getUsers());
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {
             ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
