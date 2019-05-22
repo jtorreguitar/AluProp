@@ -90,7 +90,8 @@ public class ProposalController {
 
     @RequestMapping(value = "/delete/{proposalId}", method = RequestMethod.POST )
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
-                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
+                               @ModelAttribute FilteredSearchForm searchForm) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getName().equals("anonymousUser"))
             return new ModelAndView("404");
@@ -103,7 +104,7 @@ public class ProposalController {
         Collection<User> retrieveUsers = proposal.getUsers();
 
         emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
-        return new ModelAndView("successfulDelete");
+        return new ModelAndView("successfulDelete").addObject("currentUser", u);
     }
 
     @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
