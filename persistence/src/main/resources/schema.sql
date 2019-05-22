@@ -199,3 +199,23 @@ ALTER COLUMN description TYPE varchar(50);
 
 ALTER TABLE properties
 ALTER COLUMN caption TYPE varchar(700);
+
+INSERT INTO neighbourhoods(
+    id, name, cityid)
+VALUES (2, 'Puerto Madero', 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO neighbourhoods(
+    id, name, cityid)
+VALUES (3, 'Retiro', 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO neighbourhoods(
+    id, name, cityid)
+VALUES (4, 'Chacarita', 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO neighbourhoods(
+    id, name, cityid)
+VALUES (5, 'Villa Crespo', 1)
+ON CONFLICT DO NOTHING;
