@@ -69,41 +69,42 @@ public class ProposalController {
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(id);
         if (proposal == null)
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         Property property = propertyService.get(proposal.getPropertyId());
+        User creator = userService.get(proposal.getCreatorId());
         if (proposal.getCreatorId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         if (userIsInvitedToProposal(u, proposal)){
             mav.addObject("isInvited", true);
             mav.addObject("hasReplied", userHasRepliedToProposal(u, proposal));
         }
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
+        mav.addObject("creator", creator);
         mav.addObject("currentUser", u);
         return mav;
     }
 
     @RequestMapping(value = "/delete/{proposalId}", method = RequestMethod.POST )
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
-                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
+                               @ModelAttribute FilteredSearchForm searchForm) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getName().equals("anonymousUser"))
             return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
-        if (proposal.getCreatorId() != u.getId())
-            return new ModelAndView("404");
+        if (proposal == null || proposal.getCreatorId() != u.getId())
+            return new ModelAndView("404").addObject("currentUser", u);
         proposalService.delete(proposalId);
 
         Collection<User> retrieveUsers = proposal.getUsers();
 
         emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
-        return new ModelAndView("successfulDelete");
+        return new ModelAndView("successfulDelete").addObject("currentUser", u);
     }
 
     @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
@@ -115,7 +116,7 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         long affectedRows = proposalService.setAccept(u.getId(), proposalId);
         proposal = proposalService.getById(proposalId);
         if (proposal.isCompletelyAccepted()){
@@ -137,7 +138,7 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
         proposal.getUsers().add(creator);
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);

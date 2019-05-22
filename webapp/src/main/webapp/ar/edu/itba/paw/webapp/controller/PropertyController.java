@@ -87,7 +87,7 @@ public class PropertyController {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Property prop = propertyService.getPropertyWithRelatedEntities(id);
         if (prop == null)
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("currentUser", user);
         mav.addObject("property", prop);
@@ -110,7 +110,7 @@ public class PropertyController {
             final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
             return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
         }
-        return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true);
+        return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true).addObject("currentUser", user);
 
     }
 
@@ -186,7 +186,8 @@ public class PropertyController {
                 return create(propertyOrErrors.alternative());
         }
         catch(IllegalPropertyStateException e) {
-            return new ModelAndView("404");
+            User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+            return new ModelAndView("404").addObject("currentUser", u);
         }
     }
 
@@ -222,7 +223,8 @@ public class PropertyController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView search(@ModelAttribute FilteredSearchForm searchForm){
-        return index(0, searchForm, 9);
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        return index(0, searchForm, 9).addObject("currentUser", user);
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
@@ -246,6 +248,9 @@ public class PropertyController {
         mav.addObject("maxItems",MAX_SIZE);
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("isSearch", true);
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
+        mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         return mav;
     }
 
@@ -258,7 +263,7 @@ public class PropertyController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Property prop = propertyService.get(propertyId);
         if (prop.getOwnerId() != u.getId())
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         propertyService.delete(propertyId);
         return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
     }
@@ -294,7 +299,7 @@ public class PropertyController {
             emailSender.sendEmailToUsers("AluProp - Te han invitado a una propuesta!",
                     "Puedes responder a la propuesta usando el siguiente enlace: \n" +
                             generateProposalUrl(proposalOrErrors.value(), request) +
-                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\n Saludos,\nEl equipo de AluProp.",
+                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
                     proposalOrErrors.value().getUsers());
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {

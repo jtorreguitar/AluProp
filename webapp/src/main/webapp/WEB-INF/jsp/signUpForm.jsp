@@ -135,7 +135,7 @@
                           </div> <!-- form-group// -->
                           <spring:message code="label.signup" var="signUpButton"/>
                           <spring:message code="label.login" var="logInButton"/>
-                          <small class="text-muted"><spring:message code="label.terms_of_use" arguments="${signUpButton}"/> </small>
+                          <%--<small class="text-muted"><spring:message code="label.terms_of_use" arguments="${signUpButton}"/> </small>--%>
                       </form:form>
                   </article> <!-- card-body end .// -->
                   <div class="border-top card-body text-center">

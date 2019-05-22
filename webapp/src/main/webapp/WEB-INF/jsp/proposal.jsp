@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
         <!-- Bootstrap core css -->
-        <link href="/resources/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="<c:url value="/resources/css/style.css"/>" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     </head>
@@ -37,6 +37,11 @@
     <ul class="list-group list-group-flush">
         <c:choose>
             <c:when test="${not empty proposal.users}">
+                <li class="list-group-item">
+                    <div style="display: flex;justify-content: space-between">${creator.name}
+                        <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
+                    </div>
+                </li>
                 <c:forEach var="user" items="${proposal.users}" varStatus="i">
                     <li class="list-group-item">
                         <div style="display: flex;justify-content: space-between">${user.name}
@@ -53,7 +58,8 @@
                                     </c:otherwise>
                                 </c:choose>
                             </span>
-                        </div></li>
+                        </div>
+                    </li>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -65,18 +71,21 @@
         <div class="row">
             <c:choose>
                 <c:when test="${proposal.creatorId == currentUser.id}">
-                    <form action="/proposal/delete/${proposal.id}" method="post">
+                    <c:url value="/proposal/delete/${proposal.id}" var="postPath"/>
+                    <form action="${postPath}" method="post">
                         <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
                     </form>
                 </c:when>
                 <c:when test="${isInvited == true && !hasReplied}">
                     <div class="col-6">
-                        <form action="/proposal/accept/${proposal.id}" method="post">
+                        <c:url value="/proposal/accept/${proposal.id}" var="postPath"/>
+                        <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
                         </form>
                     </div>
                     <div class="col-6">
-                        <form action="/proposal/decline/${proposal.id}" method="post">
+                        <c:url value="/proposal/decline/${proposal.id}" var="postPath"/>
+                        <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>
                     </div>
@@ -85,7 +94,7 @@
                     <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
-                    This is your property lol
+                    <spring:message code="label.proposal.your_prpoperty"/>
                 </c:otherwise>
             </c:choose>
 
