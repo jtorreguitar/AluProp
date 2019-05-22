@@ -295,7 +295,7 @@ public class PropertyController {
             emailSender.sendEmailToUsers("AluProp - Te han invitado a una propuesta!",
                     "Puedes responder a la propuesta usando el siguiente enlace: \n" +
                             generateProposalUrl(proposalOrErrors.value(), request) +
-                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\n Saludos,\nEl equipo de AluProp.",
+                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
                     proposalOrErrors.value().getUsers());
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {
