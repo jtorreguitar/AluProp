@@ -96,7 +96,7 @@
                                                 <%--<button type="submit" class="btn btn-primary">Search</button>--%>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Search</button>
+                                    <button type="submit" class="btn btn-primary">${searchPlaceholder}</button>
                                 </div>
                             </div>
                         </form:form>

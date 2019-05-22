@@ -15,7 +15,6 @@ public interface PropertyService {
 
     Property get(long id);
     PageResponse<Property> getAll(PageRequest pageRequest);
-
     PageResponse<Property> getByDescription(PageRequest pageRequest, String description);
     PageResponse<Property> advancedSearch(PageRequest pageRequest,
                                           String description,
@@ -32,5 +31,6 @@ public interface PropertyService {
 	int undoInterestOrReturnErrors(long propertyId, User user);
     Property getPropertyWithRelatedEntities(long id);
     Either<Property, Collection<String>> create(Property property);
+    int delete(long id);
     Collection<Property> getInterestsOfUser(long id);
 }

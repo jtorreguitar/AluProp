@@ -285,6 +285,11 @@ public class APPropertyDao implements PropertyDao {
         return ret;
     }
 
+    @Override
+    public int delete(long id) {
+        return jdbcTemplate.update("DELETE FROM properties WHERE id=?", id);
+    }
+
     private Map<String, Object> generateArgumentsForPropertyCreation(Property property) {
         Map<String, Object> args = new HashMap<>();
         args.put("caption", property.getCaption());

@@ -115,7 +115,7 @@ public class UserController {
     }
 
     private String redactConfirmationBody() {
-        return "Muchas gracias por elegirnos!\n Ingresa a http://pawserver.it.itba.edu.ar/paw-2019a-5/ para ver las propiedades disponibles, mostrar tu intere y crear propuestas, o bien publicar tus propiedades!\n Saludos,\nEl equipo de AluProp.";
+        return "Muchas gracias por elegirnos!\n Ingresa a http://pawserver.it.itba.edu.ar/paw-2019a-5/ para ver las propiedades disponibles, mostrar tu interés y crear propuestas, o bien publicar tus propiedades!\nSaludos,\nEl equipo de AluProp.";
     }
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {

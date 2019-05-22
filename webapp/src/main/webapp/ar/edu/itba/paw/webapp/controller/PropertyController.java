@@ -249,6 +249,20 @@ public class PropertyController {
         return mav;
     }
 
+    @RequestMapping(value = "/property/delete/{propertyId}", method = RequestMethod.POST)
+    public ModelAndView create(HttpServletRequest request,
+                               @PathVariable(value = "propertyId") int propertyId, @ModelAttribute FilteredSearchForm searchForm) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Property prop = propertyService.get(propertyId);
+        if (prop.getOwnerId() != u.getId())
+            return new ModelAndView("404");
+        propertyService.delete(propertyId);
+        return new ModelAndView("successfulPropertyDelete");
+    }
+
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
     public ModelAndView create(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId,

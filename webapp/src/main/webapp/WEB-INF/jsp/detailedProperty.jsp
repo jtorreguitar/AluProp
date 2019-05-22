@@ -69,8 +69,20 @@
             <spring:message code="forms.privacy.individual" var="privacy_individual"/>
             <div>
                 <H2>${property.description}</H2>
-                <H6>${property.propertyType.toString()} in ${property.neighbourhood.name}</H6>
-                <H8>${property.capacity} huespedes | ${property.privacyLevel?privacy_shared:privacy_individual}</H8>
+                <H6>
+                    <c:choose>
+                        <c:when test="${property.propertyType == 'HOUSE'}">
+                            <spring:message code="forms.house"/>
+                        </c:when>
+                        <c:when test="${property.propertyType == 'APARTMENT'}">
+                            <spring:message code="forms.apartment"/>
+                        </c:when>
+                        <c:when test="${property.propertyType == 'LOFT'}">
+                            <spring:message code="forms.loft"/>
+                        </c:when>
+                    </c:choose>
+                        <spring:message code="label.properties.in"/> ${property.neighbourhood.name}</H6>
+                <H8>${property.capacity} <spring:message code="label.guests"/> | ${property.privacyLevel?privacy_shared:privacy_individual}</H8>
             </div>
             <div class="interest-column text-right">
                 <H4 class="price">$${property.price}</H4><br/>
@@ -78,6 +90,11 @@
                 <spring:message code="user.not_interested" var="not_interested"/>
 
                 <c:choose>
+                    <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
+                        <form action="/property/delete/${property.id}" method="post">
+                            <button type="submit" class="btn btn-danger"><spring:message code="label.properties.delete"/></button>
+                        </form>
+                    </c:when>
                     <c:when test="${userRole == '[ROLE_HOST]'}">
 
                     </c:when>

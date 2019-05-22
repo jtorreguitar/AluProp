@@ -42,13 +42,13 @@ public class ProposalController {
 //    private final static String SENT_HOST_SUBJECT= "AluProp - There's a new proposal for your property!";
 
     private final static String DELETE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
-    private final static String DELETE_BODY = "Lamentablemente, el creador de la propuesta la ha cancelado.\n Saludos,\nEl equipo de AluProp.";
+    private final static String DELETE_BODY = "Lamentablemente, el creador de la propuesta la ha cancelado.\nSaludos,\nEl equipo de AluProp.";
 
     private final static String DECLINE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
-    private final static String DECLINE_BODY = "Lamentablemente, alguien ha rechazado la propuesta y por lo tanto se ha cancelado.\n Saludos,\nEl equipo de AluProp.";
+    private final static String DECLINE_BODY = "Lamentablemente, alguien ha rechazado la propuesta y por lo tanto se ha cancelado.\nSaludos,\nEl equipo de AluProp.";
 
     private final static String SENT_SUBJECT= "AluProp - Una propuesta ha sido enviada!";
-    private final static String SENT_BODY = "Todos los miembros de la propuesta han aceptado, así que fue enviada al dueño de la propiedad!\n Saludos,\nEl equipo de AluProp.";
+    private final static String SENT_BODY = "Todos los miembros de la propuesta han aceptado, así que fue enviada al dueño de la propiedad!\nSaludos,\nEl equipo de AluProp.";
 
     private final static String SENT_HOST_SUBJECT= "AluProp - Hay una propuesta nueva para tu propiedad!";
 
@@ -169,7 +169,7 @@ public class ProposalController {
 
     private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){
         Property property = propertyService.get(proposal.getPropertyId());
-        StringBuilder builder = new StringBuilder("Hello ");
+        StringBuilder builder = new StringBuilder("Hola ");
         builder.append(host.getName());
         builder.append("! ");
         builder.append("Los siguientes estudiantes están interesados en tu propiedad ");
@@ -180,12 +180,14 @@ public class ProposalController {
             builder.append(student.getFullName());
             builder.append(": ");
             builder.append(student.getEmail());
+            builder.append(" | Teléfono:");
+            builder.append(student.getContactNumber());
             builder.append('\n');
         }
         builder.append("Puedes contactarlos para completar la oferta!\n");
         builder.append("Puedes ver la propuesta usando el siguiente enlace: ");
         builder.append(generateProposalUrl(proposal, request));
-        builder.append("\nSaludos,\nEl equipo de AluProp.");
+        builder.append("\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.");
         return  builder.toString();
     }
 

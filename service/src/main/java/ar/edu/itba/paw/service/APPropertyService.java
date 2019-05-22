@@ -119,6 +119,11 @@ public class APPropertyService implements PropertyService {
         return Either.valueFrom(propertyDao.create(property));
     }
 
+    @Override
+    public int delete(long id) {
+        return propertyDao.delete(id);
+    }
+
     private void checkRelatedEntitiesExist(Property property) {
         List<Image> images = new LinkedList<>(property.getImages());
         images.add(new Image(property.getMainImageId()));
