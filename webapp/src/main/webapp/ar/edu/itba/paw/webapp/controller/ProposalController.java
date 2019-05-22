@@ -97,7 +97,7 @@ public class ProposalController {
             return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
-        if (proposal.getCreatorId() != u.getId())
+        if (proposal == null || proposal.getCreatorId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         proposalService.delete(proposalId);
 
