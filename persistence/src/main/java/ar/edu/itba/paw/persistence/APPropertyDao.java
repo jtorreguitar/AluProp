@@ -208,25 +208,26 @@ public class APPropertyDao implements PropertyDao {
         }
         QUERY.append("WHERE " + SEARCH_CONDITION + " LIMIT ? OFFSET ?");
 
+        try {
+            List<Property> result = jdbcTemplate.query(QUERY.toString(),
+                    ROW_MAPPER,
+                    pageRequest.getPageSize(),
+                    pageRequest.getPageNumber() * pageRequest.getPageSize());
 
-        System.out.println("FOR SPARTA : " + QUERY);
+            HashSet<Long> id_set = new HashSet<>();
 
-        List<Property> result= jdbcTemplate.query(QUERY.toString(),
-                ROW_MAPPER,
-                pageRequest.getPageSize(),
-                pageRequest.getPageNumber()*pageRequest.getPageSize());
-
-        HashSet<Long> id_set = new HashSet<>();
-
-        List<Property> result_unique = new LinkedList<>();
-        for( Property prop : result){
-            if(!id_set.contains(prop.getId())){
-                id_set.add(prop.getId());
-                result_unique.add(prop);
+            List<Property> result_unique = new LinkedList<>();
+            for (Property prop : result) {
+                if (!id_set.contains(prop.getId())) {
+                    id_set.add(prop.getId());
+                    result_unique.add(prop);
+                }
             }
-        }
 
-        return result_unique;
+            return result_unique;
+        }catch(Exception e){
+            return new LinkedList<Property>();
+        }
     }
     @Override
     public boolean showInterest(long propertyId, User user) {
