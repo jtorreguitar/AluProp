@@ -30,7 +30,7 @@
                 <c:url value="/user/signUp" var="signUp"/>
                 <header class="card-header">
                     <a href="${signUp}" class="float-right btn btn-outline-primary mt-1"><spring:message code="label.signup"/></a>
-                    <h4 class="card-title mt-2"><spring:message code="label.signup"/></h4>
+                    <h4 class="card-title mt-2"><spring:message code="label.login"/></h4>
                 </header>
                 <article class="card-body">
                     <c:url value="/user/logIn" var="loginUrl" />

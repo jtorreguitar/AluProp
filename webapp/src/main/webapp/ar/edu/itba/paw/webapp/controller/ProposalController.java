@@ -69,8 +69,6 @@ public class ProposalController {
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(id);
         if (proposal == null)
