@@ -87,7 +87,7 @@ public class PropertyController {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Property prop = propertyService.getPropertyWithRelatedEntities(id);
         if (prop == null)
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("currentUser", user);
         mav.addObject("property", prop);
@@ -186,7 +186,8 @@ public class PropertyController {
                 return create(propertyOrErrors.alternative());
         }
         catch(IllegalPropertyStateException e) {
-            return new ModelAndView("404");
+            User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+            return new ModelAndView("404").addObject("currentUser", u);
         }
     }
 
@@ -259,7 +260,7 @@ public class PropertyController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Property prop = propertyService.get(propertyId);
         if (prop.getOwnerId() != u.getId())
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         propertyService.delete(propertyId);
         return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
     }

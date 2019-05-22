@@ -74,10 +74,10 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(id);
         if (proposal == null)
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         Property property = propertyService.get(proposal.getPropertyId());
         if (proposal.getCreatorId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         if (userIsInvitedToProposal(u, proposal)){
             mav.addObject("isInvited", true);
             mav.addObject("hasReplied", userHasRepliedToProposal(u, proposal));
@@ -97,7 +97,7 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal.getCreatorId() != u.getId())
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         proposalService.delete(proposalId);
 
         Collection<User> retrieveUsers = proposal.getUsers();
@@ -115,7 +115,7 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         long affectedRows = proposalService.setAccept(u.getId(), proposalId);
         proposal = proposalService.getById(proposalId);
         if (proposal.isCompletelyAccepted()){
@@ -137,7 +137,7 @@ public class ProposalController {
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject("currentUser", u);
         User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
         proposal.getUsers().add(creator);
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
