@@ -1,7 +1,7 @@
 # AluProp
 
 ## Credenciales
-**Host acounts**
+**Host accounts**
 - email: nachovidau96@gmail.com pass:123456
 
 **User accounts**
