@@ -248,6 +248,9 @@ public class PropertyController {
         mav.addObject("maxItems",MAX_SIZE);
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("isSearch", true);
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
+        mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         return mav;
     }
 
