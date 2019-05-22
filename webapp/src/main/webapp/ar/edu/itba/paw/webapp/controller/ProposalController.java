@@ -76,6 +76,7 @@ public class ProposalController {
         if (proposal == null)
             return new ModelAndView("404").addObject("currentUser", u);
         Property property = propertyService.get(proposal.getPropertyId());
+        User creator = userService.get(proposal.getCreatorId());
         if (proposal.getCreatorId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         if (userIsInvitedToProposal(u, proposal)){
@@ -84,6 +85,7 @@ public class ProposalController {
         }
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
+        mav.addObject("creator", creator);
         mav.addObject("currentUser", u);
         return mav;
     }

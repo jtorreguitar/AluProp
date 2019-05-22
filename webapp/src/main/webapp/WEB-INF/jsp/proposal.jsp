@@ -37,6 +37,11 @@
     <ul class="list-group list-group-flush">
         <c:choose>
             <c:when test="${not empty proposal.users}">
+                <li class="list-group-item">
+                    <div style="display: flex;justify-content: space-between">${creator.name}
+                        <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
+                    </div>
+                </li>
                 <c:forEach var="user" items="${proposal.users}" varStatus="i">
                     <li class="list-group-item">
                         <div style="display: flex;justify-content: space-between">${user.name}
@@ -53,7 +58,8 @@
                                     </c:otherwise>
                                 </c:choose>
                             </span>
-                        </div></li>
+                        </div>
+                    </li>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -88,7 +94,7 @@
                     <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
-                    This is your property lol
+                    <spring:message code="label.proposal.your_prpoperty"/>
                 </c:otherwise>
             </c:choose>
 
