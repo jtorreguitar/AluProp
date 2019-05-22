@@ -48,7 +48,7 @@
                             <c:choose>
                                 <c:when test="${not empty interests}">
                                     <c:forEach var="interest" items="${interests}">
-                                        <a href="/${interest.id}" class="list-group-item list-group-item-action">${interest.description}</a>
+                                        <a href="<c:url value="/${interest.id}"/>" class="list-group-item list-group-item-action">${interest.description}</a>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
@@ -68,7 +68,7 @@
                                 <c:when test="${not empty proposals}">
                                     <div class="card-body">
                                         <c:forEach var="proposal" items="${proposals}" varStatus="i">
-                                            <a href="/proposal/${proposal.id}" class="list-group-item list-group-item-action">${proposalPropertyNames[i.index]}</a>
+                                            <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">${proposalPropertyNames[i.index]}</a>
                                         </c:forEach>
                                     </div>
                                 </c:when>

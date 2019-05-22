@@ -110,7 +110,7 @@ public class PropertyController {
             final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
             return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
         }
-        return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true);
+        return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true).addObject("currentUser", user);
 
     }
 
@@ -222,7 +222,8 @@ public class PropertyController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView search(@ModelAttribute FilteredSearchForm searchForm){
-        return index(0, searchForm, 9);
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        return index(0, searchForm, 9).addObject("currentUser", user);
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
@@ -235,6 +236,8 @@ public class PropertyController {
         }
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        mav.addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
         PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize),searchForm.getDescription(), searchForm.getPropertyType(), searchForm.getNeighbourhoodId(), searchForm.getPrivacyLevel(), searchForm.getCapacity(), searchForm.getMinPrice(), searchForm.getMaxPrice(), searchForm.getRuleIds(), searchForm.getServiceIds());
         mav.addObject("properties", response.getResponseData());

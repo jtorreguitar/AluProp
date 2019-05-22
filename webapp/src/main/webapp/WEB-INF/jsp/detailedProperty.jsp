@@ -91,7 +91,8 @@
 
                 <c:choose>
                     <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
-                        <form action="/property/delete/${property.id}" method="post">
+                        <c:url value="/property/delete/" var="postPath"/>
+                        <form action="${postPath}${property.id}" method="post">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.properties.delete"/></button>
                         </form>
                     </c:when>
@@ -99,12 +100,14 @@
 
                     </c:when>
                     <c:when test="${userRole == '[ROLE_GUEST]' && userInterested == true}">
-                        <form action="/${property.id}/deInterest/" method="POST">
+                        <c:url value="/${property.id}/deInterest/" var="postPath"/>
+                        <form action="${postPath}" method="POST">
                             <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
                         </form><br/>
                     </c:when>
                     <c:otherwise>
-                        <form action="/${property.id}/interest/" method="POST">
+                        <c:url value="/${property.id}/interest/" var="postPath"/>
+                        <form action="${postPath}" method="POST">
                             <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
                         </form><br/>
                     </c:otherwise>
