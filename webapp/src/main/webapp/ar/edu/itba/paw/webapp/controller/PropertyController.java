@@ -260,7 +260,7 @@ public class PropertyController {
         if (prop.getOwnerId() != u.getId())
             return new ModelAndView("404");
         propertyService.delete(propertyId);
-        return new ModelAndView("successfulPropertyDelete");
+        return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
     }
 
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
