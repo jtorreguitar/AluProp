@@ -171,7 +171,7 @@ public class APPropertyDao implements PropertyDao {
             shouldAddAnd=true;
         }
 
-        if(minPrice != null && maxPrice != null && minPrice != 0 && maxPrice != 0){
+        if(minPrice != null && maxPrice != null && maxPrice != 0){
             if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
 
             SEARCH_CONDITION.append("price > " + minPrice + " AND price < " + maxPrice);
