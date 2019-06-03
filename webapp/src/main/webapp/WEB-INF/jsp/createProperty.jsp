@@ -142,7 +142,7 @@
 
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">Create Property</button>
+                            <button type="submit" class="btn btn-primary btn-block"><spring:message code="host.publish_property_button"/></button>
                         </div> <!-- form-group// -->
                     </form:form>
                 </article> <!-- card-body end .// -->

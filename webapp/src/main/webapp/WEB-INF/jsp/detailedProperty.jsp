@@ -147,7 +147,16 @@
                                         <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
                                             <c:forEach var="user" items="${interestedUsers}">
                                                 <c:if test="${user.id != currentUser.id}">
-                                                    <li class="list-group-item"><c:if test="${userRole != '[ROLE_HOST]'}"><label class="checkbox"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label></c:if> </li>
+                                                    <li class="list-group-item">
+                                                        <c:choose>
+                                                            <c:when test="${userRole != '[ROLE_HOST]'}">
+                                                                <label class="checkbox"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label></li>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <label class="checkbox">${user.name}</label></li>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
                                                 </c:if>
                                             </c:forEach>
                                         </c:when>
