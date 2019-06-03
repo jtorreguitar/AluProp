@@ -69,13 +69,13 @@
                                                     <div class="form-group col-md-6">
                                                             <%--<label>Min</label>--%>
                                                         <form:label path="minPrice"><spring:message code="forms.rent_per_month_min"/></form:label>
-                                                        <form:input path="minPrice" type="number" class="form-control" placeholder="Max"></form:input>
+                                                        <form:input path="minPrice" type="number" class="form-control" placeholder="Min"></form:input>
                                                         <form:errors path="minPrice" cssClass="formError" element="p"/>
                                                     </div>
                                                     <div class="form-group col-md-6 text-right">
                                                             <%--<label>Max</label>--%>
                                                         <form:label path="maxPrice"><spring:message code="forms.rent_per_month_max"/></form:label>
-                                                        <form:input path="maxPrice" type="number" class="form-control" placeholder="Min"></form:input>
+                                                        <form:input path="maxPrice" type="number" class="form-control" placeholder="Max"></form:input>
                                                         <form:errors path="maxPrice" cssClass="formError" element="p"/>
                                                     </div>
                                                 </div>
