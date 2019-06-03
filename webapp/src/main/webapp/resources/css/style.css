@@ -22,6 +22,10 @@ img {
     object-fit: cover;
 }
 
+.checkbox{
+    padding:2px;
+}
+
 .search-bar-form {
     margin: 0;
 }
