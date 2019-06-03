@@ -120,7 +120,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header"><spring:message code="forms.description"/></div>
+                    <div class="card-header"><spring:message code="property.description"/></div>
                     <div class="card-body">
                         ${property.caption}
                     </div>
@@ -176,7 +176,7 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <spring:message code="forms.rules"/>
+                        <spring:message code="property.rules"/>
                     </div>
                     <ul class="list-group list-group-flush">
                         <c:choose>
@@ -195,7 +195,7 @@
             <div class="col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <spring:message code="forms.services"/>
+                    <spring:message code="property.services"/>
                 </div>
                 <ul class="list-group list-group-flush">
                     <c:choose>
