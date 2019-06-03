@@ -88,7 +88,6 @@
                 <H4 class="price">$${property.price}</H4><br/>
                 <spring:message code="user.interested" var="interested"/>
                 <spring:message code="user.not_interested" var="not_interested"/>
-
                 <c:choose>
                     <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
                         <c:url value="/property/delete/" var="postPath"/>

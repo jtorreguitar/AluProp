@@ -77,7 +77,7 @@
                               </div>
                               <div class="col form-group">
                                   <form:label path="birthDate"><spring:message code="signup.birth_date"/></form:label>
-                                  <form:input path="birthDate" type="date" class="form-control" placeholder="yyyy-mm-dd"></form:input>
+                                  <form:input path="birthDate" type="text" class="form-control" placeholder="yyyy-mm-dd"></form:input>
                                   <form:errors path="birthDate" cssClass="formError" element="p"/>
                               </div>
                           </div>
