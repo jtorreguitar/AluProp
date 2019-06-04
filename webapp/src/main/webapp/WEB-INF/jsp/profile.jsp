@@ -73,7 +73,11 @@
                                         <c:when test="${not empty proposals}">
                                             <div class="card-body">
                                                 <c:forEach var="proposal" items="${proposals}" varStatus="i">
-                                                    <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">${proposalPropertyNames[i.index]}</a>
+                                                    <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
+                                                        <div style="display: flex;justify-content: space-between">${proposalPropertyNames[i.index]}
+                                                            <c:if test="${proposal.creatorId == currentUser.id}"><span><img class="flag" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
+                                                        </div>
+                                                    </a>
                                                 </c:forEach>
                                             </div>
                                         </c:when>
