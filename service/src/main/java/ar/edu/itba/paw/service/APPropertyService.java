@@ -170,4 +170,9 @@ public class APPropertyService implements PropertyService {
     public Collection<Property> getInterestsOfUser(long id) {
         return propertyDao.getInterestsOfUser(id);
     }
+
+    @Override
+    public Collection<Property> getByOwnerId(long id) {
+        return propertyDao.getByOwnerId(id);
+    }
 }

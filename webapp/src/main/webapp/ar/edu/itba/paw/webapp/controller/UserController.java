@@ -179,6 +179,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
+//        List<Property> properties = (List<Proposal>) propertyService.getByOwnerId(u.getId());
         mav.addObject("currentUser", u);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
@@ -186,6 +187,7 @@ public class UserController {
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
         mav.addObject("proposals", proposals);
+        //mav.addObject("properties", properties);
         if (proposals != null)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
 

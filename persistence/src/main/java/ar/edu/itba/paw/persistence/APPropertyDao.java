@@ -318,6 +318,11 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    public Collection<Property> getByOwnerId(long id) {
+        return null;
+    }
+
+    @Override
     public PageResponse<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest) {
         return null;
     }

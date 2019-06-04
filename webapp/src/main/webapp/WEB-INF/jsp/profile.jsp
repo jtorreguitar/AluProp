@@ -63,23 +63,46 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">
-                            <spring:message code="label.profile.proposals"/>
-                        </div>
-                        <div class="list-group">
-                            <c:choose>
-                                <c:when test="${not empty proposals}">
-                                    <div class="card-body">
-                                        <c:forEach var="proposal" items="${proposals}" varStatus="i">
-                                            <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">${proposalPropertyNames[i.index]}</a>
-                                        </c:forEach>
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="card-body"><spring:message code="label.profile.no_proposals" /></div>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+                        <c:choose>
+                            <c:when test="${currentUser.role == 'ROLE_GUEST'}">
+                                <div class="card-header">
+                                    <spring:message code="label.profile.proposals"/>
+                                </div>
+                                <div class="list-group">
+                                    <c:choose>
+                                        <c:when test="${not empty proposals}">
+                                            <div class="card-body">
+                                                <c:forEach var="proposal" items="${proposals}" varStatus="i">
+                                                    <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">${proposalPropertyNames[i.index]}</a>
+                                                </c:forEach>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="card-body"><spring:message code="label.profile.no_proposals" /></div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="card-header">
+                                    <spring:message code="label.profile.properties"/>
+                                </div>
+                                <div class="list-group">
+                                    <c:choose>
+                                        <c:when test="${not empty properties}">
+                                            <div class="card-body">
+                                                <c:forEach var="property" items="${properties}">
+                                                    <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action">${property.description}</a>
+                                                </c:forEach>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="card-body"><spring:message code="label.profile.no_properties" /></div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </div>
