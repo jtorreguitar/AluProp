@@ -226,16 +226,10 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ModelAndView search(@ModelAttribute FilteredSearchForm searchForm){
-        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        return index(0, searchForm, 9).addObject("currentUser", user);
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
-                               final BindingResult errors) {
+                               final BindingResult errors){
         if (errors.hasErrors()){
             return index(pageNumber,searchForm,pageSize);
         }

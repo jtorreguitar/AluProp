@@ -21,7 +21,7 @@
                 <li>
                     <div class="input-group" id="adv-search">
                         <c:url value="/search/" var="postPath"/>
-                        <form:form modelAttribute="filteredSearchForm"  action="${postPath}" method="post" style="display:flex;margin-bottom: 0px;">
+                        <form:form modelAttribute="filteredSearchForm"  action="${postPath}" method="get" style="display:flex;margin-bottom: 0px;">
                             <spring:message code="label.search" var="searchPlaceholder"/>
                             <form:input path="description" type="text" class="form-control" placeholder="${searchPlaceholder}" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;"/>
                             <form:errors path="description" cssClass="formError" element="p"/>
@@ -80,16 +80,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <form:label path="ruleIds"><spring:message code="forms.rules"/></form:label>
+                                                    <form:label path="ruleIds"><spring:message code="forms.rules"/></form:label><br/>
                                                     <c:forEach var="rule" items="${rules}">
-                                                        <label class="checkbox"><form:checkbox path="ruleIds" value="${rule.id}"/>${" "}${rule.name}</label>
+                                                        <label class="checkbox"><form:checkbox path="ruleIds" value="${rule.id}"/>${" "}${rule.name}</label><br/>
                                                     </c:forEach>
                                                     <form:errors path="ruleIds" cssClass="formError" element="p"/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <form:label path="serviceIds"><spring:message code="forms.services"/></form:label>
+                                                    <form:label path="serviceIds"><spring:message code="forms.services"/></form:label><br/>
                                                     <c:forEach var="service" items="${services}">
-                                                        <label class="checkbox"><form:checkbox path="serviceIds" value="${service.id}"/>${" "}${service.name}</label>
+                                                        <label class="checkbox"><form:checkbox path="serviceIds" value="${service.id}"/>${" "}${service.name}</label><br/>
                                                     </c:forEach>
                                                     <form:errors path="serviceIds" cssClass="formError" element="p"/>
                                                 </div>
