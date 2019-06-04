@@ -13,6 +13,7 @@ import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
@@ -107,8 +108,11 @@ public class PropertyController {
                                  @ModelAttribute FilteredSearchForm searchForm) {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         if (user != null){
-            final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
-            return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
+            if (user.getRole().equals(Role.ROLE_GUEST)){
+                final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
+                return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
+            }
+            return new ModelAndView("redirect:/" + propertyId);
         }
         return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true).addObject("currentUser", user);
 
