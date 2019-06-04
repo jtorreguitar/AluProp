@@ -46,8 +46,7 @@
                         </div> <!-- form-group// -->
                         <div class="form-group">
                             <div class="checkbox">
-                                <label for="rememberme"><spring:message code="label.remember_me"/></label>
-                                <input id="rememberme" name="rememberme" type="checkbox"/>
+                                <label for="rememberme"><input id="rememberme" name="rememberme" type="checkbox"/><spring:message code="label.remember_me"/></label>
                             </div> <!-- checkbox .// -->
                         </div> <!-- form-group// -->
                         <c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">

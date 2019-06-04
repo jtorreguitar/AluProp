@@ -46,13 +46,16 @@
                         </div>
                         <div class="list-group">
                             <c:choose>
-                                <c:when test="${not empty interests}">
+                                <c:when test="${not empty interests && user.email == currentUser.email}">
                                     <c:forEach var="interest" items="${interests}">
                                         <a href="<c:url value="/${interest.id}"/>" class="list-group-item list-group-item-action">${interest.description}</a>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                <div class="card-body"><spring:message code="label.profile.noInterests" /></div>
+                                    <div class="card-body">
+                                        <spring:message code="label.profile.noInterests" />
+                                        <a href="<c:url value="/"/>"><spring:message code="label.profile.findAProperty"/></a>
+                                    </div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
