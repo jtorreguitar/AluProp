@@ -43,10 +43,10 @@ public class SignUpForm {
     private int careerId;
 
     @Range(min=0)
-    private int gender;
+    private int gender = -1;
 
     @Range(min=0)
-    private int role;
+    private int role = -1;
 
     public String getBirthDate() {
         return birthDate;

@@ -33,10 +33,10 @@
                                                 <div class="form-group">
                                                     <form:label path="propertyType"><spring:message code="forms.property_type"/></form:label>
                                                     <form:select path="propertyType" class="form-control">
-                                                        <option value="-1" selected="true"><spring:message code="forms.choose"/></option>
-                                                        <option value="0"><spring:message code="forms.house"/></option>
-                                                        <option value="1"><spring:message code="forms.apartment"/></option>
-                                                        <option value="2"><spring:message code="forms.loft"/></option>
+                                                        <form:option value="-1" selected="true"><spring:message code="forms.choose"/></form:option>
+                                                        <form:option value="0"><spring:message code="forms.house"/></form:option>
+                                                        <form:option value="1"><spring:message code="forms.apartment"/></form:option>
+                                                        <form:option value="2"><spring:message code="forms.loft"/></form:option>
                                                     </form:select>
                                                     <form:errors path="propertyType" cssClass="formError" element="p"/>
                                                 </div>
@@ -53,9 +53,9 @@
                                                 <div class="form-group">
                                                     <form:label path="privacyLevel"><spring:message code="forms.privacy"/></form:label>
                                                     <form:select path="privacyLevel" class="form-control">
-                                                        <option value="-1" selected="true"><spring:message code="forms.choose"/></option>
-                                                        <option value="0"><spring:message code="forms.privacy.individual"/></option>
-                                                        <option value="1"><spring:message code="forms.privacy.shared"/></option>
+                                                        <form:option value="-1" selected="true"><spring:message code="forms.choose"/></form:option>
+                                                        <form:option value="0"><spring:message code="forms.privacy.individual"/></form:option>
+                                                        <form:option value="1"><spring:message code="forms.privacy.shared"/></form:option>
                                                     </form:select>
                                                     <form:errors path="privacyLevel" cssClass="formError" element="p"/>
                                                 </div>
