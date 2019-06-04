@@ -23,7 +23,8 @@ img {
 }
 
 .checkbox{
-    padding:2px;
+    padding-right:3px;
+    padding-left:3px;
 }
 
 .search-bar-form {
