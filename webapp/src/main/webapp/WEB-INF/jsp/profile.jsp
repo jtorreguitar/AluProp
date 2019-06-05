@@ -25,7 +25,7 @@
         <%@include file="navigationBar.jsp"%>
 
         <h1 class="display-4">${profileUser.name} ${profileUser.lastName}</h1>
-        <c:if test="${currentUser.role == 'ROLE_GUEST'}">
+        <c:if test="${profileUser.role == 'ROLE_GUEST'}">
             <div>
                 <h5 class="text-muted"><img src="<c:url value="/resources/images/studies.svg"/>" class="studies" alt="English">${profileUser.university.name}</h5>
             </div>
