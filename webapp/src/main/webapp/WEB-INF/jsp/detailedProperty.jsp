@@ -150,10 +150,14 @@
                                                     <li class="list-group-item">
                                                         <c:choose>
                                                             <c:when test="${userRole != '[ROLE_HOST]'}">
-                                                                <label class="checkbox"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label></li>
+                                                                <div style="display: flex;justify-content: space-between">
+                                                                    <label class="checkbox" style="align-self: center;"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label>
+                                                                    <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-info"><spring:message code="label.profile"/></button></a>
+                                                                </div>
+                                                                </li>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <label class="checkbox">${user.name}</label></li>
+                                                                <a href="<c:url value="/user/${user.id}"/>"><label class="checkbox">${user.name}</label></a></li>
                                                             </c:otherwise>
                                                         </c:choose>
 

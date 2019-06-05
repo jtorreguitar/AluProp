@@ -170,17 +170,19 @@ public class UserController {
                                         .build();
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm) {
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-        User u = userService.getUserWithRelatedEntitiesByEmail(email);
+        User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
+        User u = userService.get(userId);
         if (u == null)
             return new ModelAndView("404");
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
 //        List<Property> properties = (List<Proposal>) propertyService.getByOwnerId(u.getId());
-        mav.addObject("currentUser", u);
+        mav.addObject("currentUser", currentUser);
+        mav.addObject("profileUser", u);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
