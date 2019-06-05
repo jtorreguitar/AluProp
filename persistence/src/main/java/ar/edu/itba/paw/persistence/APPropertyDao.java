@@ -263,6 +263,8 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
         Property property = get(id);
+        if (property == null)
+            return null;
         return new Property.Builder()
                     .fromProperty(property)
                     .withNeighbourhood(neighbourhoodDao.get(property.getNeighbourhoodId()))

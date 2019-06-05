@@ -131,7 +131,7 @@
                           </div>
 
                           <div class="form-group">
-                              <button type="submit" class="btn btn-primary btn-block"><spring:message code="label.signup"/></button>
+                              <button type="submit" id="btn-register" class="btn btn-primary btn-block"><spring:message code="label.signup"/></button>
                           </div> <!-- form-group// -->
                           <spring:message code="label.signup" var="signUpButton"/>
                           <spring:message code="label.login" var="logInButton"/>
