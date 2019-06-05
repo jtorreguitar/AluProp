@@ -35,7 +35,16 @@ img {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
+}
 
+.elem-container::after {
+    content: "";
+    flex: auto;
+    display: flex;
+
+    margin: 1rem;
+    width: 100%;
+    max-width: 30rem;
 }
 
 .property-elem {
