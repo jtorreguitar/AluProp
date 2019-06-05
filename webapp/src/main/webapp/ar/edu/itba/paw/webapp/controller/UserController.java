@@ -94,7 +94,7 @@ public class UserController {
             Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form));
             if(!maybeUser.hasValue()){
                 form.setEmail("");
-                logger.debug("NOT A UNIQUE EMAIL");
+                logger.error("NOT A UNIQUE EMAIL");
                 return signUp(form, searchForm).addObject("uniqueEmail", false);
             }
             User user = maybeUser.value();
