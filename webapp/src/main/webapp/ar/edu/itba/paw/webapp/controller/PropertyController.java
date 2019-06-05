@@ -23,11 +23,13 @@ import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,8 @@ public class PropertyController {
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
     private static final Integer MAX_SIZE = 9;
 
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     private PropertyService propertyService;
     @Autowired
@@ -226,9 +230,11 @@ public class PropertyController {
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
-                               final BindingResult errors){
+                               final BindingResult errors,
+                               Locale loc){
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
-            errors.addError(new ObjectError("rangeError", "Minimum price can't be greater than maximum price"));
+            String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
+            errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
         }
         if (errors.hasErrors()){
             return index(pageNumber,searchForm,pageSize);
