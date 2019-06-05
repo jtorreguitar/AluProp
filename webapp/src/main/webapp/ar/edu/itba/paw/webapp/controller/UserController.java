@@ -83,17 +83,11 @@ public class UserController {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         ModelAndView mav = new ModelAndView("signUpForm");
 
-//        HttpSession session = request.getSession(false);
-//        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
-//        if (savedRequest != null)
-//            mav = new ModelAndView("redirect:/");
-
         mav.addObject("currentUser", user);
         mav.addObject("universities", universityService.getAll());
         mav.addObject("careers", careerService.getAll());
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
+
+        addSearchObjectsToMav(mav);
 
         return mav;
     }
@@ -185,10 +179,8 @@ public class UserController {
         mav.addObject("profileUser", u);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
         mav.addObject("proposals", proposals);
+        addSearchObjectsToMav(mav);
         //mav.addObject("properties", properties);
         if (proposals != null)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
@@ -210,5 +202,11 @@ public class UserController {
         for (Proposal prop: list)
             result.add(propertyService.get(prop.getPropertyId()).getDescription());
         return result;
+    }
+
+    private void addSearchObjectsToMav(ModelAndView mav){
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
     }
 }

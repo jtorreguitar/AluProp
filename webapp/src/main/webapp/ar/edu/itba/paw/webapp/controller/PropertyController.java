@@ -73,9 +73,7 @@ public class PropertyController {
         mav.addObject("totalPages", response.getTotalPages());
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
+        addSearchObjectsToMav(mav);
         return mav;
     }
 
@@ -146,11 +144,9 @@ public class PropertyController {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
         mav.addObject("propertyTypes", new IdNamePair[]{new IdNamePair(0, "forms.house"),new IdNamePair(1, "forms.apartment"),new IdNamePair(2, "forms.loft")});
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
+        addSearchObjectsToMav(mav);
         return mav;
     }
 
@@ -244,11 +240,9 @@ public class PropertyController {
         mav.addObject("totalPages", response.getTotalPages());
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("isSearch", true);
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
+        addSearchObjectsToMav(mav);
         return mav;
     }
 
@@ -319,5 +313,11 @@ public class PropertyController {
     private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
         URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
+    }
+
+    private void addSearchObjectsToMav(ModelAndView mav){
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
     }
 }
