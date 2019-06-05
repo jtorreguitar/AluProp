@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -226,6 +227,9 @@ public class PropertyController {
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors){
+        if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
+            errors.addError(new ObjectError("rangeError", "Minimum price can't be greater than maximum price"));
+        }
         if (errors.hasErrors()){
             return index(pageNumber,searchForm,pageSize);
         }
