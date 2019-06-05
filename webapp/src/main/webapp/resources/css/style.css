@@ -32,20 +32,13 @@ img {
 }
 
 .elem-container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 30rem); /* 2 */
+    grid-gap: 1rem; /* 3 */
+    justify-content: space-between; /* 4 */
+    width: 85%;
 }
 
-.elem-container::after {
-    content: "";
-    flex: auto;
-    display: flex;
-
-    margin: 1rem;
-    width: 100%;
-    max-width: 30rem;
-}
 
 .property-elem {
     display: flex;
