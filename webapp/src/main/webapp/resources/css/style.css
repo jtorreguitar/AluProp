@@ -240,3 +240,20 @@ border-color: #ccc;
 .go-button {
     border-radius: 7px;
 }
+
+.notFound{
+    color: black;
+    font-size: 4rem;
+    text-align: center;
+    padding-bottom:10px;
+}
+
+.notFoundDiv{
+    margin-top: 20%;
+}
+.notFoundSubText{
+    color: grey;
+    font-size: 1.4rem;
+    text-align:center;
+
+}

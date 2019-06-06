@@ -24,9 +24,12 @@
 <%@include file="navigationBar.jsp"%>
 
 <!-- ####################### CARDS CONTAINING PROPERTIES  #######################-->
-<div class="elem-container">
+<div class="notFoundDiv">
 
-    <H1><spring:message code="errors.page_not_found"/></H1>
+    <h1 class="notFound"> <spring:message code="error.404"/></h1>
+    <c:url value="/" var="home"/>
+    <h3 class="notFoundSubText"> <spring:message code="error.404.subText" arguments="${home}"/></h3>
+
 
 </div>
 
