@@ -210,6 +210,7 @@ public class PropertyController {
             .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
             .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
             .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
+            .withAvailability(true)
             .build();
     }
 

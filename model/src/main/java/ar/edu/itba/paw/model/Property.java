@@ -24,6 +24,7 @@ public class Property {
     private Image mainImage;
     private long ownerId;
     private User owner;
+    private boolean is_available;
 
     public long getId() {
         return id;
@@ -93,6 +94,11 @@ public class Property {
         return owner;
     }
 
+    public boolean getAvailability() {
+        return is_available;
+    }
+
+
     public static class Builder {
         private Property property;
 
@@ -118,6 +124,7 @@ public class Property {
             this.property.services = property.services;
             this.property.ownerId = property.ownerId;
             this.property.owner = property.owner;
+            this.property.is_available = property.is_available;
             return this;
         }
 
@@ -258,6 +265,11 @@ public class Property {
 
         public Builder withOwner(User owner) {
             this.property.owner = owner;
+            return this;
+        }
+
+        public Builder withAvailability(boolean is_available){
+            this.property.is_available = is_available;
             return this;
         }
     }

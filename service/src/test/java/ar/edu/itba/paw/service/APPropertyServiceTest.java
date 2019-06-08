@@ -73,6 +73,7 @@ public class APPropertyServiceTest {
                 .withImages(new HashSet<>())
                 .withMainImageId(IMAGE_ID)
                 .withOwnerId(OWNER_ID)
+                .withAvailability(true)
                 .build();
     }
 

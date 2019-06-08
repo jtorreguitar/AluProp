@@ -272,6 +272,7 @@ public class APPropertyDao implements PropertyDao {
                     .withMainImage(imageDao.get(property.getMainImageId()))
                     .withImages(imageDao.getByProperty(property.getId()))
                     .withOwner(userDao.get(property.getOwnerId()))
+                    .withAvailability(true)
                     .build();
     }
 
