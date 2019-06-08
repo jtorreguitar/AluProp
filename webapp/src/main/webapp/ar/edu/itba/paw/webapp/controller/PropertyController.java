@@ -66,7 +66,7 @@ public class PropertyController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
-                              @RequestParam(required = false, defaultValue = "9") int pageSize) {
+                              @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
