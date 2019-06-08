@@ -11,6 +11,8 @@
         <title><spring:message code="label.proposal.proposal"/></title>
 
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
+        <link rel='icon' type='image/png' href="<c:url value="/resources/images/favicon.png"/>"/>
+
 
         <!-- Bootstrap core css -->
         <link href="<c:url value="/resources/css/style.css"/>" rel="stylesheet" type="text/css" />

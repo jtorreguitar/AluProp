@@ -31,12 +31,25 @@ img {
     margin: 0;
 }
 
-.elem-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 30rem); /* 2 */
-    grid-gap: 1rem; /* 3 */
-    justify-content: space-between; /* 4 */
-    width: 85%;
+@supports (display: grid) {
+    .elem-container {
+        /*display:flex;*/
+        /*flex-flow: row wrap;*/
+        /*justify-content: space-evenly;*/
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 30rem); /* 2 */
+        grid-gap: 1rem; /* 3 */
+        justify-content: space-between; /* 4 */
+        width: 85%;
+    }
+}
+
+@supports not (display: grid) {
+    .elem-container {
+        display:flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+    }
 }
 
 
@@ -86,6 +99,13 @@ img {
     width: 35px;
     margin-left: 5px;
     margin-right: 0.5rem;
+}
+
+.navbar-logo {
+    height: 50px;
+    width: 88px;
+    /*margin-left: 5px;*/
+    /*margin-right: 0.5rem;*/
 }
 
 .formError{
