@@ -54,13 +54,13 @@
                             <span>
                                 <c:choose>
                                     <c:when test="${proposal.invitedUserStates[i.index] == 0 }">
-                                        <img src="<c:url value="/resources/images/clock.png"/>" class="flag" alt="${language_en}">
+                                        <img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">
                                     </c:when>
                                     <c:when test="${proposal.invitedUserStates[i.index] == 1}">
-                                        <img src="<c:url value="/resources/images/check.png"/>" class="flag" alt="${language_en}">
+                                        <img src="<c:url value="/resources/images/check.png"/>" class="my-span" alt="${language_en}">
                                     </c:when>
                                     <c:otherwise>
-                                        <img src="<c:url value="/resources/images/cross.png"/>" class="flag" alt="${language_en}">
+                                        <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
                                     </c:otherwise>
                                 </c:choose>
                             </span>

@@ -9,6 +9,7 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class APPropertyDao implements PropertyDao {
 
     private final String GET_INTERESTS_OF_USER_QUERY = "SELECT * FROM properties p WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.id AND userId = ?)";
+    private final String GET_PROPERTIES_OF_USER_QUERY = "SELECT * FROM properties p WHERE p.ownerid = ?";
+
     private final RowMapper<Property> ROW_MAPPER = (rs, rowNum)
         -> new Property.Builder()
             .withId(rs.getLong("id"))
@@ -34,6 +37,7 @@ public class APPropertyDao implements PropertyDao {
             .withPropertyType(PropertyType.valueOf(rs.getString("propertyType")))
             .withMainImageId(rs.getLong("mainImageId"))
             .withOwnerId(rs.getLong("ownerId"))
+            .withAvailability(Availability.valueOf(rs.getString("availability")))
             .build();
 
     private final RowMapper<Interest> ROW_MAPPER_INTEREST = (rs, rowNum)
@@ -270,6 +274,7 @@ public class APPropertyDao implements PropertyDao {
                     .withMainImage(imageDao.get(property.getMainImageId()))
                     .withImages(imageDao.getByProperty(property.getId()))
                     .withOwner(userDao.get(property.getOwnerId()))
+                    .withAvailability(Availability.valueOf("AVAILABLE"))
                     .build();
     }
 
@@ -318,7 +323,7 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> getByOwnerId(long id) {
-        return null;
+        return jdbcTemplate.query(GET_PROPERTIES_OF_USER_QUERY, ROW_MAPPER, id);
     }
 
     @Override
