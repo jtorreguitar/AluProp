@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.enums.Role;
@@ -73,7 +74,7 @@ public class APPropertyServiceTest {
                 .withImages(new HashSet<>())
                 .withMainImageId(IMAGE_ID)
                 .withOwnerId(OWNER_ID)
-                .withAvailability(true)
+                .withAvailability(Availability.valueOf("AVAILABLE"))
                 .build();
     }
 

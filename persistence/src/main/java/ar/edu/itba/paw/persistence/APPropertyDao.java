@@ -9,6 +9,7 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -272,7 +273,7 @@ public class APPropertyDao implements PropertyDao {
                     .withMainImage(imageDao.get(property.getMainImageId()))
                     .withImages(imageDao.getByProperty(property.getId()))
                     .withOwner(userDao.get(property.getOwnerId()))
-                    .withAvailability(true)
+                    .withAvailability(Availability.valueOf("AVAILABLE"))
                     .build();
     }
 

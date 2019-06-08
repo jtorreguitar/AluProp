@@ -197,3 +197,9 @@ WHERE NOT EXISTS (SELECT * FROM propertyservices WHERE id = 1);
 
 ALTER TABLE properties
 ADD COLUMN IF NOT EXISTS is_available boolean NOT NULL DEFAULT true;
+
+ALTER TABLE properties
+DROP COLUMN is_available;
+
+ALTER TABLE properties
+ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE'

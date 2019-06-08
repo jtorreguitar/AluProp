@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 
@@ -24,7 +25,7 @@ public class Property {
     private Image mainImage;
     private long ownerId;
     private User owner;
-    private boolean is_available;
+    private Availability availability;
 
     public long getId() {
         return id;
@@ -94,8 +95,8 @@ public class Property {
         return owner;
     }
 
-    public boolean getAvailability() {
-        return is_available;
+    public Availability getAvailability() {
+        return availability;
     }
 
 
@@ -124,7 +125,7 @@ public class Property {
             this.property.services = property.services;
             this.property.ownerId = property.ownerId;
             this.property.owner = property.owner;
-            this.property.is_available = property.is_available;
+            this.property.availability = property.availability;
             return this;
         }
 
@@ -268,8 +269,8 @@ public class Property {
             return this;
         }
 
-        public Builder withAvailability(boolean is_available){
-            this.property.is_available = is_available;
+        public Builder withAvailability(Availability availability){
+            this.property.availability = availability;
             return this;
         }
     }

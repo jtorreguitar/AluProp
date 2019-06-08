@@ -12,6 +12,7 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
@@ -210,7 +211,7 @@ public class PropertyController {
             .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
             .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
             .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
-            .withAvailability(true)
+            .withAvailability(Availability.valueOf("AVAILABLE"))
             .build();
     }
 
