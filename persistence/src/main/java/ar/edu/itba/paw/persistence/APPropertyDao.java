@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class APPropertyDao implements PropertyDao {
 
     private final String GET_INTERESTS_OF_USER_QUERY = "SELECT * FROM properties p WHERE EXISTS (SELECT * FROM interests WHERE propertyId = p.id AND userId = ?)";
+    private final String GET_PROPERTIES_OF_USER_QUERY = "SELECT * FROM properties p WHERE p.ownerid = ?";
+
     private final RowMapper<Property> ROW_MAPPER = (rs, rowNum)
         -> new Property.Builder()
             .withId(rs.getLong("id"))
@@ -318,7 +320,7 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> getByOwnerId(long id) {
-        return null;
+        return jdbcTemplate.query(GET_PROPERTIES_OF_USER_QUERY, ROW_MAPPER, id);
     }
 
     @Override

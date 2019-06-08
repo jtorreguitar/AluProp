@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
+import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
@@ -171,14 +172,14 @@ public class UserController {
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
-//        List<Property> properties = (List<Proposal>) propertyService.getByOwnerId(u.getId());
+        List<Property> properties = (List<Property>) propertyService.getByOwnerId(u.getId());
         mav.addObject("currentUser", currentUser);
         mav.addObject("profileUser", u);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
         mav.addObject("proposals", proposals);
         addSearchObjectsToMav(mav);
-        //mav.addObject("properties", properties);
+        mav.addObject("properties", properties);
         if (proposals != null)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
 

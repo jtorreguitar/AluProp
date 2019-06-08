@@ -57,10 +57,8 @@
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="card-body">
                                             <spring:message code="label.profile.noInterests" />
                                             <a href="<c:url value="/"/>"><spring:message code="label.profile.findAProperty"/></a>
-                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -75,15 +73,13 @@
                             <div class="list-group">
                                 <c:choose>
                                     <c:when test="${not empty proposals}">
-                                        <div class="card-body">
                                             <c:forEach var="proposal" items="${proposals}" varStatus="i">
                                                 <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
                                                     <div style="display: flex;justify-content: space-between">${proposalPropertyNames[i.index]}
-                                                        <c:if test="${proposal.creatorId == currentUser.id}"><span><img class="flag" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
+                                                        <c:if test="${proposal.creatorId == currentUser.id}"><span><img class="my-span" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
                                                     </div>
                                                 </a>
                                             </c:forEach>
-                                        </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="card-body"><spring:message code="label.profile.no_proposals" /></div>
@@ -98,16 +94,29 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <spring:message code="label.profile.properties"/>
+                                <spring:message code="label.profile.your_properties"/>
                             </div>
                             <div class="list-group">
                                 <c:choose>
                                     <c:when test="${not empty properties}">
-                                        <div class="card-body">
                                             <c:forEach var="property" items="${properties}">
-                                                <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action">${property.description}</a>
+                                                <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action" style="display: flex;justify-content: space-between">${property.description}
+                                                    <span class="badge badge-success my-badge">Active</span>
+                                                    <%--<span>--%>
+                                                        <%--<c:choose>--%>
+                                                            <%--<c:when test="${proposal.invitedUserStates[i.index] == 0 }">--%>
+                                                                <%--<img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">--%>
+                                                            <%--</c:when>--%>
+                                                            <%--<c:when test="${proposal.invitedUserStates[i.index] == 1}">--%>
+                                                                <%--<img src="<c:url value="/resources/images/check.png"/>" class="my-span" alt="${language_en}">--%>
+                                                            <%--</c:when>--%>
+                                                            <%--<c:otherwise>--%>
+                                                                <%--<img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">--%>
+                                                            <%--</c:otherwise>--%>
+                                                        <%--</c:choose>--%>
+                                                    <%--</span>--%>
+                                                </a>
                                             </c:forEach>
-                                        </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="card-body"><spring:message code="label.profile.no_properties" /></div>
