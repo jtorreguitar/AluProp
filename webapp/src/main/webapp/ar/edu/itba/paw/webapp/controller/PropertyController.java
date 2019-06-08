@@ -292,7 +292,7 @@ public class PropertyController {
 
         propertyService.changeStatus(propertyId);
 
-        return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
+        return new ModelAndView("detailedProperty");
     }
 
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
