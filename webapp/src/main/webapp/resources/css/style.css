@@ -323,3 +323,8 @@ border-color: #ccc;
     height: 30px;
     text-align: center;
 }
+.nav-center{
+    display: flex;
+    justify-content: center;
+    margin:auto;
+}

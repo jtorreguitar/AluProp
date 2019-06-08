@@ -9,21 +9,18 @@
 <%--</head>--%>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="/"><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
+    <a style="margin-left: 2rem;" class="navbar-brand" href="/"><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="navbar-collapse collapse" id="navbarCollapse">
-
-        <ul class="navbar-nav mr-auto">
-        </ul>
-        <ul class="navbar-nav" style="float: right">
+        <ul class="navbar-nav nav-center mr-auto">
             <li>
                 <div class="input-group" id="adv-search">
                     <c:url value="/search/" var="postPath"/>
                     <form:form modelAttribute="filteredSearchForm"  action="${postPath}" method="get" style="display:flex;margin-bottom: 0px;">
                         <spring:message code="label.search" var="searchPlaceholder"/>
-                        <form:input path="description" type="text" class="form-control" placeholder="${searchPlaceholder}" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;"/>
+                        <form:input path="description" type="text" class="form-control" placeholder="${searchPlaceholder}" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;width:22rem;"/>
                         <form:errors path="description" cssClass="formError" element="p"/>
                         <div class="input-group-btn">
                             <div class="btn-group" role="group">
@@ -101,10 +98,15 @@
                     </form:form>
                 </div>
             </li>
+        </ul>
+        <ul class="navbar-nav" style="float: right">
             <c:if test="${pageContext.request.userPrincipal.name == null}">
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/signUp' ? 'active':''}" style="padding-right:0px;" href="<c:url value="/user/signUp"/>"><spring:message code="label.signup" /></a></li>
                 <li><span class="nav-link mr-1" style="padding-left:0px;padding-right:0px;"><spring:message code="label.nav.or" /></span></li>
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" style="padding-left:0px;" href="<c:url value="/user/logIn"/>"><spring:message code="label.login" /></a></li>
+            </c:if>
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <li><a class="nav-link mr-1 bold active" href="<c:url value="/user/${currentUser.id}"/>"><spring:message code="user.greeting" arguments="${currentUser.name}"/> </a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li>
@@ -149,9 +151,7 @@
                     </div>
                 </li>
             </c:if>
-            <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <li><a class="nav-link mr-1 bold active" href="<c:url value="/user/${currentUser.id}"/>"><spring:message code="user.greeting" arguments="${currentUser.name}"/> </a></li>
-            </c:if>
+
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><div><a class="nav-link mr-1" href="<c:url value="/user/logOut"/>"> <spring:message code="user.logout"/> </a></div></li>
             </c:if>
