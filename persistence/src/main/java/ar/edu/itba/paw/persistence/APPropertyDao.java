@@ -263,6 +263,8 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
         Property property = get(id);
+        if (property == null)
+            return null;
         return new Property.Builder()
                     .fromProperty(property)
                     .withNeighbourhood(neighbourhoodDao.get(property.getNeighbourhoodId()))
@@ -315,6 +317,11 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Collection<Property> getInterestsOfUser(long id) {
         return jdbcTemplate.query(GET_INTERESTS_OF_USER_QUERY, ROW_MAPPER, id);
+    }
+
+    @Override
+    public Collection<Property> getByOwnerId(long id) {
+        return null;
     }
 
     @Override

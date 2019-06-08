@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
@@ -16,16 +15,20 @@ import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -57,57 +60,81 @@ public class UserController {
     public RuleService ruleService;
     @Autowired
     public ServiceService serviceService;
+    @Autowired
+    protected AuthenticationManager authenticationManager;
 
     @RequestMapping("/logIn")
-    public ModelAndView login(@ModelAttribute FilteredSearchForm searchForm) {
+    public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
+        HttpSession session = request.getSession(false);
+        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+        if (savedRequest != null){
+            String targetUrl = savedRequest.getRedirectUrl();
+            System.out.println(targetUrl);
+        }
         return new ModelAndView("logInForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
-    public ModelAndView signUp(@ModelAttribute("signUpForm") final SignUpForm form,
+    public ModelAndView signUp(HttpServletRequest request, @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         ModelAndView mav = new ModelAndView("signUpForm");
+
         mav.addObject("currentUser", user);
         mav.addObject("universities", universityService.getAll());
         mav.addObject("careers", careerService.getAll());
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
+
+        addSearchObjectsToMav(mav);
 
         return mav;
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
-    public ModelAndView register(@Valid @ModelAttribute("signUpForm") SignUpForm form,
+    public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("signUpForm") SignUpForm form,
                                  final BindingResult errors,
                                  @ModelAttribute FilteredSearchForm searchForm) {
         if(errors.hasErrors()){
-            return signUp(form, searchForm);
+            return signUp(request, form, searchForm);
         }
         else if (!form.getRepeatPassword().equals(form.getPassword())){
             form.setRepeatPassword("");
-            return signUp(form, searchForm).addObject("passwordMatch", false);
+            return signUp(request, form, searchForm).addObject("passwordMatch", false);
         }
+        ModelAndView mav = new ModelAndView("redirect:/");
+        HttpSession session = request.getSession(false);
+        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+        if (savedRequest != null)
+            mav = new ModelAndView("redirect:"+ savedRequest.getRedirectUrl());
 
         try {
             Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form));
             if(!maybeUser.hasValue()){
                 form.setEmail("");
-                logger.error("NOT A UNIQUE EMAIL");
-                return signUp(form, searchForm).addObject("uniqueEmail", false);
+                logger.debug("NOT A UNIQUE EMAIL");
+                return signUp(request, form, searchForm).addObject("uniqueEmail", false);
             }
             User user = maybeUser.value();
             String title = redactConfirmationTitle(user);
             String body = redactConfirmationBody();
             emailSender.sendEmailToSingleUser(title, body, user);
             logger.debug("Confirmation email sent to: " + user.getEmail());
-
-            return new ModelAndView("redirect:/");
+            authenticateUserAndSetSession(form, request);
+            return mav;
         }
         catch(IllegalUserStateException e) {
             return new ModelAndView("404");
         }
+    }
+
+    private void authenticateUserAndSetSession(SignUpForm form, HttpServletRequest request) {
+        String username = form.getEmail();
+        String password = form.getPassword();
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+        request.getSession();
+        token.setDetails(new WebAuthenticationDetails(request));
+        Authentication authenticatedUser = authenticationManager.authenticate(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     }
 
     private String redactConfirmationTitle(User user) {
@@ -134,22 +161,24 @@ public class UserController {
                                         .build();
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm) {
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-        User u = userService.getUserWithRelatedEntitiesByEmail(email);
+        User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
+        User u = userService.get(userId);
         if (u == null)
             return new ModelAndView("404");
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
-        mav.addObject("currentUser", u);
+//        List<Property> properties = (List<Proposal>) propertyService.getByOwnerId(u.getId());
+        mav.addObject("currentUser", currentUser);
+        mav.addObject("profileUser", u);
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
         mav.addObject("proposals", proposals);
+        addSearchObjectsToMav(mav);
+        //mav.addObject("properties", properties);
         if (proposals != null)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
 
@@ -170,5 +199,11 @@ public class UserController {
         for (Proposal prop: list)
             result.add(propertyService.get(prop.getPropertyId()).getDescription());
         return result;
+    }
+
+    private void addSearchObjectsToMav(ModelAndView mav){
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
     }
 }

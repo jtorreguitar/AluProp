@@ -23,7 +23,8 @@ img {
 }
 
 .checkbox{
-    padding:2px;
+    padding-right:3px;
+    padding-left:3px;
 }
 
 .search-bar-form {
@@ -31,11 +32,13 @@ img {
 }
 
 .elem-container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 30rem); /* 2 */
+    grid-gap: 1rem; /* 3 */
+    justify-content: space-between; /* 4 */
+    width: 85%;
 }
+
 
 .property-elem {
     display: flex;
@@ -236,4 +239,21 @@ border-color: #ccc;
 
 .go-button {
     border-radius: 7px;
+}
+
+.notFound{
+    color: black;
+    font-size: 4rem;
+    text-align: center;
+    padding-bottom:10px;
+}
+
+.notFoundDiv{
+    margin-top: 20%;
+}
+.notFoundSubText{
+    color: grey;
+    font-size: 1.4rem;
+    text-align:center;
+
 }

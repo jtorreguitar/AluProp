@@ -88,7 +88,6 @@
                 <H4 class="price">$${property.price}</H4><br/>
                 <spring:message code="user.interested" var="interested"/>
                 <spring:message code="user.not_interested" var="not_interested"/>
-
                 <c:choose>
                     <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
                         <c:url value="/property/delete/" var="postPath"/>
@@ -121,7 +120,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header"><spring:message code="forms.description"/></div>
+                    <div class="card-header"><spring:message code="property.description"/></div>
                     <div class="card-body">
                         ${property.caption}
                     </div>
@@ -148,7 +147,20 @@
                                         <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
                                             <c:forEach var="user" items="${interestedUsers}">
                                                 <c:if test="${user.id != currentUser.id}">
-                                                    <li class="list-group-item"><c:if test="${userRole != '[ROLE_HOST]'}"><label class="checkbox"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label></c:if> </li>
+                                                    <li class="list-group-item">
+                                                        <c:choose>
+                                                            <c:when test="${userRole != '[ROLE_HOST]'}">
+                                                                <div style="display: flex;justify-content: space-between">
+                                                                    <label class="checkbox" style="align-self: center;"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label>
+                                                                    <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-info"><spring:message code="label.profile"/></button></a>
+                                                                </div>
+                                                                </li>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a href="<c:url value="/user/${user.id}"/>"><label class="checkbox">${user.name}</label></a></li>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
                                                 </c:if>
                                             </c:forEach>
                                         </c:when>
@@ -168,7 +180,7 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <spring:message code="forms.rules"/>
+                        <spring:message code="property.rules"/>
                     </div>
                     <ul class="list-group list-group-flush">
                         <c:choose>
@@ -187,7 +199,7 @@
             <div class="col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <spring:message code="forms.services"/>
+                    <spring:message code="property.services"/>
                 </div>
                 <ul class="list-group list-group-flush">
                     <c:choose>

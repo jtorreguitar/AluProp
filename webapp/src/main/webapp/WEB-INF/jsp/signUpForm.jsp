@@ -77,7 +77,7 @@
                               </div>
                               <div class="col form-group">
                                   <form:label path="birthDate"><spring:message code="signup.birth_date"/></form:label>
-                                  <form:input path="birthDate" type="date" class="form-control" placeholder="yyyy-mm-dd"></form:input>
+                                  <form:input path="birthDate" type="text" class="form-control" placeholder="yyyy-mm-dd"></form:input>
                                   <form:errors path="birthDate" cssClass="formError" element="p"/>
                               </div>
                           </div>
@@ -97,7 +97,7 @@
                               <form:select path="careerId" id="select-career" name="careers">
                                   <form:option value="-1"> <spring:message code="forms.choose"/> </form:option>
                                   <c:forEach var="career" items="${careers}">
-                                      <option value="${career.id}">${career.name}</option>
+                                      <form:option value="${career.id}">${career.name}</form:option>
                                   </c:forEach>
                               </form:select>
                               <form:errors path="careerId" cssClass="formError" element="p"/>
@@ -109,29 +109,29 @@
                               <form:textarea path="bio" type="text" class="form-control"  style="resize:both;" placeholder="${bioPlaceholder}"></form:textarea>
                               <form:errors path="bio" cssClass="formError" element="p"/>
                           </div>
-                          <div class="col form-group">
+                          <div class="form-group">
                               <form:label path="gender" class="form-check form-check-inline"><spring:message code="signup.gender"/></form:label>
                               <form:select path="gender">
-                                  <option value="-1"><spring:message code="forms.choose"/></option>
-                                  <option value="0"><spring:message code="signup.gender.male"/></option>
-                                  <option value="1"><spring:message code="signup.gender.female"/></option>
-                                  <option value="2"><spring:message code="signup.gender.other"/></option>
-
+                                  <form:option value="-1"><spring:message code="forms.choose"/></form:option>
+                                  <form:option value="0"><spring:message code="signup.gender.male"/></form:option>
+                                  <form:option value="1"><spring:message code="signup.gender.female"/></form:option>
+                                  <form:option value="2"><spring:message code="signup.gender.other"/></form:option>
                               </form:select>
-                          </div>
-
-                          <div class="col form-group">
-
-                              <form:label path="role" class="form-check form-check-inline"><spring:message code="signup.i-am"/> </form:label>
-                              <form:select path="role">
-                                  <option value="-1" selected="selected"><spring:message code="forms.choose"/></option>
-                                  <option value="0"><spring:message code="label.guest"/></option>
-                                  <option value="1"><spring:message code="label.host" /></option>
-                              </form:select>
+                              <form:errors path="gender" cssClass="formError" element="p"/>
                           </div>
 
                           <div class="form-group">
-                              <button type="submit" class="btn btn-primary btn-block"><spring:message code="label.signup"/></button>
+                              <form:label path="role" class="form-check form-check-inline"><spring:message code="signup.i-am"/> </form:label>
+                              <form:select path="role">
+                                  <form:option value="-1" selected="selected"><spring:message code="forms.choose"/></form:option>
+                                  <form:option value="0"><spring:message code="label.guest"/></form:option>
+                                  <form:option value="1"><spring:message code="label.host" /></form:option>
+                              </form:select>
+                              <form:errors path="role" cssClass="formError" element="p"/>
+                          </div>
+
+                          <div class="form-group">
+                              <button type="submit" id="btn-register" class="btn btn-primary btn-block"><spring:message code="label.signup"/></button>
                           </div> <!-- form-group// -->
                           <spring:message code="label.signup" var="signUpButton"/>
                           <spring:message code="label.login" var="logInButton"/>

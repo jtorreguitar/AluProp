@@ -21,7 +21,7 @@
                 <li>
                     <div class="input-group" id="adv-search">
                         <c:url value="/search/" var="postPath"/>
-                        <form:form modelAttribute="filteredSearchForm"  action="${postPath}" method="post" style="display:flex;margin-bottom: 0px;">
+                        <form:form modelAttribute="filteredSearchForm"  action="${postPath}" method="get" style="display:flex;margin-bottom: 0px;">
                             <spring:message code="label.search" var="searchPlaceholder"/>
                             <form:input path="description" type="text" class="form-control" placeholder="${searchPlaceholder}" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;"/>
                             <form:errors path="description" cssClass="formError" element="p"/>
@@ -33,10 +33,10 @@
                                                 <div class="form-group">
                                                     <form:label path="propertyType"><spring:message code="forms.property_type"/></form:label>
                                                     <form:select path="propertyType" class="form-control">
-                                                        <option value="-1" selected="true"><spring:message code="forms.choose"/></option>
-                                                        <option value="0"><spring:message code="forms.house"/></option>
-                                                        <option value="1"><spring:message code="forms.apartment"/></option>
-                                                        <option value="2"><spring:message code="forms.loft"/></option>
+                                                        <form:option value="-1" selected="true"><spring:message code="forms.choose"/></form:option>
+                                                        <form:option value="0"><spring:message code="forms.house"/></form:option>
+                                                        <form:option value="1"><spring:message code="forms.apartment"/></form:option>
+                                                        <form:option value="2"><spring:message code="forms.loft"/></form:option>
                                                     </form:select>
                                                     <form:errors path="propertyType" cssClass="formError" element="p"/>
                                                 </div>
@@ -53,9 +53,9 @@
                                                 <div class="form-group">
                                                     <form:label path="privacyLevel"><spring:message code="forms.privacy"/></form:label>
                                                     <form:select path="privacyLevel" class="form-control">
-                                                        <option value="-1" selected="true"><spring:message code="forms.choose"/></option>
-                                                        <option value="0"><spring:message code="forms.privacy.individual"/></option>
-                                                        <option value="1"><spring:message code="forms.privacy.shared"/></option>
+                                                        <form:option value="-1" selected="true"><spring:message code="forms.choose"/></form:option>
+                                                        <form:option value="0"><spring:message code="forms.privacy.individual"/></form:option>
+                                                        <form:option value="1"><spring:message code="forms.privacy.shared"/></form:option>
                                                     </form:select>
                                                     <form:errors path="privacyLevel" cssClass="formError" element="p"/>
                                                 </div>
@@ -69,27 +69,27 @@
                                                     <div class="form-group col-md-6">
                                                             <%--<label>Min</label>--%>
                                                         <form:label path="minPrice"><spring:message code="forms.rent_per_month_min"/></form:label>
-                                                        <form:input path="minPrice" type="number" class="form-control" placeholder="Max"></form:input>
+                                                        <form:input path="minPrice" type="number" class="form-control" placeholder="Min"></form:input>
                                                         <form:errors path="minPrice" cssClass="formError" element="p"/>
                                                     </div>
                                                     <div class="form-group col-md-6 text-right">
                                                             <%--<label>Max</label>--%>
                                                         <form:label path="maxPrice"><spring:message code="forms.rent_per_month_max"/></form:label>
-                                                        <form:input path="maxPrice" type="number" class="form-control" placeholder="Min"></form:input>
+                                                        <form:input path="maxPrice" type="number" class="form-control" placeholder="Max"></form:input>
                                                         <form:errors path="maxPrice" cssClass="formError" element="p"/>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <form:label path="ruleIds"><spring:message code="forms.rules"/></form:label>
+                                                    <form:label path="ruleIds"><spring:message code="forms.rules"/></form:label><br/>
                                                     <c:forEach var="rule" items="${rules}">
-                                                        <form:checkbox path="ruleIds" value="${rule.id}"/>${rule.name}
+                                                        <label class="checkbox"><form:checkbox path="ruleIds" value="${rule.id}"/>${" "}${rule.name}</label><br/>
                                                     </c:forEach>
                                                     <form:errors path="ruleIds" cssClass="formError" element="p"/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <form:label path="serviceIds"><spring:message code="forms.services"/></form:label>
+                                                    <form:label path="serviceIds"><spring:message code="forms.services"/></form:label><br/>
                                                     <c:forEach var="service" items="${services}">
-                                                        <label><form:checkbox path="serviceIds" value="${service.id}"/>${service.name}</label>
+                                                        <label class="checkbox"><form:checkbox path="serviceIds" value="${service.id}"/>${" "}${service.name}</label><br/>
                                                     </c:forEach>
                                                     <form:errors path="serviceIds" cssClass="formError" element="p"/>
                                                 </div>
@@ -108,7 +108,7 @@
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" style="padding-left:0px;" href="<c:url value="/user/logIn"/>"><spring:message code="label.login" /></a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <li><a class="nav-link mr-1 bold active" href="<c:url value="/user/profile"/>"><spring:message code="user.greeting" arguments="${currentUser.name}"/> </a></li>
+                <li><a class="nav-link mr-1 bold active" href="<c:url value="/user/${currentUser.id}"/>"><spring:message code="user.greeting" arguments="${currentUser.name}"/> </a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><div><a class="nav-link mr-1" href="<c:url value="/user/logOut"/>"> <spring:message code="user.logout"/> </a></div></li>

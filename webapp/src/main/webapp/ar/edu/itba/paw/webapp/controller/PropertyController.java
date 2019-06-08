@@ -13,6 +13,7 @@ import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
@@ -22,11 +23,14 @@ import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -40,6 +44,8 @@ public class PropertyController {
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
     private static final Integer MAX_SIZE = 9;
 
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     private PropertyService propertyService;
     @Autowired
@@ -72,9 +78,7 @@ public class PropertyController {
         mav.addObject("totalPages", response.getTotalPages());
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
+        addSearchObjectsToMav(mav);
         return mav;
     }
 
@@ -107,8 +111,11 @@ public class PropertyController {
                                  @ModelAttribute FilteredSearchForm searchForm) {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         if (user != null){
-            final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
-            return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
+            if (user.getRole().equals(Role.ROLE_GUEST)){
+                final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
+                return StatusCodeUtility.parseStatusCode(code, "redirect:/" + propertyId);
+            }
+            return new ModelAndView("redirect:/" + propertyId);
         }
         return new ModelAndView("redirect:/" + propertyId).addObject("noLogin", true).addObject("currentUser", user);
 
@@ -142,11 +149,9 @@ public class PropertyController {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
         mav.addObject("propertyTypes", new IdNamePair[]{new IdNamePair(0, "forms.house"),new IdNamePair(1, "forms.apartment"),new IdNamePair(2, "forms.loft")});
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
+        addSearchObjectsToMav(mav);
         return mav;
     }
 
@@ -222,16 +227,15 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ModelAndView search(@ModelAttribute FilteredSearchForm searchForm){
-        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        return index(0, searchForm, 9).addObject("currentUser", user);
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
-                               final BindingResult errors) {
+                               final BindingResult errors,
+                               Locale loc){
+        if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
+            String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
+            errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
+        }
         if (errors.hasErrors()){
             return index(pageNumber,searchForm,pageSize);
         }
@@ -246,11 +250,9 @@ public class PropertyController {
         mav.addObject("totalPages", response.getTotalPages());
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("isSearch", true);
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
+        addSearchObjectsToMav(mav);
         return mav;
     }
 
@@ -321,5 +323,11 @@ public class PropertyController {
     private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
         URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
+    }
+
+    private void addSearchObjectsToMav(ModelAndView mav){
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
     }
 }

@@ -12,14 +12,11 @@ public class FilteredSearchForm {
     @Size(min=0, max=100)
     private String description;
 
+    private int propertyType = -1;
 
-    private int propertyType;
+    private int neighbourhoodId = -1;
 
-
-    private int neighbourhoodId;
-
-
-    private int privacyLevel;
+    private int privacyLevel = -1;
 
     @Range(min=0, max=100)
     private int capacity;

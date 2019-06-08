@@ -7,6 +7,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +21,9 @@ public class APCareerDao implements CareerDao {
         -> new Career(rs.getLong("id"), rs.getString("name"));
     private final JdbcTemplate jdbcTemplate;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Autowired
     public APCareerDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -25,12 +31,14 @@ public class APCareerDao implements CareerDao {
 
     @Override
     public Career get(long id) {
-        List<Career> careers = jdbcTemplate.query("SELECT * FROM careers WHERE id = ?", ROW_MAPPER, id);
-        return careers.isEmpty() ? null : careers.get(0);
+        final TypedQuery<Career> query = entityManager.createQuery("from Career as c where c.id = :id", Career.class);
+        query.setParameter("id", id);
+        final List<Career> list = query.getResultList();
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
     public Collection<Career> getAll() {
-        return jdbcTemplate.query("SELECT * FROM careers", ROW_MAPPER);
+        return entityManager.createQuery("from Career", Career.class).getResultList();
     }
 }
