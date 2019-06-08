@@ -109,17 +109,6 @@
                                                             <span class="badge badge-secondary my-badge"> <spring:message code="property.inactive"/> </span>
                                                         </c:otherwise>
                                                     </c:choose>
-
-                                                    <%--<span>--%>
-                                                        <%--<c:choose>--%>
-                                                            <%--<c:when test="${proposal.invitedUserStates[i.index] == 0 }">--%>
-                                                                <%----%>
-                                                            <%--</c:when>--%>
-                                                            <%--<c:otherwise>--%>
-                                                                <%----%>
-                                                            <%--</c:otherwise>--%>
-                                                        <%--</c:choose>--%>
-                                                    <%--</span>--%>
                                                 </a>
                                             </c:forEach>
                                     </c:when>
