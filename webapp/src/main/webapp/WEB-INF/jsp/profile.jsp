@@ -101,7 +101,15 @@
                                     <c:when test="${not empty properties}">
                                             <c:forEach var="property" items="${properties}">
                                                 <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action" style="display: flex;justify-content: space-between">${property.description}
-                                                    <span class="badge badge-success my-badge">Active</span>
+                                                    <c:choose>
+                                                        <c:when test="${property.availability == 'AVAILABLE'}">
+                                                            <span class="badge badge-success my-badge>"> Active </span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge badge-secondary my-badge"> Inactive</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+
                                                     <%--<span>--%>
                                                         <%--<c:choose>--%>
                                                             <%--<c:when test="${proposal.invitedUserStates[i.index] == 0 }">--%>

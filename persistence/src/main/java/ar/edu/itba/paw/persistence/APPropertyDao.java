@@ -37,6 +37,7 @@ public class APPropertyDao implements PropertyDao {
             .withPropertyType(PropertyType.valueOf(rs.getString("propertyType")))
             .withMainImageId(rs.getLong("mainImageId"))
             .withOwnerId(rs.getLong("ownerId"))
+            .withAvailability(Availability.valueOf(rs.getString("availability")))
             .build();
 
     private final RowMapper<Interest> ROW_MAPPER_INTEREST = (rs, rowNum)

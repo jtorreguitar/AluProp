@@ -7,6 +7,7 @@ import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
