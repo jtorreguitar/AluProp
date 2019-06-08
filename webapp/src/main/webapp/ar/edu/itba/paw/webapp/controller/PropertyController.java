@@ -91,6 +91,11 @@ public class PropertyController {
     public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form,
                             @ModelAttribute FilteredSearchForm searchForm,
                             @PathVariable("id") long id) {
+
+        return addObjectsToMAVForDetailedProperty(id);
+    }
+
+    private ModelAndView addObjectsToMAVForDetailedProperty(long id){
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
@@ -108,6 +113,7 @@ public class PropertyController {
         addSearchObjectsToMav(mav);
         if (user != null)
             addNotificationsToMav(mav, user);
+
         return mav;
     }
 
@@ -292,7 +298,7 @@ public class PropertyController {
 
         propertyService.changeStatus(propertyId);
 
-        return new ModelAndView("detailedProperty");
+        return addObjectsToMAVForDetailedProperty(propertyId);
     }
 
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
