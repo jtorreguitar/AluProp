@@ -94,12 +94,7 @@
                             <div class="card">
                                 <div class="card-header"><spring:message code="property.description"/></div>
                                 <div class="card-body">
-                                    <%--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dui tellus, luctus sed lacus a, vehicula rhoncus justo. Vivamus cursus, tellus sed pharetra maximus, nisi enim ornare urna, a consequat felis quam a orci. Donec mauris felis, auctor sed nulla a, sollicitudin hendrerit enim. Fusce quis congue justo. Pellentesque eros ligula, varius vitae interdum vel, congue sed eros. Aliquam et augue condimentum, ultricies lectus id, elementum lacus. Cras in rhoncus elit, faucibus euismod nunc. Duis pellentesque commodo tempus. Nunc hendrerit eros vel nisl viverra porttitor. Nam nec urna ac nulla lobortis consequat eu non arcu. Ut ut condimentum tellus, vel ultrices metus. Quisque sapien velit, venenatis nec purus sit amet, accumsan semper massa. Nulla consectetur suscipit sapien, vel rhoncus nunc suscipit id. Donec luctus orci non lectus ornare imperdiet. Donec et nulla mollis, rutrum nisl non, maximus purus.--%>
-
-                                    <%--Nam efficitur cursus purus, a egestas tellus auctor non. Integer maximus, neque a viverra cursus, lectus ex elementum massa, non auctor justo lectus et neque. Quisque ex arcu, tristique vitae dignissim sit amet, rhoncus a sapien. Sed sed erat dui. Vestibulum metus lacus, tempor eu erat ut, pulvinar vulputate arcu. Vestibulum massa quam, laoreet ut commodo a, sagittis in mi. Pellentesque sem ligula, ullamcorper sit amet consectetur tempor, blandit a diam. Proin euismod pulvinar molestie. Nullam rutrum ipsum ut ipsum varius faucibus nec non ante. Praesent pulvinar quis justo ac viverra. Mauris non quam mattis, lobortis arcu ac, ultrices purus.--%>
-
-                                    <%--Suspendisse convallis faucibus mattis. Nunc vel risus sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Etiam non orci sit amet nibh cursus finibus. Phasellus elementum lobortis velit, sit amet suscipit elit consectetur vitae. Donec non faucibus purus. Quisque feugiat tortor ut velit imperdiet iaculis. In pretium ex ante, sit amet aliquet erat vulputate varius. Phasellus efficitur urna iaculis eros luctus, et efficitur justo varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras porta, libero id tempor finibus, lectus velit auctor odio, nec cursus erat mauris ultrices sapien. Phasellus suscipit semper ligula eget lobortis. Fusce feugiat, velit vel ultrices feugiat, odio nibh faucibus augue, sit amet vestibulum lorem metus ut sem.--%>
-                                ${property.caption}
+                                   ${property.caption}
                                 </div>
                             </div>
                             <br>
@@ -196,19 +191,31 @@
                 <div class="col-md-4">
                     <div class="card acqua">
                         <div class="card-body">
-                            <H4 class="price">$${property.price}</H4><br/>
+                            <H4 class="price">$${property.price} <spring:message code="property.per_month"/></H4><br>
                             <spring:message code="user.interested" var="interested"/>
                             <spring:message code="user.not_interested" var="not_interested"/>
                             <c:choose>
                                 <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
-                                    <c:url value="/property/delete/" var="postPath"/>
-                                    <form action="${postPath}${property.id}" method="post">
-                                        <button type="submit" class="btn btn-danger"><spring:message code="label.properties.delete"/></button>
-                                    </form>
-                                    <c:url value="#" var="postPath"/>
-                                    <%--<form action="${postPath}${property.id}" method="post">--%>
-                                    <button type="submit" class="btn btn-secondary"><spring:message code="label.properties.pause"/></button>
-                                    <%--</form>--%>
+                                    <div class="flex-container">
+                                        <c:choose>
+                                            <c:when test="${property.availability == 'AVAILABLE'}">
+                                                <c:url value="/property/changeStatus/" var="postPath"/>
+                                                <form action="${postPath}${property.id}" method="post">
+                                                    <button type="submit" class="btn btn-secondary"><spring:message code="label.properties.pause"/></button>
+                                                </form>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:url value="/property/changeStatus/" var="postPath"/>
+                                                <form action="${postPath}${property.id}" method="post">
+                                                    <button type="submit" class="btn btn-success"><spring:message code="label.properties.activate"/></button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <c:url value="/property/delete/" var="postPath"/>
+                                        <form action="${postPath}${property.id}" method="post">
+                                            <button type="submit" class="btn btn-danger"><spring:message code="label.properties.delete"/></button>
+                                        </form>
+                                    </div>
                                 </c:when>
                                 <c:when test="${userRole == '[ROLE_HOST]'}">
 
@@ -225,7 +232,7 @@
                                         <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
                                     </form><br/>
                                 </c:otherwise>
-                            </c:choose><br/>
+                            </c:choose>
                             <c:if test="${param.noLogin == true}">
                                 <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
                             </c:if>

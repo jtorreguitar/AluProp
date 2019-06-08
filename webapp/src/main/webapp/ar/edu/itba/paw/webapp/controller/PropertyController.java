@@ -91,6 +91,11 @@ public class PropertyController {
     public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form,
                             @ModelAttribute FilteredSearchForm searchForm,
                             @PathVariable("id") long id) {
+
+        return addObjectsToMAVForDetailedProperty(id);
+    }
+
+    private ModelAndView addObjectsToMAVForDetailedProperty(long id){
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
@@ -108,6 +113,7 @@ public class PropertyController {
         addSearchObjectsToMav(mav);
         if (user != null)
             addNotificationsToMav(mav, user);
+
         return mav;
     }
 
@@ -277,6 +283,22 @@ public class PropertyController {
             return new ModelAndView("404").addObject("currentUser", u);
         propertyService.delete(propertyId);
         return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
+    }
+
+    @RequestMapping(value = "/property/changeStatus/{propertyId}", method = RequestMethod.POST)
+    public ModelAndView changeStatus(HttpServletRequest request,
+                               @PathVariable(value = "propertyId") int propertyId, @ModelAttribute FilteredSearchForm searchForm) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Property prop = propertyService.get(propertyId);
+        if (prop.getOwnerId() != u.getId())
+            return new ModelAndView("404").addObject("currentUser", u);
+
+        propertyService.changeStatus(propertyId);
+
+        return addObjectsToMAVForDetailedProperty(propertyId);
     }
 
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
