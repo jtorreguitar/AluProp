@@ -103,10 +103,10 @@
                                                 <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action" style="display: flex;justify-content: space-between">${property.description}
                                                     <c:choose>
                                                         <c:when test="${property.availability == 'AVAILABLE'}">
-                                                            <span class="badge badge-success my-badge>"> Active </span>
+                                                            <span class="badge badge-success my-badge>"> <spring:message code="property.active"/> </span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="badge badge-secondary my-badge"> Inactive</span>
+                                                            <span class="badge badge-secondary my-badge"> <spring:message code="property.inactive"/> </span>
                                                         </c:otherwise>
                                                     </c:choose>
 
