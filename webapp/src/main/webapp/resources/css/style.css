@@ -52,6 +52,14 @@ img {
     }
 }
 
+.my-elem-container {
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+
+.acqua {
+    background-color: mintcream;
+}
 
 .property-elem {
     display: flex;
