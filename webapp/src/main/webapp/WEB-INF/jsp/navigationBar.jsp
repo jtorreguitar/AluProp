@@ -9,7 +9,7 @@
 <%--</head>--%>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href=""><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
+    <a class="navbar-brand" href="/"><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -93,7 +93,6 @@
                                             </c:forEach>
                                             <form:errors path="serviceIds" cssClass="formError" element="p"/>
                                         </div>
-                                            <%--<button type="submit" class="btn btn-primary">Search</button>--%>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">${searchPlaceholder}</button>
@@ -109,7 +108,45 @@
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li>
-                    <a href=""> <img src="<c:url value="/resources/images/bell.png"/>" class="flag"> </a>
+                    <div class="dropdown dropdown-lg" style="display:flex;">
+                        <button type="button" id="selection-btn 1" style="background: transparent;border: none;" data-toggle="dropdown" aria-expanded="false">
+                            <c:if test="${not empty notifications}">
+                                <img src="<c:url value="/resources/images/bell_active.png"/>" class="flag"/>
+                            </c:if>
+                            <c:if test="${empty notifications}">
+                                <img src="<c:url value="/resources/images/bell.png"/>" class="flag"/>
+                            </c:if>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" role="menu" style="width: 100px; padding:0;">
+                            <div class="notifications-header">
+                                <spring:message code="notifications.notifications"/>
+                            </div>
+                            <c:choose>
+                                <c:when test="${not empty notifications}">
+                                    <c:forEach var="notification" items="${notifications}">
+                                        <div class="list-group">
+                                            <a href="<c:url value="${notification.link}"/>" class="list-group-item list-group-item-action">
+                                                <div class="notification">
+                                                    <div class="notification-subject"><spring:message code="${notification.subjectCode}"/></div>
+                                                    <div class="notification-text"><spring:message code="${notification.textCode}"/></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="notifications-footer">
+                                        <div class="notifications-footer"><spring:message code="notifications.noNotifications"/></div>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                            <div class="notifications-footer">
+                                <a href="<c:url value="/notifications"/>" class="list-group-item list-group-item-action">
+                                    <spring:message code="notifications.viewAll"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">

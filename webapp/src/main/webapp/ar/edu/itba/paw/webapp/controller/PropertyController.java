@@ -62,6 +62,8 @@ public class PropertyController {
     private ProposalService proposalService;
     @Autowired
     public APJavaMailSender emailSender;
+    @Autowired
+    protected NotificationService notificationService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
@@ -79,6 +81,8 @@ public class PropertyController {
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
         addSearchObjectsToMav(mav);
+        if (user != null)
+            addNotificationsToMav(mav, user);
         return mav;
     }
 
@@ -100,9 +104,9 @@ public class PropertyController {
             mav.addObject("userInterested",userService.getUserIsInterestedInProperty(user.getId(), id));
             mav.addObject("interestedUsers", userService.getUsersInterestedInProperty(id, new PageRequest(0, 100)).getResponseData());
         }
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
+        addSearchObjectsToMav(mav);
+        if (user != null)
+            addNotificationsToMav(mav, user);
         return mav;
     }
 
@@ -253,6 +257,9 @@ public class PropertyController {
         mav.addObject("isSearch", true);
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         addSearchObjectsToMav(mav);
+        if (user != null)
+
+            addNotificationsToMav(mav, user);
         return mav;
     }
 
@@ -329,5 +336,10 @@ public class PropertyController {
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
+    }
+
+    private void addNotificationsToMav(ModelAndView mav, User u){
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        mav.addObject("notifications", notifications);
     }
 }

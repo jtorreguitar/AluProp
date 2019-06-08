@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
+import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
@@ -62,6 +63,8 @@ public class UserController {
     public ServiceService serviceService;
     @Autowired
     protected AuthenticationManager authenticationManager;
+    @Autowired
+    protected NotificationService notificationService;
 
     @RequestMapping("/logIn")
     public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
@@ -177,6 +180,7 @@ public class UserController {
         mav.addObject("userRole", auth.getAuthorities());
         mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
         mav.addObject("proposals", proposals);
+        addNotificationsToMav(mav, u);
         addSearchObjectsToMav(mav);
         //mav.addObject("properties", properties);
         if (proposals != null)
@@ -205,5 +209,10 @@ public class UserController {
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
+    }
+
+    private void addNotificationsToMav(ModelAndView mav, User u){
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        mav.addObject("notifications", notifications);
     }
 }

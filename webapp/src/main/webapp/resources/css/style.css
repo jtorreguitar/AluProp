@@ -277,3 +277,28 @@ border-color: #ccc;
     text-align:center;
 
 }
+
+.notifications-header{
+    font-size: medium;
+    font-weight: bold;
+    height: 30px;
+    text-align: center;
+
+}
+
+.notification{
+    height: 80px;
+}
+
+.notification-subject{
+    font-size: medium;
+    font-weight: bold;
+}
+
+.notification-text{
+}
+
+.notifications-footer{
+    height: 30px;
+    text-align: center;
+}

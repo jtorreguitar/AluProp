@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
-import ar.edu.itba.paw.interfaces.service.ProposalService;
-import ar.edu.itba.paw.interfaces.service.UserService;
+import ar.edu.itba.paw.interfaces.service.*;
+import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
@@ -26,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 @Controller
 @RequestMapping("/proposal")
@@ -65,6 +65,18 @@ public class ProposalController {
     @Autowired
     public APJavaMailSender emailSender;
 
+    @Autowired
+    protected NotificationService notificationService;
+
+    @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private RuleService ruleService;
+
+    @Autowired
+    private NeighbourhoodService neighbourhoodService;
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
@@ -85,6 +97,8 @@ public class ProposalController {
         mav.addObject("proposal", proposal);
         mav.addObject("creator", creator);
         mav.addObject("currentUser", u);
+        addSearchObjectsToMav(mav);
+        addNotificationsToMav(mav, u);
         return mav;
     }
 
@@ -195,6 +209,17 @@ public class ProposalController {
     private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
         URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
+    }
+
+    private void addSearchObjectsToMav(ModelAndView mav){
+        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
+        mav.addObject("rules", ruleService.getAll());
+        mav.addObject("services", serviceService.getAll());
+    }
+
+    private void addNotificationsToMav(ModelAndView mav, User u){
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        mav.addObject("notifications", notifications);
     }
 
     //English text
