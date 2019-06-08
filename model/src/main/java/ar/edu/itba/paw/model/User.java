@@ -38,7 +38,7 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    @Column
+    @Transient
     private long universityId;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -46,7 +46,7 @@ public class User {
     @JoinColumn(name = "universityId")
     private University university;
 
-    @Column
+    @Transient
     private long careerId;
 
     @ManyToOne(fetch = FetchType.EAGER)

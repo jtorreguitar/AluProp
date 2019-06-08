@@ -16,10 +16,10 @@ public class Proposal {
     @Column(name = "id")
     private long id;
 
-    @Column
+    @Transient
     private long propertyId;
 
-    @Column
+    @Transient
     private long creatorId;
 
     @OneToMany(fetch = FetchType.LAZY)

@@ -14,14 +14,14 @@ public class UserProposal {
     @Column(name = "id")
     private long id;
 
-    @Column
+    @Transient
     private long userId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private User user;
 
-    @Column
+    @Transient
     private long proposalId;
 
     @ManyToOne(fetch = FetchType.EAGER)

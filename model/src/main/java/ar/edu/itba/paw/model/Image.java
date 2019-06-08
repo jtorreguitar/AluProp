@@ -14,7 +14,7 @@ public class Image {
     @Column(name = "id")
     private long id;
 
-    @Column
+    @Transient
     private long propertyId;
 
     @Column

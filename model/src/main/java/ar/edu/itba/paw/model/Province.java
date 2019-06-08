@@ -13,7 +13,7 @@ public class Province {
     @Column(name = "id")
     private long id;
 
-    @Column
+    @Transient
     private long countryId;
 
     @ManyToOne(fetch = FetchType.EAGER)

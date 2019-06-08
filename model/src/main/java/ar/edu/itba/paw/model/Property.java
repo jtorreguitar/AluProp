@@ -26,7 +26,7 @@ public class Property {
     @Enumerated(EnumType.STRING)
     private PropertyType propertyType;
 
-    @Column
+    @Transient
     private long neighbourhoodId;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -57,14 +57,14 @@ public class Property {
     @OneToMany(fetch = FetchType.LAZY)
     private Collection<Image> images;
 
-    @Column
+    @Transient
     private long mainImageId;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mainImageId")
     private Image mainImage;
 
-    @Column
+    @Transient
     private long ownerId;
 
     @ManyToOne(fetch = FetchType.EAGER)

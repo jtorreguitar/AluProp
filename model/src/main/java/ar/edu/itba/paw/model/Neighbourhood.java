@@ -16,7 +16,7 @@ public class Neighbourhood {
     @Column(length = 75)
     private String name;
 
-    @Column
+    @Transient
     private long cityId;
 
     @ManyToOne(fetch = FetchType.EAGER)

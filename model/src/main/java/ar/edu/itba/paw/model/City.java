@@ -16,14 +16,14 @@ public class City {
     @Column(length = 75)
     private String name;
 
-    @Column
+    @Transient
     private long provinceId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "provinceId")
     private Province province;
 
-    @Column
+    @Transient
     private long countryId;
 
     @ManyToOne(fetch = FetchType.EAGER)

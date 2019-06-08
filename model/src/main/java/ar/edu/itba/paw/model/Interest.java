@@ -12,10 +12,10 @@ public class Interest {
     @Column(name = "id")
     private long id;
 
-    @Column
+    @Transient
     private long propertyId;
 
-    @Column
+    @Transient
     private long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
