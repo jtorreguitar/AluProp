@@ -5,6 +5,8 @@ public class PropertyService {
     private long propertyId;
     private long ruleId;
 
+    /* package */ PropertyService() { }
+
     public PropertyService(long id, long propertyId, long ruleId) {
         this.id = id;
         this.propertyId = propertyId;

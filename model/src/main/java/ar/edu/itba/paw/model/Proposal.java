@@ -1,38 +1,46 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "proposals")
 public class Proposal {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proposals_id_seq")
+    @SequenceGenerator(sequenceName = "proposals_id_seq", name = "proposals_id_seq", allocationSize = 1)
+    @Column(name = "id")
     private long id;
+
+    @Column
     private long propertyId;
+
+    @Column
     private long creatorId;
-    private List<User> users;
-    private List<Integer> invitedUserStates;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<UserProposal> userProposals;
+
+    /* package */ Proposal() { }
 
     public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
 
-    public long getPropertyId() {return propertyId;}
-    public void setPropertyId(long propertyId) { this.propertyId = propertyId; }
+    public long getPropertyId() { return propertyId; }
 
     public long getCreatorId() { return creatorId; }
-    public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
 
-    public List<User> getUsers() { return users; }
-    public void setUsers(List<User> users) { this.users = users; }
+    public List<UserProposal> getUsers() { return userProposals; }
 
     public List<Integer> getInvitedUserStates() {
-        return invitedUserStates;
-    }
-
-    public void setInvitedUserStates(List<Integer> invitedUserStates) {
-        this.invitedUserStates = invitedUserStates;
+        return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
     }
 
     public boolean isCompletelyAccepted(){
-        for (Integer state: invitedUserStates)
+        for (Integer state: getInvitedUserStates())
             if (state != 1)
                 return false;
         return true;
@@ -49,15 +57,13 @@ public class Proposal {
 
         public Builder withCreatorId(long creatorId){proposal.creatorId = creatorId;return this;}
 
-        public Builder withUsers(List<User> users){proposal.users = users;return this;}
-
-        public Builder withInvitedUserStates(List<Integer> userStates){proposal.invitedUserStates = userStates;return this;}
+        public Builder withUserProposals(List<UserProposal> userProposals){proposal.userProposals = userProposals;return this;}
 
         public Builder fromProposal(Proposal proposal){
             this.proposal.id = proposal.id;
             this.proposal.creatorId = proposal.creatorId;
             this.proposal.propertyId = proposal.propertyId;
-            this.proposal.users = proposal.users;
+            this.proposal.userProposals = proposal.userProposals;
             return this;
         }
 
@@ -65,7 +71,7 @@ public class Proposal {
             initializeLists();return proposal;
         }
 
-        private void initializeLists() {if(this.proposal.users == null) this.proposal.users = new LinkedList<>(); }
+        private void initializeLists() {if(this.proposal.userProposals == null) this.proposal.userProposals = new LinkedList<>(); }
 
     }
 }

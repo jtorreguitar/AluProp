@@ -1,9 +1,37 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.enums.UserProposalState;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "userProposals")
 public class UserProposal {
-    long id;
-    long userId;
-    long proposalId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userProposals_id_seq")
+    @SequenceGenerator(sequenceName = "userProposals_id_seq", name = "userProposals_id_seq", allocationSize = 1)
+    @Column(name = "id")
+    private long id;
+
+    @Column
+    private long userId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @Column
+    private long proposalId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "proposalId")
+    private Proposal proposal;
+
+    @Enumerated(EnumType.ORDINAL)
+    private UserProposalState state;
+
+    /* package */ UserProposal() { }
 
     public UserProposal(long id, long userId, long proposalId){
         this.id = id;
@@ -33,5 +61,9 @@ public class UserProposal {
 
     public void setProposalId(long proposalId) {
         this.proposalId = proposalId;
+    }
+
+    public UserProposalState getState() {
+        return state;
     }
 }

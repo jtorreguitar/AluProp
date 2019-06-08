@@ -27,12 +27,6 @@ public class APProposalDao implements ProposalDao {
     private UserProposalDao userProposalDao;
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    private PropertyDao propertyDao;
-
-    @Autowired
     public APProposalDao(DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
@@ -68,19 +62,13 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     public Proposal getById(long id) {
-        List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals  WHERE proposals.id=? ", ROW_MAPPER, id);
-        if(!list.isEmpty()){
-            RowMapper<Pair<Long, Integer>> mapper = (rs, rowNum) -> new Pair<>(rs.getLong("userid"), rs.getInt("state"));
-            List<Pair<Long, Integer>> invitedList = jdbcTemplate.query("SELECT * FROM userProposals  WHERE proposalid=? ", mapper, list.get(0).getId());
-            list.get(0).setUsers(new ArrayList<>());
-            list.get(0).setInvitedUserStates(new ArrayList<>());
-            for (Pair<Long, Integer> pair: invitedList){
-                list.get(0).getUsers().add(userDao.getWithRelatedEntities(pair.getKey()));
-                list.get(0).getInvitedUserStates().add(pair.getValue());
-            }
-            return list.get(0);
-        }
-        return null;
+        List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals  WHERE id = ?", ROW_MAPPER, id);
+        if(list.isEmpty()) return null;
+        Proposal proposal = new Proposal.Builder()
+                                .fromProposal(list.get(0))
+                                .withUserProposals(userProposalDao.getByProposalId(list.get(0).getId()))
+                                .build();
+        return proposal;
     }
 
     @Override

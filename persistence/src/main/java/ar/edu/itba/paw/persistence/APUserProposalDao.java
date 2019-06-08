@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -36,4 +37,8 @@ public class APUserProposalDao implements UserProposalDao {
         jdbcInsert.execute(args);
     }
 
+    @Override
+    public List<UserProposal> getByProposalId(long id) {
+        return jdbcTemplate.query("select * from userProposals where proposalId = ?", ROW_MAPPER, id);
+    }
 }

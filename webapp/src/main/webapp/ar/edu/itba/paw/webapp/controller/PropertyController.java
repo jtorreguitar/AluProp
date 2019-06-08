@@ -5,10 +5,7 @@ import java.util.*;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
-import ar.edu.itba.paw.interfaces.APJavaMailSender;
-import ar.edu.itba.paw.interfaces.Either;
-import ar.edu.itba.paw.interfaces.PageRequest;
-import ar.edu.itba.paw.interfaces.PageResponse;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
@@ -24,13 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -286,7 +281,7 @@ public class PropertyController {
         Proposal proposal = new Proposal.Builder()
                 .withCreatorId(userId)
                 .withPropertyId(propertyId)
-                .withUsers(getUsersByIds(form.getInvitedUsersIds()))
+                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
                 .withInvitedUserStates(new ArrayList<>())
                 .build();
         for (Long id: form.getInvitedUsersIds())

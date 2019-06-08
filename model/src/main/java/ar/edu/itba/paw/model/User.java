@@ -4,33 +4,76 @@ import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    @SequenceGenerator(sequenceName = "users_id_seq", name = "users_id_seq", allocationSize = 1)
+    @Column(name = "id")
     private long id;
+
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
+
+    @Column(length = 100, nullable = false)
     private String name;
+
+    @Column(length = 100, nullable = false)
     private String lastName;
+
+    @Column(nullable = false)
     private Date birthDate;
+
+    @Column(nullable = false)
     private Gender gender;
+
+    @Column(nullable = false)
     private String passwordHash;
+
+    @Column
     private long universityId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId
+    @JoinColumn(name = "universityId")
     private University university;
+
+    @Column
     private long careerId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId
+    @JoinColumn(name = "careerId")
     private Career career;
+
+    @Column(length = 1000)
     private String bio;
+
+    @Column(length = 25)
     private String contactNumber;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "interests")
     private Collection<Property> interestedProperties;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
-    private User() {
-        this.interestedProperties = new LinkedList<>();
-    }
+    @OneToMany(fetch = FetchType.LAZY)
+    private Collection<UserProposal> userProposals;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private Collection<Property> ownedProperties;
+
+    /* package */ User() { }
 
     public long getId() {
         return id;

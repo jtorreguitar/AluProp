@@ -1,17 +1,39 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.util.Collection;
 
+@Entity
+@Table(name = "cities")
 public class City {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cities_id_seq")
+    @SequenceGenerator(sequenceName = "cities_id_seq", name = "cities_id_seq", allocationSize = 1)
+    @Column(name = "id")
     private long id;
+
+    @Column(length = 75)
     private String name;
+
+    @Column
     private long provinceId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "provinceId")
     private Province province;
+
+    @Column
     private long countryId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "countryId")
     private Country country;
+
+    @OneToMany(fetch = FetchType.LAZY)
     private Collection<Neighbourhood> neighbourhoods;
 
-    private City() { }
+    /* package */ City() { }
 
     public long getId() {
         return id;

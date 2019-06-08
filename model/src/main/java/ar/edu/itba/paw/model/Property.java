@@ -3,27 +3,75 @@ package ar.edu.itba.paw.model;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.LinkedList;
 
+@Entity
+@Table(name = "properties")
 public class Property {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "properties_id_seq")
+    @SequenceGenerator(sequenceName = "properties_id_seq", name = "properties_id_seq", allocationSize = 1)
+    @Column(name = "id")
     private long id;
+
+    @Column(length = 700)
     private String caption;
+
+    @Column(length = 50)
     private String description;
+
+    @Enumerated(EnumType.STRING)
     private PropertyType propertyType;
+
+    @Column
     private long neighbourhoodId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "neighbourhoodId")
     private Neighbourhood neighbourhood;
+
+    @Column
     private boolean privacyLevel;
+
+    @Column
     private int capacity;
+
+    @Column
     private float price;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "propertyRules")
     private Collection<Rule> rules;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "propertyRules")
     private Collection<User> interestedUsers;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "propertyRules")
     private Collection<Service> services;
+
+    @OneToMany(fetch = FetchType.LAZY)
     private Collection<Image> images;
+
+    @Column
     private long mainImageId;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "mainImageId")
     private Image mainImage;
+
+    @Column
     private long ownerId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ownerId")
     private User owner;
+
+    /* package */ Property() { }
 
     public long getId() {
         return id;

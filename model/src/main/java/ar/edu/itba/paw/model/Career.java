@@ -3,12 +3,14 @@ package ar.edu.itba.paw.model;
 import javax.persistence.*;
 import java.util.Collection;
 
+@Entity
+@Table(name = "careers")
 public class Career {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "careers_id_seq")
     @SequenceGenerator(sequenceName = "careers_id_seq", name = "careers_id_seq", allocationSize = 1)
-    @Column(name = "careerid")
+    @Column(name = "id")
     private long id;
 
     @Column(length = 100, nullable = false, unique = true)

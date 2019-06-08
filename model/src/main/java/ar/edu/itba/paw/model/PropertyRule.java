@@ -5,6 +5,8 @@ public class PropertyRule {
     private long propertyId;
     private long ruleId;
 
+    /* package */ PropertyRule() { }
+
     public PropertyRule(long id, long propertyId, long ruleId) {
         this.id = id;
         this.propertyId = propertyId;

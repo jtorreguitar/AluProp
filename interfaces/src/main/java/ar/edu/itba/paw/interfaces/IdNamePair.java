@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.model;
+package ar.edu.itba.paw.interfaces;
 
 public class IdNamePair {
     private int id;

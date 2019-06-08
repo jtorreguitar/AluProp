@@ -17,17 +17,8 @@ import java.util.List;
 @Repository
 public class APCareerDao implements CareerDao {
 
-    private RowMapper<Career> ROW_MAPPER = (rs, rownum)
-        -> new Career(rs.getLong("id"), rs.getString("name"));
-    private final JdbcTemplate jdbcTemplate;
-
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    public APCareerDao(DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
 
     @Override
     public Career get(long id) {
@@ -39,6 +30,6 @@ public class APCareerDao implements CareerDao {
 
     @Override
     public Collection<Career> getAll() {
-        return entityManager.createQuery("from Career", Career.class).getResultList();
+        return entityManager.createQuery("from Career c", Career.class).getResultList();
     }
 }
