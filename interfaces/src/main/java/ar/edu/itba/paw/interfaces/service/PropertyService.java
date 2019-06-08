@@ -33,7 +33,6 @@ public interface PropertyService {
     Either<Property, Collection<String>> create(Property property);
     int delete(long id);
     Collection<Property> getInterestsOfUser(long id);
-
-    //DAO ISN'T IMPLEMENTED FOR THE METHODS BELOW
     Collection<Property> getByOwnerId(long id);
+    void changeStatus(long id);
 }

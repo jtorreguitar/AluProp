@@ -279,6 +279,22 @@ public class PropertyController {
         return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
     }
 
+    @RequestMapping(value = "/property/changeStatus/{propertyId}", method = RequestMethod.POST)
+    public ModelAndView changeStatus(HttpServletRequest request,
+                               @PathVariable(value = "propertyId") int propertyId, @ModelAttribute FilteredSearchForm searchForm) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Property prop = propertyService.get(propertyId);
+        if (prop.getOwnerId() != u.getId())
+            return new ModelAndView("404").addObject("currentUser", u);
+
+        propertyService.changeStatus(propertyId);
+
+        return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
+    }
+
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
     public ModelAndView create(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId,
