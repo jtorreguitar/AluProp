@@ -1,10 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import java.net.URI;
-import java.util.*;
-import java.util.function.LongFunction;
-import java.util.stream.Collectors;
-
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
@@ -25,19 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.*;
+import java.util.function.LongFunction;
+import java.util.stream.Collectors;
 
 @Controller
 public class PropertyController {
@@ -310,8 +307,9 @@ public class PropertyController {
                                final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
         Property prop = propertyService.get(propertyId);
-        if (form.getInvitedUsersIds().length  < 1 || form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
+        if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
+
 
         String userEmail = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         long userId = userService.getByEmail(userEmail).getId();
