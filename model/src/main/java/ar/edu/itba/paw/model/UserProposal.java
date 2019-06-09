@@ -66,4 +66,12 @@ public class UserProposal {
     public UserProposalState getState() {
         return state;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Proposal getProposal() {
+        return proposal;
+    }
 }

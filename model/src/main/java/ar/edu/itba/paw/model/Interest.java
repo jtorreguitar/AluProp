@@ -34,6 +34,19 @@ public class Interest {
         this.userId = userId;
     }
 
+    public Interest(Property property, User user) {
+        this.property = property;
+        this.user = user;
+    }
+
+    public Property getProperty() {
+        return property;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
     public long getId() {
         return id;
     }

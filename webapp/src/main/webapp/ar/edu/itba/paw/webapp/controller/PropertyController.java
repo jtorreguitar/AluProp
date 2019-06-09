@@ -312,8 +312,7 @@ public class PropertyController {
         Proposal proposal = new Proposal.Builder()
                 .withCreatorId(userId)
                 .withPropertyId(propertyId)
-                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
-                .withInvitedUserStates(new ArrayList<>())
+//                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
                 .build();
         for (Long id: form.getInvitedUsersIds())
             proposal.getInvitedUserStates().add(0);

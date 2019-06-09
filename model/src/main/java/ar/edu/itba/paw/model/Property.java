@@ -71,6 +71,8 @@ public class Property {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ownerId")
     private User owner;
+
+    @Enumerated(EnumType.STRING)
     private Availability availability;
 
     /* package */ Property() { }

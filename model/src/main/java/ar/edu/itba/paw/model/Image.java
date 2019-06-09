@@ -14,9 +14,6 @@ public class Image {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long propertyId;
-
     @Column
     private byte[] image;
 
@@ -26,9 +23,8 @@ public class Image {
 
     /* package */ Image() { }
 
-    public Image(long id, long propertyId, byte[] image) {
+    public Image(long id, byte[] image) {
         this.id = id;
-        this.propertyId = propertyId;
         this.image = image;
     }
 
@@ -44,10 +40,6 @@ public class Image {
         return id;
     }
 
-    public long getPropertyId() {
-        return propertyId;
-    }
-
     public byte[] getImage() {
         return image;
     }
@@ -56,7 +48,7 @@ public class Image {
         return property;
     }
 
-    public void setPropertyId(long propertyId) {
-        this.propertyId = propertyId;
+    public void setProperty(Property property) {
+        this.property = property;
     }
 }

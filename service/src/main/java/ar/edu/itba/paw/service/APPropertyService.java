@@ -119,8 +119,8 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public int delete(long id) {
-        return propertyDao.delete(id);
+    public void delete(long id) {
+        propertyDao.delete(id);
     }
 
     private void checkRelatedEntitiesExist(Property property) {

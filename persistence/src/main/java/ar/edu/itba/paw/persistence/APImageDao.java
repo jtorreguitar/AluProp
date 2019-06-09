@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.ImageDao;
 import ar.edu.itba.paw.model.Image;
+import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,7 +33,7 @@ public class APImageDao implements ImageDao {
 
     @Override
     public Collection<Image> getByProperty(long propertyId) {
-        final TypedQuery<Image> query = entityManager.createQuery("from Image i where i.propertyId = :propertyId", Image.class);
+        final TypedQuery<Image> query = entityManager.createQuery("from Image i where i.property.id = :propertyId", Image.class);
         query.setParameter("propertyId", propertyId);
         return query.getResultList();
     }
@@ -40,7 +41,8 @@ public class APImageDao implements ImageDao {
     @Override
     public void addProperty(long id, long propertyId) {
         Image i = entityManager.find(Image.class, id);
-        i.setPropertyId(propertyId);
+        Property p = entityManager.find(Property.class, propertyId);
+        i.setProperty(p);
         entityManager.persist(i);
     }
 

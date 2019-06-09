@@ -31,7 +31,7 @@ public interface PropertyService {
 	int undoInterestOrReturnErrors(long propertyId, User user);
     Property getPropertyWithRelatedEntities(long id);
     Either<Property, Collection<String>> create(Property property);
-    int delete(long id);
+    void delete(long id);
     Collection<Property> getInterestsOfUser(long id);
     Collection<Property> getByOwnerId(long id);
     void changeStatus(long id);

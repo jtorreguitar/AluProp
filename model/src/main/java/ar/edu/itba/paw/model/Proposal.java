@@ -33,7 +33,9 @@ public class Proposal {
 
     public long getCreatorId() { return creatorId; }
 
-    public List<UserProposal> getUsers() { return userProposals; }
+    public List<UserProposal> getUserProposals() { return userProposals; }
+
+    public List<User> getUsers() { return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList()); }
 
     public List<Integer> getInvitedUserStates() {
         return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());

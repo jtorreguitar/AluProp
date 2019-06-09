@@ -15,7 +15,7 @@ public interface PropertyDao extends Dao<Property>{
     Property getPropertyWithRelatedEntities(long id);
     Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description);
     Property create(Property property);
-    int delete(long id);
+    void delete(long id);
     Collection<Property> getInterestsOfUser(long id);
     Collection<Property> getByOwnerId(long id);
     PageResponse<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);
