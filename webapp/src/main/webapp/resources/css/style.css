@@ -31,14 +31,35 @@ img {
     margin: 0;
 }
 
-.elem-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 30rem); /* 2 */
-    grid-gap: 1rem; /* 3 */
-    justify-content: space-between; /* 4 */
-    width: 85%;
+@supports (display: grid) {
+    .elem-container {
+        /*display:flex;*/
+        /*flex-flow: row wrap;*/
+        /*justify-content: space-evenly;*/
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 30rem); /* 2 */
+        grid-gap: 1rem; /* 3 */
+        justify-content: space-between; /* 4 */
+        width: 85%;
+    }
 }
 
+@supports not (display: grid) {
+    .elem-container {
+        display:flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+    }
+}
+
+.my-elem-container {
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+
+.acqua {
+    background-color: mintcream;
+}
 
 .property-elem {
     display: flex;
@@ -76,6 +97,9 @@ img {
     text-align: right;
 }
 
+.my-form {
+    margin-bottom: 0px;
+}
 
 .bold {
     font-weight: bold;
@@ -86,6 +110,26 @@ img {
     width: 35px;
     margin-left: 5px;
     margin-right: 0.5rem;
+}
+
+
+.navbar-logo {
+    height: 50px;
+    width: 88px;
+    /*margin-left: 5px;*/
+    /*margin-right: 0.5rem;*/
+}
+
+.my-span {
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 0.5rem;
+}
+
+.my-badge {
+    line-height: normal;
+
 }
 
 .formError{
@@ -256,4 +300,34 @@ border-color: #ccc;
     font-size: 1.4rem;
     text-align:center;
 
+}
+
+.notifications-header{
+    font-size: medium;
+    font-weight: bold;
+    height: 30px;
+    text-align: center;
+
+}
+
+.notification{
+    height: 80px;
+}
+
+.notification-subject{
+    font-size: medium;
+    font-weight: bold;
+}
+
+.notification-text{
+}
+
+.notifications-footer{
+    height: 30px;
+    text-align: center;
+}
+.nav-center{
+    display: flex;
+    justify-content: center;
+    margin:auto;
 }

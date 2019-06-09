@@ -32,6 +32,10 @@ public class Image {
         this.image = image;
     }
 
+    public Image(byte[] image) {
+        this.image = image;
+    }
+
     public Image(long id) {
         this.id = id;
     }
@@ -50,5 +54,9 @@ public class Image {
 
     public Property getProperty() {
         return property;
+    }
+
+    public void setPropertyId(long propertyId) {
+        this.propertyId = propertyId;
     }
 }

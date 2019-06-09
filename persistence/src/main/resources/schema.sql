@@ -217,4 +217,9 @@ INSERT INTO neighbourhoods(
 VALUES (5, 'Villa Crespo', 1)
 ON CONFLICT DO NOTHING;
 
+<<<<<<< HEAD
+=======
+ALTER TABLE properties
+ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE'
+>>>>>>> c99bfb4b48c345b2867767780f3904f1d701228f
 

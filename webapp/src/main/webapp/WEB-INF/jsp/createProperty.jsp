@@ -12,6 +12,8 @@
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
 
+    <link rel='icon' type='image/png' href="<c:url value="/resources/images/favicon.png"/>"/>
+
     <!-- Bootstrap core css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css" />
@@ -39,22 +41,22 @@
                                 <spring:message code="placeholder.choose_file" var="chooseFilePlaceholder"/>
                                 <div class="form-group">
                                     <spring:message code="forms.upload_picture" arguments="1"/>
-                                    <input id="uploadFile1" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <input id="uploadFile1" placeholder="${chooseFilePlaceholder}"/>
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn1" type="file" class="upload" name="file"/>
                                     </div></br>
                                     <spring:message code="forms.upload_picture" arguments="2"/>
-                                    <input id="uploadFile2" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <input id="uploadFile2" placeholder="${chooseFilePlaceholder}" />
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn2" type="file" class="upload" name="file"/>
                                     </div></br>
                                     <spring:message code="forms.upload_picture" arguments="3"/>
-                                    <input id="uploadFile3" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <input id="uploadFile3" placeholder="${chooseFilePlaceholder}"/>
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn3" type="file" class="upload" name="file"/>
                                     </div></br>
                                     <spring:message code="forms.upload_picture" arguments="4"/>
-                                    <input id="uploadFile4" placeholder="${chooseFilePlaceholder}" disabled="disabled" />
+                                    <input id="uploadFile4" placeholder="${chooseFilePlaceholder}"/>
                                     <div class="fileUpload btn btn-primary"><span><spring:message code="forms.upload"/></span>
                                         <input id="uploadBtn4" type="file" class="upload" name="file"/>
                                     </div>
@@ -145,7 +147,7 @@
 
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block"><spring:message code="host.publish_property_button"/></button>
+                            <button id="btn-publish" type="submit" class="btn btn-primary btn-block"><spring:message code="host.publish_property_button"/></button>
                         </div> <!-- form-group// -->
                     </form:form>
                 </article> <!-- card-body end .// -->

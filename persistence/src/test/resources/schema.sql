@@ -195,3 +195,5 @@ INSERT INTO propertyServices (id, propertyId, serviceId)
 SELECT * FROM (VALUES(1, 1, 1))
 WHERE NOT EXISTS (SELECT * FROM propertyservices WHERE id = 1);
 
+ALTER TABLE properties
+ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE'

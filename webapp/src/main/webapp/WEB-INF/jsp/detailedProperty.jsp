@@ -12,6 +12,8 @@
         <title><spring:message code="label.property"/></title>
 
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
+        <link rel='icon' type='image/png' href="<c:url value="/resources/images/favicon.png"/>"/>
+
 
         <!-- Bootstrap core css -->
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css" />
@@ -64,160 +66,183 @@
             </c:otherwise>
         </c:choose>
         <br>
-        <div class="flex-container">
-            <spring:message code="forms.privacy.shared" var="privacy_shared"/>
-            <spring:message code="forms.privacy.individual" var="privacy_individual"/>
-            <div>
-                <H2>${property.description}</H2>
-                <H6>
-                    <c:choose>
-                        <c:when test="${property.propertyType == 'HOUSE'}">
-                            <spring:message code="forms.house"/>
-                        </c:when>
-                        <c:when test="${property.propertyType == 'APARTMENT'}">
-                            <spring:message code="forms.apartment"/>
-                        </c:when>
-                        <c:when test="${property.propertyType == 'LOFT'}">
-                            <spring:message code="forms.loft"/>
-                        </c:when>
-                    </c:choose>
-                        <spring:message code="label.properties.in"/> ${property.neighbourhood.name}</H6>
-                <H8>${property.capacity} <spring:message code="label.guests"/> | ${property.privacyLevel?privacy_shared:privacy_individual}</H8>
-            </div>
-            <div class="interest-column text-right">
-                <H4 class="price">$${property.price}</H4><br/>
-                <spring:message code="user.interested" var="interested"/>
-                <spring:message code="user.not_interested" var="not_interested"/>
-                <c:choose>
-                    <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
-                        <c:url value="/property/delete/" var="postPath"/>
-                        <form action="${postPath}${property.id}" method="post">
-                            <button type="submit" class="btn btn-danger"><spring:message code="label.properties.delete"/></button>
-                        </form>
-                    </c:when>
-                    <c:when test="${userRole == '[ROLE_HOST]'}">
-
-                    </c:when>
-                    <c:when test="${userRole == '[ROLE_GUEST]' && userInterested == true}">
-                        <c:url value="/${property.id}/deInterest/" var="postPath"/>
-                        <form action="${postPath}" method="POST">
-                            <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
-                        </form><br/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:url value="/${property.id}/interest/" var="postPath"/>
-                        <form action="${postPath}" method="POST">
-                            <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
-                        </form><br/>
-                    </c:otherwise>
-                </c:choose><br/>
-                <c:if test="${param.noLogin == true}">
-                    <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
-                </c:if>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header"><spring:message code="property.description"/></div>
-                    <div class="card-body">
-                        ${property.caption}
-                    </div>
-                </div>
-                <br/>
-                <c:choose>
-                    <c:when test="${userInterested == true || userRole == '[ROLE_HOST]'}">
-                        <c:url value="/proposal/create/${property.id}" var="postPath"/>
-                        <form:form modelAttribute="proposalForm" action="${postPath}" method="post">
+        <div class="my-elem-container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card acqua">
+                        <div class="card-body">
+                            <div>
+                                <spring:message code="forms.privacy.shared" var="privacy_shared"/>
+                                <spring:message code="forms.privacy.individual" var="privacy_individual"/>
+                                <H2>${property.description}</H2>
+                                <H6>
+                                    <c:choose>
+                                        <c:when test="${property.propertyType == 'HOUSE'}">
+                                            <spring:message code="forms.house"/>
+                                        </c:when>
+                                        <c:when test="${property.propertyType == 'APARTMENT'}">
+                                            <spring:message code="forms.apartment"/>
+                                        </c:when>
+                                        <c:when test="${property.propertyType == 'LOFT'}">
+                                            <spring:message code="forms.loft"/>
+                                        </c:when>
+                                    </c:choose>
+                                    <spring:message code="label.properties.in"/> ${property.neighbourhood.name}</H6>
+                                <H8>${property.capacity} <spring:message code="label.guests"/> | ${property.privacyLevel?privacy_shared:privacy_individual}</H8>
+                            </div>
+                            <br>
                             <div class="card">
-                                <div class="card-header" style="display: flex;justify-content: space-between;">
-                                    <spring:message code="user.create_proposal" var="createProposal"/>
-                                    <span> <spring:message code="user.interested_users"/>
-                                        <c:if test="${userRole != '[ROLE_HOST]' && interestedUsers.size() > 1}">
-                                            <input type="submit" value="${createProposal}" class="btn btn-primary stretched-link"/>
-                                        </c:if>
-                                    </span>
-                                    <c:if test="${maxPeople != null}">
-                                        <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
-                                    </c:if>
+                                <div class="card-header"><spring:message code="property.description"/></div>
+                                <div class="card-body">
+                                   ${property.caption}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="card">
+                                <div class="card-header">
+                                    <spring:message code="property.rules"/>
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <c:choose>
-                                        <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
-                                            <c:forEach var="user" items="${interestedUsers}">
-                                                <c:if test="${user.id != currentUser.id}">
-                                                    <li class="list-group-item">
-                                                        <c:choose>
-                                                            <c:when test="${userRole != '[ROLE_HOST]'}">
-                                                                <div style="display: flex;justify-content: space-between">
-                                                                    <label class="checkbox" style="align-self: center;"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label>
-                                                                    <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-info"><spring:message code="label.profile"/></button></a>
-                                                                </div>
-                                                                </li>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <a href="<c:url value="/user/${user.id}"/>"><label class="checkbox">${user.name}</label></a></li>
-                                                            </c:otherwise>
-                                                        </c:choose>
-
-                                                </c:if>
+                                        <c:when test="${not empty property.rules}">
+                                            <c:forEach var="rule" items="${property.rules}">
+                                                <li class="list-group-item">${rule.name}</li>
                                             </c:forEach>
                                         </c:when>
                                         <c:otherwise>
-                                            <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>
+                                            <li class="list-group-item"> <spring:message code="property.no_special_rules"/> </li>
                                         </c:otherwise>
                                     </c:choose>
                                 </ul>
                             </div>
-                        </form:form>
-                    </c:when>
-                    <c:otherwise>
+                            <br>
+                            <div class="card">
+                                <div class="card-header">
+                                    <spring:message code="property.services"/>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <c:choose>
+                                        <c:when test="${not empty property.services}">
+                                            <c:forEach var="service" items="${property.services}">
+                                                <li class="list-group-item">${service.name}</li>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="list-group-item"> <spring:message code="property.no_special_services"/> </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </ul>
+                            </div>
 
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <spring:message code="property.rules"/>
+                        </div>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <c:choose>
-                            <c:when test="${not empty property.rules}">
-                                <c:forEach var="rule" items="${property.rules}">
-                                    <li class="list-group-item">${rule.name}</li>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="list-group-item"> <spring:message code="property.no_special_rules"/> </li>
-                            </c:otherwise>
-                        </c:choose>
-                    </ul>
                 </div>
-            </div>
-            <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">
-                    <spring:message code="property.services"/>
+                <div class="col-md-4">
+                    <div class="card acqua">
+                        <div class="card-body">
+                            <H4 class="price">$${property.price} <spring:message code="property.per_month"/></H4><br>
+                            <spring:message code="user.interested" var="interested"/>
+                            <spring:message code="user.not_interested" var="not_interested"/>
+                                <c:choose>
+                                    <c:when test="${userRole == '[ROLE_HOST]' && currentUser.id == property.ownerId}">
+                                        <div class="flex-container">
+                                            <c:choose>
+                                                <c:when test="${property.availability == 'AVAILABLE'}">
+                                                    <c:url value="/property/changeStatus/" var="postPath"/>
+                                                    <form class="my-form" action="${postPath}${property.id}" method="post">
+                                                        <button type="submit" class="btn btn-secondary"><spring:message code="label.properties.pause"/></button>
+                                                    </form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:url value="/property/changeStatus/" var="postPath"/>
+                                                    <form class="my-form" action="${postPath}${property.id}" method="post">
+                                                        <button type="submit" class="btn btn-success"><spring:message code="label.properties.activate"/></button>
+                                                    </form>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <c:url value="/property/delete/" var="postPath"/>
+                                            <form class="my-form" action="${postPath}${property.id}" method="post">
+                                                <button type="submit" class="btn btn-danger"><spring:message code="label.properties.delete"/></button>
+                                            </form>
+                                        </div>
+                                    </c:when>
+                                    <c:when test="${userRole == '[ROLE_HOST]'}">
+                                    </c:when>
+                                    <c:when test="${userRole == '[ROLE_GUEST]' && userInterested == true}">
+                                        <div class="flex-container" style="justify-content: space-around">
+                                            <c:url value="/${property.id}/deInterest/" var="postPath"/>
+                                            <c:choose>
+                                                <c:when test="${userInterested == true || userRole == '[ROLE_HOST]'}">
+                                                    <c:url value="/proposal/create/${property.id}" var="postPath"/>
+                                                    <form:form modelAttribute="proposalForm" action="${postPath}" method="post">
+                                                        <div class="card">
+                                                            <div class="card-header" style="display: flex;justify-content: space-between;">
+                                                                <spring:message code="user.create_proposal" var="createProposal"/>
+                                                                <span> <spring:message code="user.interested_users"/>
+                                                                    <c:if test="${userRole != '[ROLE_HOST]' && interestedUsers.size() > 1}">
+                                                                        <input type="submit" value="${createProposal}" class="btn btn-primary stretched-link"/>
+                                                                    </c:if>
+                                                                </span>
+                                                                <c:if test="${maxPeople != null}">
+                                                                    <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
+                                                                </c:if>
+                                                            </div>
+                                                            <ul class="list-group list-group-flush">
+                                                                <c:choose>
+                                                                    <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
+                                                                        <c:forEach var="user" items="${interestedUsers}">
+                                                                            <c:if test="${user.id != currentUser.id}">
+                                                                                <li class="list-group-item">
+                                                                                <c:choose>
+                                                                                    <c:when test="${userRole != '[ROLE_HOST]'}">
+                                                                                        <div style="display: flex;justify-content: space-between">
+                                                                                            <label class="checkbox" style="align-self: center;"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label>
+                                                                                            <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-info"><spring:message code="label.profile"/></button></a>
+                                                                                        </div>
+                                                                                </li>
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        <a href="<c:url value="/user/${user.id}"/>"><label class="checkbox">${user.name}</label></a></li>
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
+
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </ul>
+                                                        </div>
+                                                    </form:form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <c:url value="/${property.id}/deInterest/" var="postPath"/>
+                                            <form class="my-form" action="${postPath}" method="POST">
+                                                <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
+                                            </form>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="flex-container" style="justify-content: space-around">
+                                            <c:url value="/${property.id}/interest/" var="postPath"/>
+                                            <form class="my-form" action="${postPath}" method="POST">
+                                                <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
+                                            </form>
+                                        </div>
+                                    </c:otherwise>
+                            </c:choose>
+                            <c:if test="${param.noLogin == true}">
+                                <p class="formError"><spring:message code="system.must_be_logged_in_interest"/></p>
+                            </c:if>
+                        </div>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <c:choose>
-                        <c:when test="${not empty property.services}">
-                            <c:forEach var="service" items="${property.services}">
-                                <li class="list-group-item">${service.name}</li>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="list-group-item"> <spring:message code="property.no_special_services"/> </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
-            </div>
             </div>
         </div>
-
-
     </div>
 
 </body>

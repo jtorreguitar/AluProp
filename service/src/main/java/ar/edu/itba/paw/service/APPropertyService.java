@@ -28,7 +28,6 @@ public class APPropertyService implements PropertyService {
     /* package */ final static String NEIGHBOURHOOD_NOT_EXISTS = "The neighbourhood specified does not exist";
     private final int DEFAULT_PAGE_SIZE = 10;
     private final int DEFAULT_PAGE_NUMBER = 0;
-
     private List<String> errors;
 
     @Autowired
@@ -174,5 +173,12 @@ public class APPropertyService implements PropertyService {
     @Override
     public Collection<Property> getByOwnerId(long id) {
         return propertyDao.getByOwnerId(id);
+    }
+
+    @Override
+    public void changeStatus(long id){
+
+        System.out.println("INFO: STATAUS CHANGED"); // TODO: DELETE WHEN MIGRATED TO HIBERNATE
+        //propertyDao.changeStatus(id);
     }
 }

@@ -9,6 +9,7 @@ import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
@@ -57,11 +58,13 @@ public class PropertyController {
     private ProposalService proposalService;
     @Autowired
     public APJavaMailSender emailSender;
+    @Autowired
+    protected NotificationService notificationService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
-                              @RequestParam(required = false, defaultValue = "9") int pageSize) {
+                              @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
@@ -74,6 +77,8 @@ public class PropertyController {
         mav.addObject("totalElements", response.getTotalItems());
         mav.addObject("maxItems",MAX_SIZE);
         addSearchObjectsToMav(mav);
+        if (user != null)
+            addNotificationsToMav(mav, user);
         return mav;
     }
 
@@ -81,6 +86,11 @@ public class PropertyController {
     public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form,
                             @ModelAttribute FilteredSearchForm searchForm,
                             @PathVariable("id") long id) {
+
+        return addObjectsToMAVForDetailedProperty(id);
+    }
+
+    private ModelAndView addObjectsToMAVForDetailedProperty(long id){
         final ModelAndView mav = new ModelAndView("detailedProperty");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
@@ -95,9 +105,10 @@ public class PropertyController {
             mav.addObject("userInterested",userService.getUserIsInterestedInProperty(user.getId(), id));
             mav.addObject("interestedUsers", userService.getUsersInterestedInProperty(id, new PageRequest(0, 100)).getResponseData());
         }
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
+        addSearchObjectsToMav(mav);
+        if (user != null)
+            addNotificationsToMav(mav, user);
+
         return mav;
     }
 
@@ -205,6 +216,7 @@ public class PropertyController {
             .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
             .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
             .withOwnerId(UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService).getId())
+            .withAvailability(Availability.valueOf("AVAILABLE"))
             .build();
     }
 
@@ -248,6 +260,9 @@ public class PropertyController {
         mav.addObject("isSearch", true);
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         addSearchObjectsToMav(mav);
+        if (user != null)
+
+            addNotificationsToMav(mav, user);
         return mav;
     }
 
@@ -263,6 +278,22 @@ public class PropertyController {
             return new ModelAndView("404").addObject("currentUser", u);
         propertyService.delete(propertyId);
         return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
+    }
+
+    @RequestMapping(value = "/property/changeStatus/{propertyId}", method = RequestMethod.POST)
+    public ModelAndView changeStatus(HttpServletRequest request,
+                               @PathVariable(value = "propertyId") int propertyId, @ModelAttribute FilteredSearchForm searchForm) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser"))
+            return new ModelAndView("404");
+        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        Property prop = propertyService.get(propertyId);
+        if (prop.getOwnerId() != u.getId())
+            return new ModelAndView("404").addObject("currentUser", u);
+
+        propertyService.changeStatus(propertyId);
+
+        return addObjectsToMAVForDetailedProperty(propertyId);
     }
 
     @RequestMapping(value = "/proposal/create/{propertyId}", method = RequestMethod.POST)
@@ -324,5 +355,10 @@ public class PropertyController {
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
+    }
+
+    private void addNotificationsToMav(ModelAndView mav, User u){
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        mav.addObject("notifications", notifications);
     }
 }

@@ -9,6 +9,8 @@
         <title><spring:message code="label.profile"/></title>
 
         <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
+        <link rel='icon' type='image/png' href="<c:url value="/resources/images/favicon.png"/>"/>
+
 
         <!-- Bootstrap core css -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -55,10 +57,8 @@
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="card-body">
                                             <spring:message code="label.profile.noInterests" />
                                             <a href="<c:url value="/"/>"><spring:message code="label.profile.findAProperty"/></a>
-                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -73,15 +73,13 @@
                             <div class="list-group">
                                 <c:choose>
                                     <c:when test="${not empty proposals}">
-                                        <div class="card-body">
                                             <c:forEach var="proposal" items="${proposals}" varStatus="i">
                                                 <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
                                                     <div style="display: flex;justify-content: space-between">${proposalPropertyNames[i.index]}
-                                                        <c:if test="${proposal.creatorId == currentUser.id}"><span><img class="flag" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
+                                                        <c:if test="${proposal.creatorId == currentUser.id}"><span><img class="my-span" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
                                                     </div>
                                                 </a>
                                             </c:forEach>
-                                        </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="card-body"><spring:message code="label.profile.no_proposals" /></div>
@@ -96,16 +94,23 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <spring:message code="label.profile.properties"/>
+                                <spring:message code="label.profile.your_properties"/>
                             </div>
                             <div class="list-group">
                                 <c:choose>
                                     <c:when test="${not empty properties}">
-                                        <div class="card-body">
                                             <c:forEach var="property" items="${properties}">
-                                                <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action">${property.description}</a>
+                                                <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action" style="display: flex;justify-content: space-between">${property.description}
+                                                    <c:choose>
+                                                        <c:when test="${property.availability == 'AVAILABLE'}">
+                                                            <span class="badge badge-success my-badge>"> <spring:message code="property.active"/> </span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge badge-secondary my-badge"> <spring:message code="property.inactive"/> </span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </a>
                                             </c:forEach>
-                                        </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="card-body"><spring:message code="label.profile.no_properties" /></div>

@@ -22,10 +22,7 @@ public class APCareerDao implements CareerDao {
 
     @Override
     public Career get(long id) {
-        final TypedQuery<Career> query = entityManager.createQuery("from Career as c where c.id = :id", Career.class);
-        query.setParameter("id", id);
-        final List<Career> list = query.getResultList();
-        return list.isEmpty() ? null : list.get(0);
+        return entityManager.find(Career.class, id);
     }
 
     @Override
