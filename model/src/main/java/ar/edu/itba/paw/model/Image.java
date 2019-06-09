@@ -18,15 +18,15 @@ public class Image {
     private long propertyId;
 
     @Column
-    private InputStream image;
+    private byte[] image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "propertyId")
     private Property property;
 
-    /* package */
+    /* package */ Image() { }
 
-    public Image(long id, long propertyId, InputStream image) {
+    public Image(long id, long propertyId, byte[] image) {
         this.id = id;
         this.propertyId = propertyId;
         this.image = image;
@@ -44,7 +44,7 @@ public class Image {
         return propertyId;
     }
 
-    public InputStream getImage() {
+    public byte[] getImage() {
         return image;
     }
 

@@ -19,7 +19,7 @@ import java.util.Map;
 public class APImageDao implements ImageDao {
 
     private RowMapper<Image> ROW_MAPPER = (rs, rowNum)
-        -> new Image(rs.getLong("id"), rs.getLong("propertyId"), rs.getBinaryStream("image"));
+        -> new Image(rs.getLong("id"), rs.getLong("propertyId"), rs.getBytes("image"));
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
