@@ -59,7 +59,8 @@ CREATE TABLE IF NOT EXISTS properties (
     capacity integer,
     price float,
     mainimageid integer, --THIS SHOULD BE A FOREIGN KEY! BUT THE ADD COLUMN IF NOT EXISTS WASN'T WORKING TODO FIX
-    ownerId INTEGER REFERENCES  users(id) ON DELETE CASCADE
+    ownerId INTEGER REFERENCES  users(id) ON DELETE CASCADE,
+    availability varchar(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS interests (
@@ -135,8 +136,8 @@ WHERE NOT EXISTS (SELECT * FROM images WHERE id=1);
 
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (1, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (1, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'AVAILABLE'))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=1);
 
 INSERT INTO images(
@@ -145,33 +146,33 @@ SELECT * FROM (VALUES (2, 1, decode('/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhU
 WHERE NOT EXISTS (SELECT * FROM images WHERE id=2);
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (2, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (2, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'AVAILABLE'))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=2);
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (3, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (3, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'AVAILABLE'))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=3);
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (4, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1,1 ))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (4, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1,1, 'AVAILABLE' ))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=4);
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (5, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (5, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'AVAILABLE'))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=5);
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (6, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1,1 ))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (6, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1,1, 'AVAILABLE' ))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=6);
 
 INSERT INTO properties(
-    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId)
-SELECT * FROM (VALUES (7, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1))
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId, availability)
+SELECT * FROM (VALUES (7, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'AVAILABLE'))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=7);
 
 INSERT INTO interests(id, propertyid, userid)
@@ -194,6 +195,3 @@ WHERE NOT EXISTS (SELECT * FROM services WHERE id=1);
 INSERT INTO propertyServices (id, propertyId, serviceId)
 SELECT * FROM (VALUES(1, 1, 1))
 WHERE NOT EXISTS (SELECT * FROM propertyservices WHERE id = 1);
-
-ALTER TABLE properties
-ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE'
