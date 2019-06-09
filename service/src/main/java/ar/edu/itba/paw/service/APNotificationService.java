@@ -24,4 +24,9 @@ public class APNotificationService implements NotificationService {
     public List<Notification> getAllUnreadNotificationsForUser(long id) {
         return notificationDao.getAllUnreadNotificationsForUser(id);
     }
+
+    @Override
+    public Notification createNotification(long userId, String subjectCode, String textCode, String link) {
+        return notificationDao.createNotification(userId, subjectCode, textCode, link);
+    }
 }

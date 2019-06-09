@@ -40,6 +40,9 @@ public class PropertyController {
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
     private static final Integer MAX_SIZE = 9;
 
+    private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
+    private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
+
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -261,7 +264,6 @@ public class PropertyController {
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         addSearchObjectsToMav(mav);
         if (user != null)
-
             addNotificationsToMav(mav, user);
         return mav;
     }
@@ -323,11 +325,12 @@ public class PropertyController {
 //                            generateProposalUrl(proposalOrErrors.value(), request) +
 //                            "\nIf you can't see the proposal, remember to log in!\n Cheers!",
 //                    proposalOrErrors.value().getUsers());
-            emailSender.sendEmailToUsers("AluProp - Te han invitado a una propuesta!",
-                    "Puedes responder a la propuesta usando el siguiente enlace: \n" +
-                            generateProposalUrl(proposalOrErrors.value(), request) +
-                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
-                    proposalOrErrors.value().getUsers());
+//            emailSender.sendEmailToUsers("AluProp - Te han invitado a una propuesta!",
+//                    "Puedes responder a la propuesta usando el siguiente enlace: \n" +
+//                            generateProposalUrl(proposalOrErrors.value(), request) +
+//                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
+//                    proposalOrErrors.value().getUsers());
+            sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers());
             return new ModelAndView("redirect:/proposal/" + proposalOrErrors.value().getId());
         } else {
             ModelAndView mav = new ModelAndView("redirect:/" + propertyId);
@@ -359,5 +362,13 @@ public class PropertyController {
     private void addNotificationsToMav(ModelAndView mav, User u){
         List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
         mav.addObject("notifications", notifications);
+    }
+
+    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users){
+        for (User user: users){
+            Notification result = notificationService.createNotification(user.getId(), subjectCode, link, textCode);
+            if (result == null)
+                logger.error("Failed to deliver notification to user with id: " + user.getId());
+        }
     }
 }

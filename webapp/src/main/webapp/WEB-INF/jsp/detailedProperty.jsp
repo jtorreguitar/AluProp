@@ -170,22 +170,13 @@
                                     </c:when>
                                     <c:when test="${userRole == '[ROLE_GUEST]' && userInterested == true}">
                                         <div class="flex-container" style="justify-content: space-around">
-                                            <c:url value="/${property.id}/deInterest/" var="postPath"/>
                                             <c:choose>
                                                 <c:when test="${userInterested == true || userRole == '[ROLE_HOST]'}">
                                                     <c:url value="/proposal/create/${property.id}" var="postPath"/>
-                                                    <form:form modelAttribute="proposalForm" action="${postPath}" method="post">
+                                                    <form:form modelAttribute="proposalForm" action="${postPath}" style="width: -moz-available;" method="post">
                                                         <div class="card">
                                                             <div class="card-header" style="display: flex;justify-content: space-between;">
-                                                                <spring:message code="user.create_proposal" var="createProposal"/>
-                                                                <span> <spring:message code="user.interested_users"/>
-                                                                    <c:if test="${userRole != '[ROLE_HOST]' && interestedUsers.size() > 1}">
-                                                                        <input type="submit" value="${createProposal}" class="btn btn-primary stretched-link"/>
-                                                                    </c:if>
-                                                                </span>
-                                                                <c:if test="${maxPeople != null}">
-                                                                    <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
-                                                                </c:if>
+                                                                <spring:message code="user.interested_users"/>
                                                             </div>
                                                             <ul class="list-group list-group-flush">
                                                                 <c:choose>
@@ -196,8 +187,10 @@
                                                                                 <c:choose>
                                                                                     <c:when test="${userRole != '[ROLE_HOST]'}">
                                                                                         <div style="display: flex;justify-content: space-between">
-                                                                                            <label class="checkbox" style="align-self: center;"><form:checkbox path="invitedUsersIds" value="${user.id}"/> ${user.name}</label>
-                                                                                            <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-info"><spring:message code="label.profile"/></button></a>
+                                                                                            <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;">
+                                                                                                <form:checkbox path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
+                                                                                            </label>
+                                                                                            <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
                                                                                         </div>
                                                                                 </li>
                                                                                     </c:when>
@@ -215,14 +208,26 @@
                                                                 </c:choose>
                                                             </ul>
                                                         </div>
+                                                        <br>
+                                                        <div class="flex-container" style="justify-content: space-around">
+                                                            <spring:message code="user.create_proposal" var="createProposal"/>
+                                                                <%--<span>--%>
+                                                            <c:if test="${userRole != '[ROLE_HOST]' && interestedUsers.size() > 1}">
+                                                                <input type="submit" value="${createProposal}" style="width: -moz-available;" class="btn btn-primary stretched-link"/>
+                                                            </c:if>
+                                                                <%--</span>--%>
+                                                            <c:if test="${maxPeople != null}">
+                                                                <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
+                                                            </c:if>
+                                                        </div>
                                                     </form:form>
                                                 </c:when>
                                                 <c:otherwise>
                                                 </c:otherwise>
                                             </c:choose>
                                             <c:url value="/${property.id}/deInterest/" var="postPath"/>
-                                            <form class="my-form" action="${postPath}" method="POST">
-                                                <input type="submit" value="${not_interested}" style="color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
+                                            <form class="my-form" action="${postPath}" method="POST" style="width: 100%;">
+                                                <input type="submit" value="${not_interested}" style="width: 100%;color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
                                             </form>
                                         </div>
                                     </c:when>

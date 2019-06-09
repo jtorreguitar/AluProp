@@ -228,12 +228,11 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
-        Property property = get(id);
+        Property property = entityManager.find(Property.class, id);
         if (property == null)
             return null;
         property.getRules().isEmpty();
         property.getServices().isEmpty();
-        property.getImages().isEmpty();
         property.getImages().isEmpty();
         return property;
     }

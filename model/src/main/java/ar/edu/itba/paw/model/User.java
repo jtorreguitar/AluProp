@@ -33,6 +33,7 @@ public class User {
     private Date birthDate;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(nullable = false)

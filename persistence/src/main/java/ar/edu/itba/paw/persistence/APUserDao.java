@@ -1,11 +1,11 @@
 package ar.edu.itba.paw.persistence;
 
-import javax.sql.DataSource;
-
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.CareerDao;
 import ar.edu.itba.paw.interfaces.dao.UniversityDao;
+import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import ar.edu.itba.paw.interfaces.dao.UserDao;
-import ar.edu.itba.paw.model.User;
-
+import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +27,19 @@ public class APUserDao implements UserDao {
                                                                     "(SELECT * FROM interests WHERE userId = u.id AND propertyId = ?)\n" +
                                                                 "ORDER BY u.name\n" +
                                                                 "LIMIT ? OFFSET ?";
+    @Autowired
+    private UniversityDao universityDao;
+    @Autowired
+    private CareerDao careerDao;
+
+    @Autowired
+    public APUserDao(DataSource ds) {
+        jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("id");
+    }
+
     private final RowMapper<User> ROW_MAPPER = (rs, rowNum)
             -> new User.Builder()
                 .withId(rs.getLong("id"))
@@ -42,23 +53,11 @@ public class APUserDao implements UserDao {
                 .withName(rs.getString("name"))
                 .withPasswordHash(rs.getString("passwordHash"))
                 .withUniversityId(rs.getLong("universityId"))
+                .withUniversity(universityDao.get(rs.getLong("universityId")))
                 .withRole(Role.valueOf(rs.getString("role")))
                 .build();
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-
-    @Autowired
-    private CareerDao careerDao;
-    @Autowired
-    private UniversityDao universityDao;
-
-    @Autowired
-    public APUserDao(DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                            .withTableName("users")
-                            .usingGeneratedKeyColumns("id");
-    }
 
     @Override
     public User get(long id) {

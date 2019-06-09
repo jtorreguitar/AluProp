@@ -8,6 +8,8 @@ import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,22 +26,14 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
-//    private final static String DELETE_SUBJECT= "AluProp - A proposal has been dropped.";
-//    private final static String DELETE_BODY = "Unfortunately, the creator of the proposal has dropped it, and it has been deleted.";
-//
-//    private final static String DECLINE_SUBJECT= "AluProp - A proposal has been dropped.";
-//    private final static String DECLINE_BODY = "Unfortunately, since someone has declined the proposal, the proposal has been dropped";
-//
-//    private final static String SENT_SUBJECT= "AluProp - A proposal has been sent.";
-//    private final static String SENT_BODY = "Every member in the proposal has accepted, so it has been sent to the property's owner.";
-//
-//    private final static String SENT_HOST_SUBJECT= "AluProp - There's a new proposal for your property!";
+    private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
 
     private final static String DELETE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
     private final static String DELETE_BODY = "Lamentablemente, el creador de la propuesta la ha cancelado.\nSaludos,\nEl equipo de AluProp.";
@@ -51,6 +45,20 @@ public class ProposalController {
     private final static String SENT_BODY = "Todos los miembros de la propuesta han aceptado, así que fue enviada al dueño de la propiedad!\nSaludos,\nEl equipo de AluProp.";
 
     private final static String SENT_HOST_SUBJECT= "AluProp - Hay una propuesta nueva para tu propiedad!";
+
+
+    private final static String DELETE_SUBJECT_CODE= "notifications.proposals.deleted.subject";
+    private final static String DELETE_BODY_CODE = "notifications.proposals.deleted";
+
+    private final static String DECLINE_SUBJECT_CODE= "notifications.proposals.declined.subject";
+    private final static String DECLINE_BODY_CODE = "notifications.proposals.declined";
+
+    private final static String SENT_SUBJECT_CODE= "notifications.proposals.sent.subject";
+    private final static String SENT_BODY_CODE = "notifications.proposals.sent";
+
+    private final static String SENT_HOST_SUBJECT_CODE= "notifications.proposals.hostProposal.subject";
+    private final static String SENT_HOST_BODY_CODE= "notifications.proposals.hostProposal";
+
 
 
     @Autowired
@@ -116,8 +124,8 @@ public class ProposalController {
         proposalService.delete(proposalId);
 
         Collection<User> retrieveUsers = proposal.getUsers();
-
-        emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
+        //emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
+        sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers);
         return new ModelAndView("successfulDelete").addObject("currentUser", u);
     }
 
@@ -136,9 +144,14 @@ public class ProposalController {
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
             proposal.getUsers().add(creator);
-            emailSender.sendEmailToUsers(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
+            //emailSender.sendEmailToUsers(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
+            sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers());
+
             Property property = propertyService.getPropertyWithRelatedEntities(proposal.getPropertyId());
-            emailSender.sendEmailToSingleUser(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
+            List<User> owner = new ArrayList<>();
+            owner.add(property.getOwner());
+            sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner);
+            //emailSender.sendEmailToSingleUser(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
         }
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
@@ -158,10 +171,19 @@ public class ProposalController {
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
         if (affectedRows > 0){
             proposalService.delete(proposalId);
-            emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
+            sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers());
+            //emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
         }
 
         return new ModelAndView("redirect:/proposal/" + proposalId);
+    }
+
+    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users){
+        for (User user: users){
+            Notification result = notificationService.createNotification(user.getId(), subjectCode, link, textCode);
+            if (result == null)
+                logger.error("Failed to deliver notification to user with id: " + user.getId());
+        }
     }
 
     private boolean userIsInvitedToProposal(User user, Proposal proposal){

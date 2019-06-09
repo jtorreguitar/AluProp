@@ -36,4 +36,9 @@ public class APNotificationDao implements NotificationDao {
     public List<Notification> getAllUnreadNotificationsForUser(long id) {
         return null;
     }
+
+    @Override
+    public Notification createNotification(long userId, String subjectCode, String textCode, String link) {
+        return null;
+    }
 }

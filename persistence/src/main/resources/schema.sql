@@ -110,6 +110,14 @@ CREATE TABLE IF NOT EXISTS userProposals (
     state integer
 );
 
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    usrId INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    subjectCode VARCHAR(250),
+    textCode VARCHAR(250),
+    link VARCHAR(250),
+    state INTEGER
+);
 
 INSERT INTO universities(id, name)
 VALUES(1, 'ITBA')
@@ -216,7 +224,3 @@ INSERT INTO neighbourhoods(
     id, name, cityid)
 VALUES (5, 'Villa Crespo', 1)
 ON CONFLICT DO NOTHING;
-
-ALTER TABLE properties
-ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE'
-
