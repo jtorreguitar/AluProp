@@ -38,10 +38,12 @@
             <c:when test="${not empty notifications}">
                 <c:forEach var="notification" items="${notifications}" varStatus="i">
                     <li class="list-group-item">
-                        <div class="notification">
-                            <div class="notification-subject"><spring:message code="${notification.subjectCode}"/></div>
-                            <div class="notification-text"><spring:message code="${notification.textCode}"/></div>
-                        </div>
+                        <a href="<c:url value="${notification.link}"/>" class="list-group-item list-group-item-action">
+                            <div class="notification">
+                                <div class="notification-subject"><spring:message code="${notification.subjectCode}"/></div>
+                                <div class="notification-text"><spring:message code="${notification.textCode}"/></div>
+                            </div>
+                        </a>
                     </li>
                 </c:forEach>
             </c:when>

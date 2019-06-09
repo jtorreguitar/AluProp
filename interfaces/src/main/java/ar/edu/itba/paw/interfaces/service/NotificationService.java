@@ -15,4 +15,5 @@ import org.springframework.lang.Nullable;
 public interface NotificationService {
     List<Notification> getAllNotificationsForUser(long id);
     List<Notification> getAllUnreadNotificationsForUser(long id);
+    Notification createNotification(long userId, String subjectCode, String textCode, String link);
 }

@@ -98,6 +98,14 @@ CREATE TABLE IF NOT EXISTS images (
     image blob
 );
 
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER IDENTITY PRIMARY KEY,
+    usrId INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    subjectCode VARCHAR(250),
+    textCode VARCHAR(250),
+    link VARCHAR(250),
+    state INTEGER
+);
 
 -- Populating test database to check access
 
