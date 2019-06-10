@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.enums.ProposalState;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,7 @@ public class Proposal {
     private long creatorId;
     private List<User> users;
     private List<Integer> invitedUserStates;
+    private ProposalState state;
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
@@ -30,6 +33,9 @@ public class Proposal {
     public void setInvitedUserStates(List<Integer> invitedUserStates) {
         this.invitedUserStates = invitedUserStates;
     }
+
+    public ProposalState getState() { return state;}
+    public void setState(ProposalState state) { this.state = state; }
 
     public boolean isCompletelyAccepted(){
         for (Integer state: invitedUserStates)
