@@ -18,7 +18,7 @@ public class Rule {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "propertyRules")
-    private Collection<User> users;
+    private Collection<Property> properties;
 
     /* package */ Rule() { }
 

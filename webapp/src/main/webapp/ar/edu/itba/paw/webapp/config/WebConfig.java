@@ -27,6 +27,7 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -47,6 +48,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @EnableWebMvc
+@EnableTransactionManagement
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.service" })
 @PropertySource("classpath:application.properties")
 @Configuration

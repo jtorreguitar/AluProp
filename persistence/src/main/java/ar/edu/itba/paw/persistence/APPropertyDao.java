@@ -15,6 +15,7 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -226,6 +227,7 @@ public class APPropertyDao implements PropertyDao {
         return interest;
     }
 
+    @Transactional
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
         Property property = entityManager.find(Property.class, id);
@@ -266,8 +268,10 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public PageResponse<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest) {
-        return null;
+    public Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest) {
+        TypedQuery<Property> query = entityManager.createQuery(GET_INTERESTS_OF_USER_QUERY, Property.class);
+        query.setParameter("userId", id);
+        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override

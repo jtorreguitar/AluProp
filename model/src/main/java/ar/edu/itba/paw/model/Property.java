@@ -44,18 +44,25 @@ public class Property {
     private float price;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "propertyRules")
+    @JoinTable(name = "propertyRules",
+                joinColumns = @JoinColumn(name = "propertyId"),
+                inverseJoinColumns = @JoinColumn(name = "ruleId"))
     private Collection<Rule> rules;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "propertyRules")
+    @JoinTable(name = "interests",
+                joinColumns = @JoinColumn(name = "propertyId"),
+                inverseJoinColumns = @JoinColumn(name = "userId"))
     private Collection<User> interestedUsers;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "propertyRules")
+    @JoinTable(name = "propertyServices",
+                joinColumns = @JoinColumn(name = "propertyId"),
+                inverseJoinColumns = @JoinColumn(name = "serviceId"))
     private Collection<Service> services;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "propertyId")
     private Collection<Image> images;
 
     @Transient

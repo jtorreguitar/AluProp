@@ -12,15 +12,9 @@ public class PropertyRule {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long propertyId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "propertyId")
     private Property property;
-
-    @Transient
-    private long ruleId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ruleId")
@@ -30,19 +24,9 @@ public class PropertyRule {
 
     public PropertyRule(long id, long propertyId, long ruleId) {
         this.id = id;
-        this.propertyId = propertyId;
-        this.ruleId = ruleId;
     }
 
     public long getId() {
         return id;
-    }
-
-    public long getPropertyId() {
-        return propertyId;
-    }
-
-    public long getRuleId() {
-        return ruleId;
     }
 }

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.model.Property;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class APPropertyDaoTest {
     private DataSource ds;
 
     @Autowired
-    private APPropertyDao propertyDao;
+    private PropertyDao propertyDao;
 
 
     private JdbcTemplate jdbcTemplate;
@@ -95,7 +96,6 @@ public class APPropertyDaoTest {
         Assert.assertNotNull(maybeProperty);
         Assert.assertEquals(propertyID, maybeProperty.getId());
         Assert.assertNotNull(maybeProperty.getNeighbourhood());
-    //    Assert.assertNotNull(maybeProperty.getInterestedUsers());
         Assert.assertNotNull(maybeProperty.getRules());
     }
 
