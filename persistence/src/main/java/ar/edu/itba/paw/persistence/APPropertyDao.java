@@ -1,14 +1,11 @@
 package ar.edu.itba.paw.persistence;
 
-import java.util.*;
-
-import javax.sql.DataSource;
-
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.*;
-import ar.edu.itba.paw.interfaces.dao.PropertyDao;
-import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.Interest;
+import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +13,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.sql.DataSource;
+import java.util.*;
 
 @Repository
 public class APPropertyDao implements PropertyDao {
@@ -230,6 +229,26 @@ public class APPropertyDao implements PropertyDao {
             return new LinkedList<Property>();
         }
     }
+
+    @Override
+    public void changeStatus(Property prop, long id) {
+        Availability oldAvail = prop.getAvailability();
+        Availability newAvail;
+        switch(oldAvail){
+            case AVAILABLE:
+                newAvail=Availability.RENTED;
+                break;
+            case RENTED:
+                newAvail=Availability.AVAILABLE;
+                break;
+            default:
+                System.out.println("Error"); //TODO Remvoe
+                return;
+        }
+
+        jdbcTemplate.update("UPDATE properties SET availability= ? WHERE id = ?", newAvail.toString(),id);
+    }
+
     @Override
     public boolean showInterest(long propertyId, User user) {
 //        if (interestExists(propertyId, user))
@@ -274,7 +293,7 @@ public class APPropertyDao implements PropertyDao {
                     .withMainImage(imageDao.get(property.getMainImageId()))
                     .withImages(imageDao.getByProperty(property.getId()))
                     .withOwner(userDao.get(property.getOwnerId()))
-                    .withAvailability(Availability.valueOf("AVAILABLE"))
+                    .withAvailability(property.getAvailability())
                     .build();
     }
 

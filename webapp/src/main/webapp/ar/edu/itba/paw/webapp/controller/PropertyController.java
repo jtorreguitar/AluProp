@@ -295,7 +295,7 @@ public class PropertyController {
         if (prop.getOwnerId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
 
-        propertyService.changeStatus(propertyId);
+        propertyService.changeStatus(prop,propertyId);
 
         return addObjectsToMAVForDetailedProperty(propertyId);
     }
