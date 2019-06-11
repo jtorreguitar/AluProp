@@ -1,20 +1,18 @@
 package ar.edu.itba.paw.service;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.net.HttpURLConnection;
-import java.util.Optional;
-
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.*;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import ar.edu.itba.paw.interfaces.service.PropertyService;
 import org.springframework.lang.Nullable;
+
+import java.net.HttpURLConnection;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 @org.springframework.stereotype.Service
 public class APPropertyService implements PropertyService {
@@ -176,9 +174,8 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public void changeStatus(long id){
+    public void changeStatus(Property prop, long id){
 
-        System.out.println("INFO: STATAUS CHANGED"); // TODO: DELETE WHEN MIGRATED TO HIBERNATE
-        //propertyDao.changeStatus(id);
+        propertyDao.changeStatus(prop, id);
     }
 }

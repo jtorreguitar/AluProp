@@ -23,6 +23,7 @@ public class Proposal {
     private long creatorId;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private List<UserProposal> userProposals;
 
     /* package */ Proposal() { }

@@ -1,11 +1,35 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "notifications")
 public class Notification {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notifications_id_seq")
+    @SequenceGenerator(sequenceName = "notifications_id_seq", name = "notifications_id_seq", allocationSize = 1)
+    @Column(name = "id")
     private long id;
+
+    @Transient
     private long userId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @Column
     private String subjectCode;
+
+    @Column
     private String textCode;
+
+    @Column
     private String link;
+
+    // TODO: please turn into enum
+    @Column
     private int state;
 
     public Notification(long id, long userId, String subjectCode, String textCode, String link, int state) {

@@ -211,11 +211,9 @@
                                                         <br>
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
-                                                                <%--<span>--%>
                                                             <c:if test="${userRole != '[ROLE_HOST]' && interestedUsers.size() > 1}">
                                                                 <input type="submit" value="${createProposal}" style="width: -moz-available;" class="btn btn-primary stretched-link"/>
                                                             </c:if>
-                                                                <%--</span>--%>
                                                             <c:if test="${maxPeople != null}">
                                                                 <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
                                                             </c:if>
@@ -232,12 +230,10 @@
                                         </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="flex-container" style="justify-content: space-around">
-                                            <c:url value="/${property.id}/interest/" var="postPath"/>
-                                            <form class="my-form" action="${postPath}" method="POST">
-                                                <input type="submit" value="${interested}" class="btn btn-primary stretched-link"/>
-                                            </form>
-                                        </div>
+                                        <c:url value="/${property.id}/interest/" var="postPath"/>
+                                        <form class="my-form" action="${postPath}" method="POST">
+                                            <input type="submit" value="${interested}" style="width: 100%" class="btn btn-primary stretched-link"/>
+                                        </form>
                                     </c:otherwise>
                             </c:choose>
                             <c:if test="${param.noLogin == true}">

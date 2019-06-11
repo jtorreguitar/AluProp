@@ -31,6 +31,7 @@ public class City {
     private Country country;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "countryId")
     private Collection<Neighbourhood> neighbourhoods;
 
     /* package */ City() { }

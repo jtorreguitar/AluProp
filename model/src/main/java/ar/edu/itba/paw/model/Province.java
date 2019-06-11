@@ -24,6 +24,7 @@ public class Province {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cityId")
     private Collection<City> cities;
 
     /* package */ Province() { }

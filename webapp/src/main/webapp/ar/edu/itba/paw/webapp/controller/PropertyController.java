@@ -6,6 +6,10 @@ import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
+import ar.edu.itba.paw.interfaces.Either;
+import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
@@ -33,6 +37,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.*;
+import java.util.function.LongFunction;
+import java.util.stream.Collectors;
 
 @Controller
 public class PropertyController {
@@ -293,7 +301,7 @@ public class PropertyController {
         if (prop.getOwnerId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
 
-        propertyService.changeStatus(propertyId);
+        propertyService.changeStatus(prop,propertyId);
 
         return addObjectsToMAVForDetailedProperty(propertyId);
     }
@@ -305,8 +313,9 @@ public class PropertyController {
                                final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
         Property prop = propertyService.get(propertyId);
-        if (form.getInvitedUsersIds().length  < 1 || form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
+        if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
+
 
         String userEmail = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         long userId = userService.getByEmail(userEmail).getId();

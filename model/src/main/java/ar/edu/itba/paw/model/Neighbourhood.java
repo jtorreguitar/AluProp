@@ -24,6 +24,7 @@ public class Neighbourhood {
     private City city;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "neighbourhoodId")
     private Collection<Property> properties;
 
     /* package */ Neighbourhood() { }

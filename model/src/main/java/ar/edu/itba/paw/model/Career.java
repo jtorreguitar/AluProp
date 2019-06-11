@@ -17,6 +17,7 @@ public class Career {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "careerId")
     private Collection<User> users;
 
     /* package */ Career() { }

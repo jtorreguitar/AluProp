@@ -17,18 +17,14 @@ public class Country {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "countryId")
     private Collection<Province> provinces;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "countryId")
     private Collection<City> cities;
 
     /* package */ Country() { }
-
-    public Country(long id, String name, Collection<Province> provinces) {
-        this.id = id;
-        this.name = name;
-        this.provinces = provinces;
-    }
 
     public long getId() {
         return id;

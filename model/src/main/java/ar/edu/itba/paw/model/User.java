@@ -69,10 +69,16 @@ public class User {
     private Role role;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private Collection<UserProposal> userProposals;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private Collection<Property> ownedProperties;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private Collection<Notification> notifications;
 
     /* package */ User() { }
 

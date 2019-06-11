@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
-import java.io.InputStream;
-import java.util.Collection;
 
 @Entity
 @Table(name = "images")

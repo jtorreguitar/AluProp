@@ -20,6 +20,10 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <error-page>
+    <location> /errors </location>
+  </error-page>
+
   <servlet-mapping>
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>/</url-pattern>
