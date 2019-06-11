@@ -2,92 +2,76 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import ar.edu.itba.paw.model.enums.UserProposalState;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class APProposalDao implements ProposalDao {
 
-    private RowMapper<Proposal> ROW_MAPPER = (rs, rowNum)
-            -> new Proposal.Builder()
-            .withId(rs.getLong("id"))
-            .withPropertyId(rs.getLong("propertyId"))
-            .withCreatorId(rs.getLong("creatorId"))
-            .build();
-    private JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    private static final String USER_PROPOSAL_BY_USER_AND_PROPOSAL = "FROM UserProposal up WHERE up.user.id = :userId AND up.proposal.id = :proposalId";
 
-    @Autowired
-    private UserProposalDao userProposalDao;
-
-    @Autowired
-    public APProposalDao(DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(ds)
-                .withTableName("proposals")
-                .usingGeneratedKeyColumns("id");
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public Proposal create(Proposal proposal){
-        final Number id = jdbcInsert.executeAndReturnKey(generateArgumentsForProposalCreation(proposal));
-        Proposal ret = new Proposal.Builder()
-                .fromProposal(proposal)
-                .withId(id.longValue())
-                .build();
-        createRelatedEntities(ret);
-        return ret;
-    }
-
-    @Override
-    public long delete(long id) {
-        return jdbcTemplate.update("DELETE FROM proposals WHERE id=?", id);
-    }
-
-    private Map<String, Object> generateArgumentsForProposalCreation(Proposal proposal){
-        Map<String, Object> map = new HashMap<>();
-        map.put("propertyId", proposal.getPropertyId());
-        map.put("creatorId", proposal.getCreatorId());
-        return map;
-    }
-
-    private void createRelatedEntities(Proposal proposal){
-        proposal.getUsers().forEach(user -> userProposalDao.create(user.getId(), proposal.getId()));
-    }
-
-    @Override
-    public Proposal getById(long id) {
-        List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals  WHERE id = ?", ROW_MAPPER, id);
-        if(list.isEmpty()) return null;
-        Proposal proposal = new Proposal.Builder()
-                                .fromProposal(list.get(0))
-                                .withUserProposals(userProposalDao.getByProposalId(list.get(0).getId()))
-                                .build();
+        entityManager.merge(proposal);
         return proposal;
     }
 
     @Override
+    public void delete(long id) {
+        Proposal proposal = entityManager.find(Proposal.class, id);
+        if(proposal == null)
+            return;
+        entityManager.remove(proposal);
+    }
+
+    @Override
+    public Proposal getById(long id) {
+        return entityManager.find(Proposal.class, id);
+    }
+
+    @Transactional
+    @Override
     public Collection<Proposal> getAllProposalForUserId(long id){
-        RowMapper<Proposal> mapper = (rs, rowNum) -> new Proposal.Builder()
-                        .withCreatorId(rs.getLong("creatorid")).withPropertyId(rs.getLong("propertyid")).withId(rs.getLong("id")).build();
-        List<Proposal> list = jdbcTemplate.query("SELECT * FROM proposals WHERE creatorid=? ", mapper, id);
-        if (list.size() > 0)
-            return list;
-        return null;
+        User user = entityManager.find(User.class, id);
+        includeProposals(user);
+        return user.getUserProposals().stream().map(up -> up.getProposal()).collect(Collectors.toList());
+    }
+
+    private void includeProposals(User user) {
+        user.getUserProposals().stream().forEach(up -> up.getProposal().getId());
     }
 
     @Override
-    public long setAccept(long userId, long proposalId) {
-        return jdbcTemplate.update("UPDATE userProposals SET state=1 WHERE proposalid=? AND userid=?", proposalId, userId);
+    public void setAccept(long userId, long proposalId) {
+        UserProposal userProposal = getUserProposalByUserAndProposalIds(userId, proposalId);
+        userProposal.setState(UserProposalState.ACCEPTED);
+        entityManager.merge(userProposal);
     }
 
     @Override
+    // TODO: for crying out loud remove magic numbers
     public long setDecline(long userId, long proposalId) {
-        return jdbcTemplate.update("UPDATE userProposals SET state=2 WHERE proposalid=? AND userid=?", proposalId, userId);
+        UserProposal userProposal = getUserProposalByUserAndProposalIds(userId, proposalId);
+        if(userProposal == null)
+            return 0;
+        userProposal.setState(UserProposalState.REJECTED);
+        return 1;
+    }
+
+    private UserProposal getUserProposalByUserAndProposalIds(long userId, long proposalId) {
+        TypedQuery<UserProposal> query = entityManager
+                                        .createQuery(USER_PROPOSAL_BY_USER_AND_PROPOSAL, UserProposal.class);
+        query.setParameter("userId", userId);
+        query.setParameter("proposalId", proposalId);
+        return query.getSingleResult();
     }
 }

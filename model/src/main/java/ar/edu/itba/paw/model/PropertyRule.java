@@ -22,11 +22,20 @@ public class PropertyRule {
 
     /* package */ PropertyRule() { }
 
-    public PropertyRule(long id, long propertyId, long ruleId) {
-        this.id = id;
+    public PropertyRule(Property property, Rule rule) {
+        this.property = property;
+        this.rule = rule;
     }
 
     public long getId() {
         return id;
+    }
+
+    public Property getProperty() {
+        return property;
+    }
+
+    public Rule getRule() {
+        return rule;
     }
 }

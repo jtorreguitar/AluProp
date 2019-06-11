@@ -210,11 +210,11 @@ public class APPropertyDao implements PropertyDao {
                 newAvail=Availability.AVAILABLE;
                 break;
             default:
-                System.out.println("Error"); //TODO Remvoe
+                System.out.println("Error"); //TODO Remove
                 return;
         }
-
-        jdbcTemplate.update("UPDATE properties SET availability= ? WHERE id = ?", newAvail.toString(),id);
+        prop.setAvailability(newAvail);
+        entityManager.merge(prop);
     }
     
     @Override

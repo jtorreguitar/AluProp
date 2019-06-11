@@ -1,16 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.model.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,7 +27,7 @@ public class APUserDaoTest {
 
 
     @Autowired
-    private APUserDao userDao;
+    private UserDao userDao;
 
     private JdbcTemplate jdbcTemplate;
 

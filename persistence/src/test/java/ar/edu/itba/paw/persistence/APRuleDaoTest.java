@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.dao.RuleDao;
 import ar.edu.itba.paw.model.Rule;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,18 +15,26 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.Assert.*;
 
 @Sql("classpath:schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes= TestConfig.class)
 public class APRuleDaoTest {
+
     private final static String RULE_NAME = "No fumar mientras se escriben tests";
+    private final static int PROPERTY_ID = 1;
+
     @Autowired
     private DataSource ds;
 
     @Autowired
-    private APRuleDao ruleDao;
+    private RuleDao ruleDao;
 
 
     private JdbcTemplate jdbcTemplate;
@@ -52,5 +61,13 @@ public class APRuleDaoTest {
 
         Assert.assertNotEquals(0, realRowCount);
         Assert.assertEquals(expectedRowCount, realRowCount);
+    }
+
+    @Test
+    public void getRulesOfPropertyTest() {
+        List<Rule> rules = new ArrayList<>(ruleDao.getRulesOfProperty(PROPERTY_ID));
+        Assert.assertNotNull(rules);
+        Assert.assertFalse(rules.isEmpty());
+        Assert.assertEquals(rules.get(0).getName(), RULE_NAME);
     }
 }

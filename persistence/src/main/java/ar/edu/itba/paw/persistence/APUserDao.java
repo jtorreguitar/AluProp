@@ -5,146 +5,106 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.dao.CareerDao;
 import ar.edu.itba.paw.interfaces.dao.UniversityDao;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
+import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class APUserDao implements UserDao {
 
-    private static final String GET_USERS_BY_PROPERTY_QUERY = "SELECT * FROM users u WHERE EXISTS " +
-                                                                    "(SELECT * FROM interests WHERE userId = u.id AND propertyId = ?)\n" +
-                                                                "ORDER BY u.name\n" +
-                                                                "LIMIT ? OFFSET ?";
-    @Autowired
-    private UniversityDao universityDao;
-    @Autowired
-    private CareerDao careerDao;
+    private static final String INTEREST_COUNT_BY_USER_AND_PROPERTY = "SELECT COUNT(i.id) FROM Interest i WHERE i.user.id = :userId AND i.property.id = :propertyId";
 
-    @Autowired
-    public APUserDao(DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("users")
-                .usingGeneratedKeyColumns("id");
-    }
-
-    private final RowMapper<User> ROW_MAPPER = (rs, rowNum)
-            -> new User.Builder()
-                .withId(rs.getLong("id"))
-                .withBio(rs.getString("bio"))
-                .withBirthDate(rs.getDate("birthDate"))
-                .withCareerId(rs.getLong("careerId"))
-                .withContactNumber(rs.getString("contactNumber"))
-                .withEmail(rs.getString("email"))
-                .withGender(Gender.valueOf(rs.getString("gender")))
-                .withLastName(rs.getString("lastName"))
-                .withName(rs.getString("name"))
-                .withPasswordHash(rs.getString("passwordHash"))
-                .withUniversityId(rs.getLong("universityId"))
-                .withUniversity(universityDao.get(rs.getLong("universityId")))
-                .withRole(Role.valueOf(rs.getString("role")))
-                .build();
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public User get(long id) {
-        final List<User> list = jdbcTemplate
-                .query("SELECT * FROM users WHERE id = ?", ROW_MAPPER, id);
-        return list.isEmpty() ? null : list.get(0);
+        return entityManager.find(User.class, id);
     }
 
+    @Transactional
     @Override
     public User getWithRelatedEntities(long id){
-        User incompleteUser = get(id);
-        return new User.Builder()
-                .fromUser(incompleteUser)
-                .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
-                .withCareer(careerDao.get(incompleteUser.getCareerId()))
-                .build();
+        User user = entityManager.find(User.class, id);
+        initializeRelatedEntities(user);
+        return user;
     }
-
 
     @Override
     public User getByEmail(String email) {
-        final List<User> list = jdbcTemplate
-                .query("SELECT * FROM users WHERE email = ?", ROW_MAPPER, email);
-        return list.isEmpty() ? null : list.get(0);
+        TypedQuery<User> query = entityManager.createQuery("FROM User u WHERE u.email = :email", User.class);
+        query.setParameter("email", email);
+        return query.getSingleResult();
+    }
+
+    private void initializeRelatedEntities(User user) {
+        user.getUserProposals().isEmpty();
+        user.getInterestedProperties().isEmpty();
+        user.getNotifications().isEmpty();
+        user.getOwnedProperties().isEmpty();
     }
 
     @Override
     public Collection<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users", ROW_MAPPER);
+        return entityManager.createQuery("FROM User", User.class).getResultList();
     }
 
     @Override
     public User create(User user) {
-        Number id = jdbcInsert.executeAndReturnKey(generateArgumentsForUserCreation(user));
-        return new User.Builder()
-                    .fromUser(user)
-                    .withId(id.longValue())
-                    .build();
+        entityManager.merge(user);
+        return user;
     }
 
-    private Map<String,Object> generateArgumentsForUserCreation(User user) {
-        Map<String,Object> ret = new HashMap<>();
-        ret.put("bio", user.getBio());
-        ret.put("email", user.getEmail());
-        ret.put("passwordHash", user.getPasswordHash());
-        ret.put("name", user.getName());
-        ret.put("lastName", user.getLastName());
-        ret.put("careerId", user.getCareerId());
-        ret.put("universityId", user.getUniversityId());
-        ret.put("Gender", user.getGender().toString());
-        ret.put("birthDate", user.getBirthDate());
-        ret.put("contactNumber", user.getContactNumber());
-        ret.put("role", user.getRole().toString());
-        return ret;
-    }
-
+    @Transactional
     @Override
     public User getUserWithRelatedEntitiesByEmail(String email) {
-        User incompleteUser = getByEmail(email);
-        return new User.Builder()
-                .fromUser(incompleteUser)
-                .withUniversity(universityDao.get(incompleteUser.getUniversityId()))
-                .withCareer(careerDao.get(incompleteUser.getCareerId()))
-                .build();
+        User user = getByEmail(email);
+        initializeRelatedEntities(user);
+        return user;
     }
 
     @Override
     public boolean userExistsByEmail(String email) {
-        return !jdbcTemplate.query("SELECT * FROM users WHERE email = ?", ROW_MAPPER, email).isEmpty();
+        return !entityManager.createQuery("FROM User u WHERE u.email = :email").getResultList().isEmpty();
     }
 
     @Override
-    public PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest) {
-        Collection<User> data = jdbcTemplate.query((GET_USERS_BY_PROPERTY_QUERY),
-                                                    ROW_MAPPER,
-                                             id,
-                                                    pageRequest.getPageSize(),
-                                                    pageRequest.getPageNumber()*(pageRequest.getPageSize() + 1));
-        RowMapper<Long> integerRowMapper = (rs, rowNum) -> rs.getLong("count");
-        Long totalUsers = jdbcTemplate.query("SELECT COUNT(*) AS count FROM users", integerRowMapper).get(0);
-        return new PageResponse<>(pageRequest, totalUsers, data);
+    public Collection<User> getUsersInterestedInProperty(long id, PageRequest pageRequest) {
+        TypedQuery<Interest> query = entityManager.createQuery("FROM Interest i WHERE i.property.id = :propertyId", Interest.class);
+        query.setParameter("propertyId", id);
+        Collection<Interest> interests = QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+        return interests.stream().map(Interest::getUser).collect(Collectors.toList());
     }
 
     @Override
-    public boolean getUserIsInterestedInProperty(long userId, long propertyId){
-        RowMapper<Integer> integerRowMapper = (rs, rowNum) -> rs.getInt("c");
-        int totalUsers = jdbcTemplate.query("SELECT COUNT(*) AS c FROM interests WHERE propertyid = ? AND userid = ?", integerRowMapper, propertyId, userId).get(0);
-        return totalUsers > 0;
+    public boolean isUserInterestedInProperty(long userId, long propertyId){
+        TypedQuery<Long> query = entityManager
+                                    .createQuery(INTEREST_COUNT_BY_USER_AND_PROPERTY, Long.class);
+        query.setParameter("userId", userId);
+        query.setParameter("propertyId", propertyId);
+        return query.getSingleResult() > 0;
+    }
+
+    @Override
+    public Long count() {
+        return entityManager.createQuery("SELECT COUNT(u.id) FROM User u", Long.class).getSingleResult();
     }
 }

@@ -42,8 +42,8 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public long delete(long id) {
-        return proposalDao.delete(id);
+    public void delete(long id) {
+        proposalDao.delete(id);
     }
 
     private void checkRelatedEntitiesExist(Proposal proposal) {
@@ -72,8 +72,8 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public long setAccept(long userId, long proposalId) {
-        return proposalDao.setAccept(userId, proposalId);
+    public void setAccept(long userId, long proposalId) {
+        proposalDao.setAccept(userId, proposalId);
     }
 
     @Override

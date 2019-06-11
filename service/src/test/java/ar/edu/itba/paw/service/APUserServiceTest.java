@@ -52,9 +52,6 @@ public class APUserServiceTest {
     private CareerDao mockCareerDao;
 
     @Mock
-    PageResponse<User> pageResponse;
-
-    @Mock
     PageRequest pageRequest;
 
     @InjectMocks
@@ -167,13 +164,11 @@ public class APUserServiceTest {
 
     @Test
     public void getUsersInterestedInProperty(){
-        Mockito.when(mockUserDao.getUsersInterestedInProperty(1, pageRequest))
-                .thenReturn(pageResponse);
 
         PageResponse<User> pr = userService.getUsersInterestedInProperty(1, pageRequest);
 
         Assert.assertNotNull(pr);
-        Assert.assertEquals(pageResponse, pr);
+        Assert.assertEquals(mockUserDao.getUsersInterestedInProperty(1, pageRequest), pr.getResponseData());
     }
 
 }

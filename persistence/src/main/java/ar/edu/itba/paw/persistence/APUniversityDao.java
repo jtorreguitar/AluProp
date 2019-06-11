@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
@@ -14,23 +16,16 @@ import java.util.List;
 @Repository
 public class APUniversityDao implements UniversityDao {
 
-    private RowMapper<University> ROW_MAPPER = (rs, rowNum)
-        -> new University(rs.getLong("id"), rs.getString("name"));
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public APUniversityDao(DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public University get(long id) {
-        List<University> list = jdbcTemplate.query("SELECT * FROM universities WHERE id = ?", ROW_MAPPER, id);
-        return list.isEmpty() ? null : list.get(0);
+        return entityManager.find(University.class, id);
     }
 
     @Override
     public Collection<University> getAll() {
-        return jdbcTemplate.query("SELECT * FROM universities", ROW_MAPPER);
+        return entityManager.createQuery("FROM University", University.class).getResultList();
     }
 }

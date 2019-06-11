@@ -11,6 +11,7 @@ import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,11 +81,13 @@ public class APUserService implements UserService {
 
     @Override
     public PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest) {
-        return userDao.getUsersInterestedInProperty(id, pageRequest);
+        Collection<User> data = userDao.getUsersInterestedInProperty(id, pageRequest);
+        long count = userDao.count();
+        return new PageResponse<>(pageRequest, count, data);
     }
 
     @Override
     public boolean getUserIsInterestedInProperty(long userId, long propertyId) {
-        return userDao.getUserIsInterestedInProperty(userId, propertyId);
+        return userDao.isUserInterestedInProperty(userId, propertyId);
     }
 }

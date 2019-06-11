@@ -38,4 +38,8 @@ public class Rule {
     public String getName() {
         return name;
     }
+
+    public Collection<Property> getProperties() {
+        return properties;
+    }
 }

@@ -17,6 +17,7 @@ public interface UserDao {
     User getUserWithRelatedEntitiesByEmail(String email);
     User create(User user);
     boolean userExistsByEmail(String email);
-    PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);
-    boolean getUserIsInterestedInProperty(long userId, long propertyId);
+    Collection<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);
+    boolean isUserInterestedInProperty(long userId, long propertyId);
+    Long count();
 }

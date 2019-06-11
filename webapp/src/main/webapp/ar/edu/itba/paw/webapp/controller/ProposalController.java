@@ -137,7 +137,7 @@ public class ProposalController {
         Proposal proposal = proposalService.getById(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404").addObject("currentUser", u);
-        long affectedRows = proposalService.setAccept(u.getId(), proposalId);
+        proposalService.setAccept(u.getId(), proposalId);
         proposal = proposalService.getById(proposalId);
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreatorId());

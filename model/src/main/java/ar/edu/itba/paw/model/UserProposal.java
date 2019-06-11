@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 
 import javax.persistence.*;
@@ -39,6 +40,11 @@ public class UserProposal {
         this.proposalId = proposalId;
     }
 
+    public UserProposal(User user, Proposal proposal) {
+        this.user = user;
+        this.proposal = proposal;
+    }
+
     public long getId() {
         return id;
     }
@@ -73,5 +79,9 @@ public class UserProposal {
 
     public Proposal getProposal() {
         return proposal;
+    }
+
+    public void setState(UserProposalState state) {
+        this.state = state;
     }
 }

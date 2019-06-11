@@ -156,6 +156,10 @@ public class Property {
         return availability;
     }
 
+    public void setAvailability(Availability availability) {
+        this.availability = availability;
+    }
+
 
     public static class Builder {
         private Property property;

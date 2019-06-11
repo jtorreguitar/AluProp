@@ -149,6 +149,18 @@ public class User {
         return builder.toString();
     }
 
+    public Collection<UserProposal> getUserProposals() {
+        return userProposals;
+    }
+
+    public Collection<Property> getOwnedProperties() {
+        return ownedProperties;
+    }
+
+    public Collection<Notification> getNotifications() {
+        return notifications;
+    }
+
     public static class Builder {
 
         private final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";

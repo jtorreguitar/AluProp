@@ -12,15 +12,9 @@ public class PropertyService {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long propertyId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "propertyId")
     private Property property;
-
-    @Transient
-    private long serviceId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "serviceId")
@@ -28,21 +22,12 @@ public class PropertyService {
 
     /* package */ PropertyService() { }
 
-    public PropertyService(long id, long propertyId, long serviceId) {
-        this.id = id;
-        this.propertyId = propertyId;
-        this.serviceId = serviceId;
+    public PropertyService(Property property, Service service) {
+        this.property = property;
+        this.service = service;
     }
 
     public long getId() {
         return id;
-    }
-
-    public long getPropertyId() {
-        return propertyId;
-    }
-
-    public long getServiceId() {
-        return serviceId;
     }
 }
