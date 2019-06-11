@@ -2,10 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.model.Notification;
-import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.model.Proposal;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.slf4j.Logger;
@@ -194,14 +192,7 @@ public class ProposalController {
     }
 
     private boolean userHasRepliedToProposal(User user, Proposal proposal){
-        int userIndex = 0;
-        for (int i = 0; i< proposal.getUsers().size(); i++){
-            if (proposal.getUsers().get(i).getId() == user.getId()){
-                userIndex = i;
-                break;
-            }
-        }
-        return proposal.getInvitedUserStates().get(userIndex) != 0;
+        return proposal.getUserProposals().stream().anyMatch(up -> up.getUser().getId() == user.getId());
     }
 
     private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){

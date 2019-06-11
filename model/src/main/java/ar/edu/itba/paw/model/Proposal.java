@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
+import ar.edu.itba.paw.model.enums.ProposalState;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,8 +25,10 @@ public class Proposal {
     private long creatorId;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private List<UserProposal> userProposals;
+    @JoinColumn(name = "proposalId")
+    private Collection<UserProposal> userProposals;
+
+    private ProposalState state;
 
     /* package */ Proposal() { }
 
@@ -34,13 +38,16 @@ public class Proposal {
 
     public long getCreatorId() { return creatorId; }
 
-    public List<UserProposal> getUserProposals() { return userProposals; }
+    public Collection<UserProposal> getUserProposals() { return userProposals; }
 
-    public List<User> getUsers() { return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList()); }
+    public Collection<User> getUsers() { return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList()); }
 
     public List<Integer> getInvitedUserStates() {
         return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
     }
+
+    public ProposalState getState() { return state;}
+    public void setState(ProposalState state) { this.state = state; }
 
     public boolean isCompletelyAccepted(){
         for (Integer state: getInvitedUserStates())

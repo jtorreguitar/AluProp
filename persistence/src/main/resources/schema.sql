@@ -103,6 +103,8 @@ CREATE TABLE IF NOT EXISTS proposals (
     creatorId INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
 
+
+
 CREATE TABLE IF NOT EXISTS userProposals (
     id SERIAL PRIMARY KEY,
     userId INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -224,3 +226,9 @@ INSERT INTO neighbourhoods(
     id, name, cityid)
 VALUES (5, 'Villa Crespo', 1)
 ON CONFLICT DO NOTHING;
+
+ALTER TABLE properties
+ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE';
+
+ALTER TABLE proposals
+ADD COLUMN IF NOT EXISTS state varchar(100) NOT NULL DEFAULT 'PENDING';

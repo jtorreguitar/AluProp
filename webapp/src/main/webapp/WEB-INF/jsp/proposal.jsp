@@ -43,13 +43,13 @@
     <ul class="list-group list-group-flush">
         <c:choose>
             <c:when test="${not empty proposal.users}">
-                <li class="list-group-item">
+                <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
                     <div style="display: flex;justify-content: space-between">${creator.name}
                         <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
                     </div>
-                </li>
+                </a>
                 <c:forEach var="user" items="${proposal.users}" varStatus="i">
-                    <li class="list-group-item">
+                    <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
                         <div style="display: flex;justify-content: space-between">${user.name}
                             <span>
                                 <c:choose>
@@ -65,7 +65,7 @@
                                 </c:choose>
                             </span>
                         </div>
-                    </li>
+                    </a>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -100,6 +100,7 @@
                     <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
+
                     <spring:message code="label.proposal.your_prpoperty"/>
                 </c:otherwise>
             </c:choose>
