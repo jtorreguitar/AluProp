@@ -168,6 +168,7 @@ public class UserController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+
         User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
         User u = userService.get(userId);
         if (u == null)

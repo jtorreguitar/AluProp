@@ -62,7 +62,9 @@ public class User {
     private String contactNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "interests")
+    @JoinTable(name = "interests",
+                joinColumns = @JoinColumn(name = "userId"),
+                inverseJoinColumns = @JoinColumn(name = "propertyId"))
     private Collection<Property> interestedProperties;
 
     @Enumerated(EnumType.STRING)
@@ -73,7 +75,7 @@ public class User {
     private Collection<UserProposal> userProposals;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "ownerId")
     private Collection<Property> ownedProperties;
 
     @OneToMany(fetch = FetchType.LAZY)

@@ -24,7 +24,7 @@ public class APPropertyService implements PropertyService {
     /* package */ final static String SERVICE_NOT_EXISTS = "One of the services specified does not exist";
     /* package */ final static String RULE_NOT_EXISTS ="One of the rules specified does not exist";
     /* package */ final static String NEIGHBOURHOOD_NOT_EXISTS = "The neighbourhood specified does not exist";
-    private final int DEFAULT_PAGE_SIZE = 10;
+    private final int DEFAULT_PAGE_SIZE = 12;
     private final int DEFAULT_PAGE_NUMBER = 0;
     private List<String> errors;
 
