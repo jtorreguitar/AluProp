@@ -18,25 +18,23 @@ public class Proposal {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long propertyId;
-
-    @Transient
-    private long creatorId;
-
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "proposalId")
     private Collection<UserProposal> userProposals;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "propertyId")
+    private Property property;
+
     private ProposalState state;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "creatorId")
+    private User creator;
 
     /* package */ Proposal() { }
 
     public long getId() { return id; }
-
-    public long getPropertyId() { return propertyId; }
-
-    public long getCreatorId() { return creatorId; }
 
     public Collection<UserProposal> getUserProposals() { return userProposals; }
 
@@ -44,6 +42,10 @@ public class Proposal {
 
     public List<Integer> getInvitedUserStates() {
         return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
+    }
+
+    public Property getProperty() {
+        return property;
     }
 
     public ProposalState getState() { return state;}
@@ -56,6 +58,10 @@ public class Proposal {
         return true;
     }
 
+    public User getCreator() {
+        return creator;
+    }
+
     public static class Builder {
         private Proposal proposal;
 
@@ -63,16 +69,10 @@ public class Proposal {
 
         public Builder withId(long id){proposal.id = id;return this;}
 
-        public Builder withPropertyId(long propertyId){proposal.propertyId = propertyId;return this;}
-
-        public Builder withCreatorId(long creatorId){proposal.creatorId = creatorId;return this;}
-
         public Builder withUserProposals(List<UserProposal> userProposals){proposal.userProposals = userProposals;return this;}
 
         public Builder fromProposal(Proposal proposal){
             this.proposal.id = proposal.id;
-            this.proposal.creatorId = proposal.creatorId;
-            this.proposal.propertyId = proposal.propertyId;
             this.proposal.userProposals = proposal.userProposals;
             return this;
         }
@@ -83,5 +83,14 @@ public class Proposal {
 
         private void initializeLists() {if(this.proposal.userProposals == null) this.proposal.userProposals = new LinkedList<>(); }
 
+        public Builder withCreator(User user) {
+            proposal.creator = user;
+            return this;
+        }
+
+        public Builder withProperty(Property property) {
+            proposal.property = property;
+            return this;
+        }
     }
 }

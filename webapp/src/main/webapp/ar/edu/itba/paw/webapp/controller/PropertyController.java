@@ -317,8 +317,8 @@ public class PropertyController {
         long userId = userService.getByEmail(userEmail).getId();
 
         Proposal proposal = new Proposal.Builder()
-                .withCreatorId(userId)
-                .withPropertyId(propertyId)
+                .withCreator(userService.get(userId))
+                .withProperty(propertyService.get(propertyId))
 //                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
                 .build();
         for (Long id: form.getInvitedUsersIds())

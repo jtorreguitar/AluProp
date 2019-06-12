@@ -12,27 +12,15 @@ public class Interest {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long propertyId;
-
-    @Transient
-    private long userId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "propertyId")
     private Property property;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private User user;
 
     /* package */ Interest() { }
-
-    public Interest(long id, long propertyId, long userId) {
-        this.id = id;
-        this.propertyId = propertyId;
-        this.userId = userId;
-    }
 
     public Interest(Property property, User user) {
         this.property = property;
@@ -49,13 +37,5 @@ public class Interest {
 
     public long getId() {
         return id;
-    }
-
-    public long getPropertyId() {
-        return propertyId;
-    }
-
-    public long getUserId() {
-        return userId;
     }
 }

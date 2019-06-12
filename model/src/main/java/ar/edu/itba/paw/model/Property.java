@@ -82,6 +82,10 @@ public class Property {
     @Enumerated(EnumType.STRING)
     private Availability availability;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "propertyId")
+    private Collection<Proposal> proposals;
+
     /* package */ Property() { }
 
     public long getId() {
@@ -160,6 +164,9 @@ public class Property {
         this.availability = availability;
     }
 
+    public Collection<Proposal> getProposals() {
+        return proposals;
+    }
 
     public static class Builder {
         private Property property;

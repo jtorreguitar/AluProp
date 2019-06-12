@@ -168,7 +168,6 @@ public class UserController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-
         User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
         User u = userService.get(userId);
         if (u == null)
@@ -203,7 +202,7 @@ public class UserController {
     private List<String> generatePropertyNames(List<Proposal> list){
         List<String> result = new ArrayList<>();
         for (Proposal prop: list)
-            result.add(propertyService.get(prop.getPropertyId()).getDescription());
+            result.add(propertyService.get(prop.getProperty().getId()).getDescription());
         return result;
     }
 

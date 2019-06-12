@@ -47,8 +47,8 @@ public class APProposalService implements ProposalService {
     }
 
     private void checkRelatedEntitiesExist(Proposal proposal) {
-        checkPropertyExists(proposal.getPropertyId());
-        checkCreatorExists(proposal.getCreatorId());
+        checkPropertyExists(proposal.getProperty().getId());
+        checkCreatorExists(proposal.getCreator().getId());
     }
 
     private void checkPropertyExists(long propertyId) {

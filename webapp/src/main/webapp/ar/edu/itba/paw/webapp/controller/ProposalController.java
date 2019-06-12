@@ -91,9 +91,9 @@ public class ProposalController {
         Proposal proposal = proposalService.getById(id);
         if (proposal == null)
             return new ModelAndView("404").addObject("currentUser", u);
-        Property property = propertyService.get(proposal.getPropertyId());
-        User creator = userService.get(proposal.getCreatorId());
-        if (proposal.getCreatorId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
+        Property property = propertyService.get(proposal.getProperty().getId());
+        User creator = userService.get(proposal.getCreator().getId());
+        if (proposal.getCreator().getId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         if (userIsInvitedToProposal(u, proposal)){
             mav.addObject("isInvited", true);
@@ -117,7 +117,7 @@ public class ProposalController {
             return new ModelAndView("404");
         User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         Proposal proposal = proposalService.getById(proposalId);
-        if (proposal == null || proposal.getCreatorId() != u.getId())
+        if (proposal == null || proposal.getCreator().getId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         proposalService.delete(proposalId);
 
@@ -140,12 +140,12 @@ public class ProposalController {
         proposalService.setAccept(u.getId(), proposalId);
         proposal = proposalService.getById(proposalId);
         if (proposal.isCompletelyAccepted()){
-            User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
+            User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
             proposal.getUsers().add(creator);
             //emailSender.sendEmailToUsers(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
             sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers());
 
-            Property property = propertyService.getPropertyWithRelatedEntities(proposal.getPropertyId());
+            Property property = propertyService.getPropertyWithRelatedEntities(proposal.getProperty().getId());
             List<User> owner = new ArrayList<>();
             owner.add(property.getOwner());
             sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner);
@@ -164,7 +164,7 @@ public class ProposalController {
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404").addObject("currentUser", u);
-        User creator = userService.getWithRelatedEntities(proposal.getCreatorId());
+        User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
         proposal.getUsers().add(creator);
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
         if (affectedRows > 0){
@@ -196,7 +196,7 @@ public class ProposalController {
     }
 
     private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){
-        Property property = propertyService.get(proposal.getPropertyId());
+        Property property = propertyService.get(proposal.getProperty().getId());
         StringBuilder builder = new StringBuilder("Hola ");
         builder.append(host.getName());
         builder.append("! ");

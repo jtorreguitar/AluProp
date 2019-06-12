@@ -43,11 +43,16 @@ public class APProposalDao implements ProposalDao {
     public Collection<Proposal> getAllProposalForUserId(long id){
         User user = entityManager.find(User.class, id);
         includeProposals(user);
-        return user.getUserProposals().stream().map(up -> up.getProposal()).collect(Collectors.toList());
+        List<Proposal> list = new LinkedList<>();
+        for(UserProposal up : user.getUserProposals())
+            list.add(up.getProposal());
+        return list;
     }
 
     private void includeProposals(User user) {
-        user.getUserProposals().stream().forEach(up -> up.getProposal().getId());
+        user.getUserProposals().isEmpty();
+        for(UserProposal up : user.getUserProposals())
+            up.getProposal().getId();
     }
 
     @Override

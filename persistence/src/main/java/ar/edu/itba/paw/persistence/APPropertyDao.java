@@ -270,18 +270,20 @@ public class APPropertyDao implements PropertyDao {
         entityManager.remove(property);
     }
 
+    @Transactional
     @Override
     public Collection<Property> getInterestsOfUser(long id) {
-        TypedQuery<Property> query = entityManager.createQuery(GET_INTERESTS_OF_USER_QUERY, Property.class);
-        query.setParameter("userId", id);
-        return query.getResultList();
+        User user = entityManager.find(User.class, id);
+        user.getInterestedProperties().isEmpty();
+        return user.getInterestedProperties();
     }
 
+    @Transactional
     @Override
     public Collection<Property> getByOwnerId(long id) {
-        TypedQuery<Property> query = entityManager.createQuery(GET_PROPERTIES_OF_USER_QUERY, Property.class);
-        query.setParameter("ownerId", id);
-        return query.getResultList();
+        User user = entityManager.find(User.class, id);
+        user.getOwnedProperties().isEmpty();
+        return user.getOwnedProperties();
     }
 
     @Override
