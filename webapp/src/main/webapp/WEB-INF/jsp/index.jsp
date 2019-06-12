@@ -35,12 +35,16 @@
                 <c:forEach var="property" items="${properties}">
                     <div class="card property-elem">
                         <img class="card-img-top" src="<c:url value="/images/${property.mainImageId}"/>" alt="Card image">
-                        <div class="card-body">
-                            <h4 class="card-title">${property.description}</h4>
-                            <p class="card-text">${property.caption}</p>
-                            <p class="card-text bold">$${property.price}</p>
-                            <p class="card-text">${property.neighbourhood}</p>
-                            <a href="${pageContext.request.contextPath}/${property.id}" class="btn btn-primary stretched-link"><spring:message code="label.properties.seeMore" /></a>
+                        <div class="card-body" style="display: flex;flex-direction: column; justify-content: space-between">
+                            <div>
+                                <h4 class="card-title">${property.description}</h4>
+                                <h6 class="card-text">${property.neighbourhood.name}</h6>
+                                <p class="card-text" style="margin-bottom: 12px;">${property.caption}</p>
+                            </div>
+                            <div style="display: flex;flex-direction: row;justify-content: space-between; align-items: end">
+                                <a href="${pageContext.request.contextPath}/${property.id}" class="btn btn-primary stretched-link"><spring:message code="label.properties.seeMore" /></a>
+                                <h5>$${property.price}</h5>
+                            </div>
                         </div>
                     </div>
                 </c:forEach>
