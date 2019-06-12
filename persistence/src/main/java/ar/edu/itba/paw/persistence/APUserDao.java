@@ -69,6 +69,7 @@ public class APUserDao implements UserDao {
         user.getInterestedProperties().isEmpty();
         user.getNotifications().isEmpty();
         user.getOwnedProperties().isEmpty();
+        user.getUserProposals().forEach(up -> up.getProposal().getId());
     }
 
     @Override

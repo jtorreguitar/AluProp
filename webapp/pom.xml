@@ -127,8 +127,6 @@
   </dependencies>
 
   <build>
-    <finalName>webapp</finalName>
-    <sourceDirectory>${basedir}/src/main/webapp</sourceDirectory>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>

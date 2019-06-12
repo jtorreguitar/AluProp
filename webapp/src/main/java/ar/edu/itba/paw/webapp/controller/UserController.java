@@ -4,10 +4,8 @@ import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.model.Notification;
-import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.model.Proposal;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
@@ -35,6 +33,7 @@ import javax.validation.Valid;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -50,8 +49,6 @@ public class UserController {
     private CareerService careerService;
     @Autowired
     private PropertyService propertyService;
-    @Autowired
-    private ProposalService proposalService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -169,24 +166,26 @@ public class UserController {
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
-        User u = userService.get(userId);
+        User u = userService.getWithRelatedEntities(userId);
         if (u == null)
-            return new ModelAndView("404");
+            return new ModelAndView("404").addObject(currentUser);
         ModelAndView mav = new ModelAndView("profile").addObject("user", u);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
-        List<Property> properties = (List<Property>) propertyService.getByOwnerId(u.getId());
         mav.addObject("currentUser", currentUser);
-        mav.addObject("profileUser", u);
         mav.addObject("userRole", auth.getAuthorities());
-        mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
-        mav.addObject("proposals", proposals);
-        addNotificationsToMav(mav, u);
+        mav = addUserAttributes(mav, u);
         addSearchObjectsToMav(mav);
-        mav.addObject("properties", properties);
-        if (proposals != null)
-            mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
+        return mav;
+    }
 
+    private ModelAndView addUserAttributes(ModelAndView mav, User u) {
+        List<Proposal> proposals = u.getUserProposals().stream().map(UserProposal::getProposal).collect(Collectors.toList());
+        mav.addObject("profileUser", u);
+        mav.addObject("interests", u.getInterestedProperties());
+        mav.addObject("properties", u.getOwnedProperties());
+        mav.addObject("proposals", proposals);
+        mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
+        mav = addNotificationsToMav(mav, u);
         return mav;
     }
 
@@ -201,8 +200,8 @@ public class UserController {
 
     private List<String> generatePropertyNames(List<Proposal> list){
         List<String> result = new ArrayList<>();
-        for (Proposal prop: list)
-            result.add(propertyService.get(prop.getProperty().getId()).getDescription());
+        for (Proposal p: list)
+            result.add(propertyService.get(p.getProperty().getId()).getDescription());
         return result;
     }
 
@@ -212,8 +211,9 @@ public class UserController {
         mav.addObject("services", serviceService.getAll());
     }
 
-    private void addNotificationsToMav(ModelAndView mav, User u){
+    private ModelAndView addNotificationsToMav(ModelAndView mav, User u){
         List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
         mav.addObject("notifications", notifications);
+        return mav;
     }
 }
