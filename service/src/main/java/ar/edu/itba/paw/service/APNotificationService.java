@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.dao.NotificationDao;
 import ar.edu.itba.paw.interfaces.service.NotificationService;
 import ar.edu.itba.paw.model.Notification;
@@ -16,8 +17,8 @@ public class APNotificationService implements NotificationService {
 
 
     @Override
-    public List<Notification> getAllNotificationsForUser(long id) {
-        return notificationDao.getAllNotificationsForUser(id);
+    public List<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
+        return notificationDao.getAllNotificationsForUser(id, pageRequest);
     }
 
     @Override
@@ -27,6 +28,11 @@ public class APNotificationService implements NotificationService {
 
     @Override
     public Notification createNotification(long userId, String subjectCode, String textCode, String link) {
-        return notificationDao.createNotification(userId, subjectCode, textCode, link);
+        Notification.Builder builder = new Notification.Builder();
+        builder.withUserId(userId);
+        builder.withSubjectCode(subjectCode);
+        builder.withTextCode(textCode);
+        builder.withLink(link);
+        return notificationDao.createNotification(builder.build());
     }
 }

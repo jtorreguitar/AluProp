@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.model;
 
+import ar.edu.itba.paw.model.enums.NotificationState;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,15 +32,48 @@ public class Notification {
 
     // TODO: please turn into enum
     @Column
-    private int state;
+    private NotificationState state;
 
-    public Notification(long id, long userId, String subjectCode, String textCode, String link, int state) {
-        this.id = id;
-        this.userId = userId;
-        this.textCode = textCode;
-        this.subjectCode = subjectCode;
-        this.link = link;
-        this.state = state;
+    Notification(){ }
+
+    public static class Builder{
+        private Notification notification;
+        public Builder(){
+            this.notification = new Notification();
+        }
+        public Builder withId(long id) {
+            notification.id = id;
+            return this;
+        }
+
+        public Builder withUserId(long id) {
+            notification.userId = id;
+            return this;
+        }
+
+        public Builder withTextCode(String textCode) {
+            notification.textCode = textCode;
+            return this;
+        }
+
+        public Builder withSubjectCode(String subjectCode) {
+            notification.subjectCode = subjectCode;
+            return this;
+        }
+
+        public Builder withLink(String link) {
+            notification.link = link;
+            return this;
+        }
+
+        public Builder withState(NotificationState state) {
+            notification.state = state;
+            return this;
+        }
+
+        public Notification build(){
+            return notification;
+        }
     }
 
     public long getId() {return id; }
@@ -56,6 +91,6 @@ public class Notification {
     public String getLink() { return link; }
     public void setLink(String link) { this.link = link; }
 
-    public int getState() { return state; }
-    public void setState(int state) { this.state = state; }
+    public NotificationState getState() { return state; }
+    public void setState(NotificationState state) { this.state = state; }
 }

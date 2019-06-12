@@ -74,7 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl(dbName);
+        ds.setUrl("jdbc:postgresql://localhost/" + dbName);
         ds.setUsername(dbUsername);
         ds.setPassword(dbPassword);
 

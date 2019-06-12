@@ -365,7 +365,7 @@ public class PropertyController {
     }
 
     private void addNotificationsToMav(ModelAndView mav, User u){
-        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }
 

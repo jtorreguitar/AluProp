@@ -9,7 +9,7 @@
 <%--</head>--%>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a style="margin-left: 2rem;padding-top: 0.0px;padding-bottom: 0.0px;margin-left: 0px" class="navbar-brand" href="/"><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
+    <a style="margin-left: 2rem;padding-top: 0.0px;padding-bottom: 0.0px;margin-left: 0px" class="navbar-brand" href="<c:url value="/"/>"><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
