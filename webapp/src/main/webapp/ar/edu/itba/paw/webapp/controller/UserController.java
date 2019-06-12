@@ -8,13 +8,12 @@ import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
 import ar.edu.itba.paw.webapp.Utilities.UserUtility;
-import ar.edu.itba.paw.webapp.form.SignUpForm;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
+import ar.edu.itba.paw.webapp.form.SignUpForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +168,7 @@ public class UserController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+
         User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
         User u = userService.get(userId);
         if (u == null)

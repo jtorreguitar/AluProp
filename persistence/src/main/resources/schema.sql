@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS userProposals (
 
 CREATE TABLE IF NOT EXISTS notifications (
     id SERIAL PRIMARY KEY,
-    usrId INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    userId INTEGER REFERENCES users(id) ON DELETE CASCADE,
     subjectCode VARCHAR(250),
     textCode VARCHAR(250),
     link VARCHAR(250),
@@ -232,3 +232,5 @@ ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE';
 
 ALTER TABLE proposals
 ADD COLUMN IF NOT EXISTS state varchar(100) NOT NULL DEFAULT 'PENDING';
+
+-- ALTER TABLE notifications RENAME COLUMN usrId TO userid; --
