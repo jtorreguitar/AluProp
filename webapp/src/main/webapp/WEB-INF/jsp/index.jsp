@@ -34,7 +34,7 @@
             <c:when test="${not empty properties}">
                 <c:forEach var="property" items="${properties}">
                     <div class="card property-elem">
-                        <img class="card-img-top" src="<c:url value="/images/${property.mainImageId}"/>" alt="Card image">
+                        <img class="card-img-top" src="<c:url value="/images/${property.mainImage.id}"/>" alt="Card image">
                         <div class="card-body" style="display: flex;flex-direction: column; justify-content: space-between">
                             <div>
                                 <h4 class="card-title">${property.description}</h4>
