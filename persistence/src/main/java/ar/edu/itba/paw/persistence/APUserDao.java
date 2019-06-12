@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
@@ -50,9 +51,17 @@ public class APUserDao implements UserDao {
 
     @Override
     public User getByEmail(String email) {
+        /*
         TypedQuery<User> query = entityManager.createQuery("FROM User u WHERE u.email = :email", User.class);
         query.setParameter("email", email);
-        return query.getSingleResult();
+        return query.getSingleResult();*/
+        try {
+            return entityManager.createQuery("FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        }catch(NoResultException e){
+            return null; //No user is logged in
+        }
     }
 
     private void initializeRelatedEntities(User user) {
