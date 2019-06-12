@@ -17,8 +17,8 @@ import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
-import ar.edu.itba.paw.webapp.Utilities.StatusCodeUtility;
-import ar.edu.itba.paw.webapp.Utilities.UserUtility;
+import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
+import ar.edu.itba.paw.webapp.utilities.UserUtility;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
@@ -37,10 +37,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
-import java.util.*;
-import java.util.function.LongFunction;
-import java.util.stream.Collectors;
 
 @Controller
 public class PropertyController {

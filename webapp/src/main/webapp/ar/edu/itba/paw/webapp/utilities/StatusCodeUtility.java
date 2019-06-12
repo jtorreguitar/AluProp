@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.Utilities;
+package ar.edu.itba.paw.webapp.utilities;
 
 import org.springframework.web.servlet.ModelAndView;
 

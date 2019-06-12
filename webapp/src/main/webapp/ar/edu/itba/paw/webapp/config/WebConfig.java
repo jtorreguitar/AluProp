@@ -58,6 +58,8 @@ public class WebConfig implements WebMvcConfigurer {
     private String dbUsername;
     @Value("${db.password}")
     private String dbPassword;
+    @Value("${db.name}")
+    private String dbName;
 
     @Bean
     public ViewResolver viewResolver() {
@@ -72,8 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("jdbc:postgresql://localhost/paw-2019a-5");
-
+        ds.setUrl(dbName);
         ds.setUsername(dbUsername);
         ds.setPassword(dbPassword);
 
