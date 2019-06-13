@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import java.util.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
@@ -158,6 +159,7 @@ public class APPropertyDao implements PropertyDao {
     }
     
     @Override
+    @Transactional
     public boolean showInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
         if(interest != null) return false;
@@ -167,6 +169,7 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    @Transactional
     public boolean undoInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
         if(interest != null) {
@@ -180,7 +183,12 @@ public class APPropertyDao implements PropertyDao {
         TypedQuery<Interest> query = entityManager.createQuery(INTEREST_BY_PROP_AND_USER_QUERY, Interest.class);
         query.setParameter("propertyId", propertyId);
         query.setParameter("userId", user.getId());
-        Interest interest = query.getSingleResult();
+        Interest interest;
+        try{
+            interest = query.getSingleResult();
+        } catch (NoResultException e){
+            return null;
+        }
         return interest;
     }
 
