@@ -26,6 +26,7 @@ public class Proposal {
     @JoinColumn(name = "propertyId")
     private Property property;
 
+    @Enumerated(EnumType.STRING)
     private ProposalState state;
 
     @OneToOne(fetch = FetchType.EAGER)

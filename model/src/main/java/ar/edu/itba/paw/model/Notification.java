@@ -30,8 +30,7 @@ public class Notification {
     @Column
     private String link;
 
-    // TODO: please turn into enum
-    @Column
+    @Enumerated(EnumType.STRING)
     private NotificationState state;
 
     Notification(){ }
