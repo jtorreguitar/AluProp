@@ -24,12 +24,8 @@ CREATE TABLE IF NOT EXISTS neighbourhoods (
 
 CREATE TABLE IF NOT EXISTS images (
     id SERIAL PRIMARY KEY,
-    propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
     image bytea
 );
-
--- The statement "ADD COLUMN IF NOT EXISTS" was added to postgres in version 9.6, watch out for version to use in prod
--- ALTER TABLE properties ADD COLUMN IF NOT EXISTS mainImageId integer references images(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS universities (
     id SERIAL PRIMARY KEY,
@@ -68,6 +64,9 @@ CREATE TABLE IF NOT EXISTS properties (
     mainImageId integer references images(id) ON DELETE SET NULL,
     ownerId INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
+
+ALTER TABLE images
+ADD COLUMN IF NOT EXISTS propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS interests (
     id SERIAL PRIMARY KEY,
