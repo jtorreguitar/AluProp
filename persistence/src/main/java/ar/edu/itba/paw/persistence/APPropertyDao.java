@@ -8,10 +8,11 @@ import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
+import ar.edu.itba.paw.interfaces.SearchableProperty;
 import ar.edu.itba.paw.interfaces.dao.*;
-import ar.edu.itba.paw.model.Interest;
-import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
+import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
@@ -25,35 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class APPropertyDao implements PropertyDao {
 
+    private static final String ALWAYS_TRUE_STRING = "1 = 1 ";
     private final String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
     private final String GET_PROPERTIES_OF_USER_QUERY = "FROM properties p WHERE p.owner.id = :ownerId";
     private final String GET_PROPERTY_BY_DESCRIPTION_QUERY = "FROM Property p WHERE p.description LIKE CONCAT('%',?1,'%')";
     private final String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
-
-    private final RowMapper<Property> ROW_MAPPER = (rs, rowNum)
-        -> new Property.Builder()
-            .withId(rs.getLong("id"))
-            .withCapacity(rs.getInt("capacity"))
-            .withCaption(rs.getString("caption"))
-            .withDescription(rs.getString("description"))
-            .withNeighbourhoodId(rs.getInt("neighbourhoodId"))
-            .withPrice(rs.getFloat("price"))
-            .withPrivacyLevel(rs.getBoolean("privacyLevel"))
-            .withPropertyType(PropertyType.valueOf(rs.getString("propertyType")))
-            .withMainImageId(rs.getLong("mainImageId"))
-            .withOwnerId(rs.getLong("ownerId"))
-            .withAvailability(Availability.valueOf(rs.getString("availability")))
-            .build();
-
-    private final JdbcTemplate jdbcTemplate;
+    private final String ALWAYS_TRUE_STRING_AND = "1 = 1 AND ";
 
     @PersistenceContext
     EntityManager entityManager;
-
-    @Autowired
-    public APPropertyDao(DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
 
     @Override
     public Property get(long id) {
@@ -75,127 +56,86 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public Collection<Property> advancedSearch(PageRequest pageRequest, String description, Integer propertyType, Integer neighborhood, Integer privacyLevel, Integer capacity, Float minPrice, Float maxPrice, long[] rules, long[] services) {
-        if ( propertyType == -1 && neighborhood == -1
-                && privacyLevel == -1 && capacity == 0
-                && (minPrice == 0 && maxPrice == 0)
-                && (rules == null || rules.length == 0)
-                && (services == null || services.length== 0)){ //No advanced search needed. Just do plain search.
-            return getPropertyByDescription(pageRequest, description);
-        }
+    public Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property) {
 
+        StringBuilder searchString = new StringBuilder("FROM Property p WHERE ");
+        if(property.getDescription() != null && !property.getDescription().equals(""))
+            searchString.append("p.description = :description AND ");
 
-        StringBuilder SEARCH_CONDITION = new StringBuilder();
-        boolean shouldAddAnd = false;
+        if(property.getPropertyType() != SearchablePropertyType.NOT_APPLICABLE)
+            searchString.append("p.propertyType = :propertyType AND ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING_AND);
 
-        if(description!=null && !description.equals("")){
-            SEARCH_CONDITION.append("description LIKE '%" + description + "%'");
-            shouldAddAnd = true;
-        }
+        if(property.getNeighbourhoodId() != SearchableProperty.NOT_APPLICABLE_NEIGHBOURHOOD_ID)
+            searchString.append("p.neighbourhood.id = :neighbourhood AND ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING_AND);
 
-        if(propertyType != -1){
-            if(shouldAddAnd){
-                SEARCH_CONDITION.append(" AND ");
-            }
+        if(property.getPrivacyLevel() != SearchablePrivacyLevel.NOT_APPLICABLE)
+            searchString.append("p.privacyLevel = :privacyLevel AND ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING_AND);
 
-            String prop;
+        if(property.getMinPrice() > 0)
+            searchString.append("p.price > :minPrice AND ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING_AND);
 
-            switch(propertyType.valueOf(propertyType)){
-                case 0:
-                    prop = "HOUSE";
-                    break;
-                case 1:
-                    prop = "APARTMENT";
-                    break;
-                default:
-                case 2:
-                    prop= "LOFT";
+        if(property.getMaxPrice() > 0)
+            searchString.append("p.price < :maxPrice AND ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING_AND);
 
-            }
-            SEARCH_CONDITION.append("propertyType= '" + prop + "'");
-            shouldAddAnd = true;
-        }
-
-        if(neighborhood != -1){
-            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
-
-            SEARCH_CONDITION.append("neighbourhoodid=" + neighborhood);
-            shouldAddAnd=true;
-        }
-
-        if(privacyLevel!= null && privacyLevel != -1){
-            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
-            boolean privacyLevelBool;
-            privacyLevelBool = privacyLevel != 0;
-
-            SEARCH_CONDITION.append("privacylevel=" + privacyLevelBool);
-            shouldAddAnd = true;
-        }
-
-        if( capacity != null && capacity != 0){
-            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
-
-            SEARCH_CONDITION.append("capacity=" + capacity);
-            shouldAddAnd=true;
-        }
-
-        if(minPrice != null && maxPrice != null && maxPrice != 0){
-            if(shouldAddAnd) SEARCH_CONDITION.append(" AND ");
-
-            SEARCH_CONDITION.append("price > " + minPrice + " AND price < " + maxPrice);
-            shouldAddAnd = true;
-        }
-
-        if(rules != null && rules.length != 0){
-            for(Long ruleID : rules){
-                if(shouldAddAnd){
-                    SEARCH_CONDITION.append(" AND ");
-                }
-                SEARCH_CONDITION.append("ruleid=" + ruleID);
-                shouldAddAnd = true;
+        if(property.getRuleIds() != null && property.getRuleIds().length > 0) {
+            for(int i = 0; i < property.getRuleIds().length; i++) {
+                searchString.append(":rule");
+                searchString.append(i);
+                searchString.append(" in ( FROM p.rules ) AND ");
             }
         }
 
-        if(services != null && services.length != 0){
-            for(Long serviceID : services){
-                if(shouldAddAnd){
-                    SEARCH_CONDITION.append(" AND ");
-                }
-                SEARCH_CONDITION.append("serviceid=" + serviceID);
-                shouldAddAnd = true;
+        if(property.getServiceIds() != null && property.getServiceIds().length > 0) {
+            for(int i = 0; i < property.getServiceIds().length; i++) {
+                searchString.append(":service");
+                searchString.append(i);
+                searchString.append(" in ( FROM p.services ) AND ");
             }
         }
-        StringBuilder QUERY = new StringBuilder();
-        QUERY.append("SELECT * FROM properties ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING_AND);
 
-        if (services != null && services.length != 0){
-            QUERY.append("INNER JOIN propertyServices on properties.id=propertyServices.propertyid ");
-        }
-        if(services != null && rules.length != 0){
-            QUERY.append("INNER JOIN propertyRules on properties.id = propertyRules.propertyid ");
-        }
-        QUERY.append("WHERE " + SEARCH_CONDITION + " LIMIT ? OFFSET ?");
+        if(property.getCapacity() > 0)
+            searchString.append("p.capacity = :capacity AND ");
+        else
+            searchString.append(ALWAYS_TRUE_STRING);
 
-        try {
-            List<Property> result = jdbcTemplate.query(QUERY.toString(),
-                    ROW_MAPPER,
-                    pageRequest.getPageSize(),
-                    pageRequest.getPageNumber() * pageRequest.getPageSize());
+        TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
+        if(property.getDescription() != null && !property.getDescription().equals(""))
+            query.setParameter("description", property.getDescription());
+        if(property.getPropertyType() != SearchablePropertyType.NOT_APPLICABLE)
+            query.setParameter("propertyType", propertyTypeFromSearchablePropertyType(property.getPropertyType()));
+        if(property.getNeighbourhoodId() != SearchableProperty.NOT_APPLICABLE_NEIGHBOURHOOD_ID)
+            query.setParameter("neighbourhood", property.getNeighbourhoodId());
+        if(property.getPrivacyLevel() != SearchablePrivacyLevel.NOT_APPLICABLE)
+            query.setParameter("privacyLevel", property.getPrivacyLevel() != SearchablePrivacyLevel.INDIVIDUAL);
+        if(property.getCapacity() > 0)
+            query.setParameter("capacity", property.getCapacity());
+        if(property.getMinPrice() > 0)
+            query.setParameter("minPrice", property.getMinPrice());
+        if(property.getMaxPrice() > 0)
+            query.setParameter("maxPrice", property.getMaxPrice());
 
-            HashSet<Long> id_set = new HashSet<>();
+        for(int i = 0; i < property.getRuleIds().length; i++)
+            query.setParameter("rule" + i, entityManager.find(Rule.class, property.getRuleIds()[i]));
+        for(int i = 0; i < property.getServiceIds().length; i++)
+            query.setParameter("service" + i, entityManager.find(Service.class, property.getServiceIds()[i]));
 
-            List<Property> result_unique = new LinkedList<>();
-            for (Property prop : result) {
-                if (!id_set.contains(prop.getId())) {
-                    id_set.add(prop.getId());
-                    result_unique.add(prop);
-                }
-            }
+        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+    }
 
-            return result_unique;
-        }catch(Exception e){
-            return new LinkedList<Property>();
-        }
+    private PropertyType propertyTypeFromSearchablePropertyType(SearchablePropertyType propertyType) {
+        return PropertyType.valueOf(propertyType.getValue());
     }
 
     @Override

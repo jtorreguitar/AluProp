@@ -60,7 +60,7 @@ public class APUserDao implements UserDao {
                     .setParameter("email", email)
                     .getSingleResult();
         }catch(NoResultException e){
-            return null; //No user is logged in
+            return null; //No user with this email exists
         }
     }
 

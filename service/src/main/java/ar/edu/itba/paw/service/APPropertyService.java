@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
+import ar.edu.itba.paw.interfaces.SearchableProperty;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
@@ -66,20 +67,11 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public PageResponse<Property> advancedSearch(PageRequest pageRequest,
-                                          String description,
-                                          @Nullable Integer propertyType,
-                                          @Nullable int neighborhood,
-                                          @Nullable Integer privacyLevel,
-                                          @Nullable Integer capacity,
-                                          @Nullable float minPrice,
-                                          @Nullable float maxPrice,
-                                          @Nullable long[] rules,
-                                          @Nullable long[] services){
+    public PageResponse<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property){
 
         return new PageResponse<>(pageRequest,
                                   propertyDao.count(),
-                                  propertyDao.advancedSearch(pageRequest, description, propertyType, neighborhood, privacyLevel, capacity, minPrice, maxPrice, rules, services));
+                                  propertyDao.advancedSearch(pageRequest, property));
     }
 
     @Override

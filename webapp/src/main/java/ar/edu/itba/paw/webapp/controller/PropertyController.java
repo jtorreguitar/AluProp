@@ -258,7 +258,7 @@ public class PropertyController {
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("currentUser", user);
         mav.addObject("userRole", auth.getAuthorities());
-        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize),searchForm.getDescription(), searchForm.getPropertyType(), searchForm.getNeighbourhoodId(), searchForm.getPrivacyLevel(), searchForm.getCapacity(), searchForm.getMinPrice(), searchForm.getMaxPrice(), searchForm.getRuleIds(), searchForm.getServiceIds());
+        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm));
         mav.addObject("properties", response.getResponseData());
         mav.addObject("currentPage", response.getPageNumber());
         mav.addObject("totalPages", response.getTotalPages());
@@ -270,6 +270,20 @@ public class PropertyController {
         if (user != null)
             addNotificationsToMav(mav, user);
         return mav;
+    }
+
+    private SearchableProperty propertyForSearch(FilteredSearchForm searchForm) {
+        return new SearchableProperty.Builder()
+            .withCapacity(searchForm.getCapacity())
+            .withDescription(searchForm.getDescription())
+            .withMaxPrice(searchForm.getMaxPrice())
+            .withMinPrice(searchForm.getMinPrice())
+            .withNeighbourhoodId(searchForm.getNeighbourhoodId())
+            .withPrivacyLevel(searchForm.getPrivacyLevelAsEnum())
+            .withPropertyType(searchForm.getPropertyTypeAsEnum())
+            .withRuleIds(searchForm.getRuleIds())
+            .withServiceIds(searchForm.getServiceIds())
+            .build();
     }
 
     @RequestMapping(value = "/property/delete/{propertyId}", method = RequestMethod.POST)

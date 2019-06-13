@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserUtility {
 
+    private UserUtility() { }
+
     public static String getUsernameOfCurrentlyLoggedUser(SecurityContext context) {
         Object principal = context.getAuthentication().getPrincipal();
         if(principal instanceof UserDetails)

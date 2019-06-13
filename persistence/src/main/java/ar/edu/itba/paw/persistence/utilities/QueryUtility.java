@@ -6,6 +6,8 @@ import javax.persistence.TypedQuery;
 
 public class QueryUtility {
 
+    private QueryUtility() { }
+
     public static <T> TypedQuery<T> makePagedQuery(TypedQuery<T> query, PageRequest pageRequest) {
         query.setFirstResult(pageRequest.getPageNumber() * pageRequest.getPageSize());
         query.setMaxResults(pageRequest.getPageSize());

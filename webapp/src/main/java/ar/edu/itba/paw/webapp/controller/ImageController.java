@@ -18,7 +18,6 @@ public class ImageController {
     @RequestMapping(value = "images/{id}", method = RequestMethod.GET)
     public @ResponseBody byte[]
     get(@PathVariable long id) {
-        Image im = imageService.get(id);
         byte[] image = imageService.get(id).getImage();
         if(image != null)
             return image;

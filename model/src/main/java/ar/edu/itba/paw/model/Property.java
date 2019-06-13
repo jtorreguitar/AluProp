@@ -12,6 +12,9 @@ import java.util.LinkedList;
 @Table(name = "properties")
 public class Property {
 
+    public static final boolean INDIVIDUAL_PRIVACY_LEVEL = false;
+    public static final boolean SHARED_PRIVACY_LEVEL = true;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "properties_id_seq")
     @SequenceGenerator(sequenceName = "properties_id_seq", name = "properties_id_seq", allocationSize = 1)

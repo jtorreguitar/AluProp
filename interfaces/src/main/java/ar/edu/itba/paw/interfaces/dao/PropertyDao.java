@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
+import ar.edu.itba.paw.interfaces.SearchableProperty;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.User;
 
@@ -19,7 +20,7 @@ public interface PropertyDao extends Dao<Property>{
     Collection<Property> getByOwnerId(long id);
     Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);
     Long count();
-    Collection<Property> advancedSearch(PageRequest pageRequest, String description, Integer propertyType, Integer neighborhood, Integer privacyLevel, Integer capacity, Float minPrice, Float maxPrice, long[] rules, long[] services);
+    Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property);
 
     void changeStatus(Property prop, long id);
 }

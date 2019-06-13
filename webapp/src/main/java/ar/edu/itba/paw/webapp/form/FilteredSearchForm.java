@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
+import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.lang.Nullable;
 
@@ -9,14 +11,18 @@ import javax.validation.constraints.Size;
 
 public class FilteredSearchForm {
 
+    public static final int NOT_APPLICABLE_PROPERTY_TYPE = -1;
+    public static final int NOT_APPLICABLE_PRIVACY_LEVEL = -1;
+    public static final int NOT_APPLICABLE_NEIGHBOURHOOD = -1;
+
     @Size(min=0, max=100)
     private String description;
 
-    private int propertyType = -1;
+    private int propertyType = NOT_APPLICABLE_PROPERTY_TYPE;
 
-    private int neighbourhoodId = -1;
+    private int neighbourhoodId = NOT_APPLICABLE_PRIVACY_LEVEL;
 
-    private int privacyLevel = -1;
+    private int privacyLevel = NOT_APPLICABLE_NEIGHBOURHOOD;
 
     @Range(min=0, max=100)
     private int capacity;
@@ -46,6 +52,13 @@ public class FilteredSearchForm {
         return propertyType;
     }
 
+    public SearchablePropertyType getPropertyTypeAsEnum() {
+        if(propertyType == NOT_APPLICABLE_PROPERTY_TYPE)
+            return SearchablePropertyType.NOT_APPLICABLE;
+        else
+            return SearchablePropertyType.valueOf(propertyType);
+    }
+
     public void setPropertyType(int propertyType) {
         this.propertyType = propertyType;
     }
@@ -56,6 +69,13 @@ public class FilteredSearchForm {
 
     public void setNeighbourhoodId(int neighbourhoodId) {
         this.neighbourhoodId = neighbourhoodId;
+    }
+
+    public SearchablePrivacyLevel getPrivacyLevelAsEnum() {
+        if(privacyLevel == NOT_APPLICABLE_PRIVACY_LEVEL)
+            return SearchablePrivacyLevel.NOT_APPLICABLE;
+        else
+            return SearchablePrivacyLevel.valueOf(privacyLevel);
     }
 
     public int getPrivacyLevel() {
@@ -105,5 +125,4 @@ public class FilteredSearchForm {
     public void setServiceIds(long[] serviceIds) {
         this.serviceIds = serviceIds;
     }
-
 }

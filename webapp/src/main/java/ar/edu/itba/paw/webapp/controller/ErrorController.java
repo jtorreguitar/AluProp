@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.HttpURLConnection;
 
 @Controller
 public class ErrorController {
@@ -22,26 +23,17 @@ public class ErrorController {
                                         HttpServletRequest httpRequest){
         ModelAndView errorPage;
         String errorMsg;
- //       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
         int httpErrorCode = getErrorCode(httpRequest);
 
         switch (httpErrorCode){
-            case 400:
-                //errorMsg = "Http Error Code: 400. Bad Request";
-                errorPage = new ModelAndView("404");
-                return errorPage;
-            case 401:
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                return new ModelAndView("404");
+            case HttpURLConnection.HTTP_UNAUTHORIZED:
                 errorMsg = "Http Error Code: 401. Unauthorized";
                 break;
-            case 404:
-                //errorMsg = "Http Error Code: 404. Resource Not Found";
-                errorPage = new ModelAndView("404");
-                return errorPage;
-            case 500:
-                //errorMsg = "Http Error Code: 500. Internal Server error";
-                errorPage = new ModelAndView("500");
-                return errorPage;
+            case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                return new ModelAndView("500");
             default:
                 errorMsg = "Unhandled Error. Something went wrong!";
                 break;

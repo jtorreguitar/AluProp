@@ -6,16 +6,17 @@ import java.net.HttpURLConnection;
 
 public class StatusCodeUtility {
 
+    private StatusCodeUtility() { }
+
     public static ModelAndView parseStatusCode(int statusCode, String successJsp) {
         switch (statusCode) {
             case HttpURLConnection.HTTP_OK:
                 return new ModelAndView(successJsp);
             case HttpURLConnection.HTTP_NOT_FOUND:
-                return new ModelAndView("notFound");
+                return new ModelAndView("404");
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
-                return new ModelAndView("internalServerError");
             default:
-                return new ModelAndView("internalServerError");
+                return new ModelAndView("500");
         }
     }
 }
