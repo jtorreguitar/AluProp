@@ -169,19 +169,19 @@ public class UserController {
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
         User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
-        User u = userService.get(userId);
-        if (u == null)
-            return new ModelAndView("404");
-        ModelAndView mav = new ModelAndView("profile").addObject("user", u);
+        User profileUser = userService.get(userId);
+        if (profileUser == null)
+            return new ModelAndView("404").addObject("currentUser", currentUser);
+        ModelAndView mav = new ModelAndView("profile");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(u.getId());
-        List<Property> properties = (List<Property>) propertyService.getByOwnerId(u.getId());
+        List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(profileUser.getId());
+        List<Property> properties = (List<Property>) propertyService.getByOwnerId(profileUser.getId());
         mav.addObject("currentUser", currentUser);
-        mav.addObject("profileUser", u);
+        mav.addObject("profileUser", profileUser);
         mav.addObject("userRole", auth.getAuthorities());
-        mav.addObject("interests", propertyService.getInterestsOfUser(u.getId()));
+        mav.addObject("interests", propertyService.getInterestsOfUser(profileUser.getId()));
         mav.addObject("proposals", proposals);
-        addNotificationsToMav(mav, u);
+        addNotificationsToMav(mav, profileUser);
         addSearchObjectsToMav(mav);
         mav.addObject("properties", properties);
         if (proposals != null)

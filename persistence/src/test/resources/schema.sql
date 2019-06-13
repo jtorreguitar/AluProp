@@ -203,9 +203,3 @@ WHERE NOT EXISTS (SELECT * FROM services WHERE id=1);
 INSERT INTO propertyServices (id, propertyId, serviceId)
 SELECT * FROM (VALUES(1, 1, 1))
 WHERE NOT EXISTS (SELECT * FROM propertyservices WHERE id = 1);
-
-ALTER TABLE notifications
-DROP COLUMN IF EXISTS state;
-
-ALTER TABLE notifications
-ADD COLUMN IF NOT EXISTS state varchar(100) NOT NULL DEFAULT 'UNREAD';
