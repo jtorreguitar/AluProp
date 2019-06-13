@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.User;
@@ -50,7 +51,7 @@ public class NotificationController {
     }
 
     private void addNotificationsToMav(ModelAndView mav, User u){
-        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }
 

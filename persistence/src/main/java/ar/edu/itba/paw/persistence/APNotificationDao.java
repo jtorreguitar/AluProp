@@ -3,8 +3,13 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.dao.NotificationDao;
 import ar.edu.itba.paw.model.Notification;
+import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,23 +18,24 @@ import java.util.Random;
 @Repository
 public class APNotificationDao implements NotificationDao {
 
+    @PersistenceContext
+    EntityManager entityManager;
+
     @Override
     public Notification get(long id) {
-        return null;
+        return entityManager.find(Notification.class, id);
     }
 
     @Override
     public Collection<Notification> getAll(PageRequest pageRequest) {
-        return null;
+        TypedQuery<Notification> query = entityManager.createQuery("FROM Notification", Notification.class);
+        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
-    public List<Notification> getAllNotificationsForUser(long id) {
-        ArrayList<Notification> dummyNotifications = new ArrayList<>();
-        dummyNotifications.add(new Notification(0, 2, "notifications.proposals.sent.subject", "notifications.proposals.sent", "/proposal/14", 0));
-        dummyNotifications.add(new Notification(0, 3, "notifications.proposals.sent.subject", "notifications.proposals.sent", "/proposal/14", 0));
-        dummyNotifications.add(new Notification(1, 3, "notifications.proposals.hostProposal.subject", "notifications.proposals.hostProposal", "/proposal/14", 0));
-        return dummyNotifications;
+    public List<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
+        //TypedQuery<Notification> query = entityManager.createQuery("FROM Notification", Notification.class);
+        return entityManager.createQuery("FROM Notification", Notification.class).getResultList();
     }
 
     @Override
@@ -38,7 +44,9 @@ public class APNotificationDao implements NotificationDao {
     }
 
     @Override
-    public Notification createNotification(long userId, String subjectCode, String textCode, String link) {
-        return null;
+    public Notification createNotification(Notification notification){//long userId, String subjectCode, String textCode, String link) {
+        if (notification != null)
+            entityManager.persist(notification);
+        return notification;
     }
 }

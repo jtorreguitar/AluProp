@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     subjectCode VARCHAR(250),
     textCode VARCHAR(250),
     link VARCHAR(250),
-    state INTEGER
+    state VARCHAR(75)
 );
 
 INSERT INTO universities(id, name)
@@ -232,5 +232,11 @@ ADD COLUMN IF NOT EXISTS availability varchar(100) NOT NULL DEFAULT 'AVAILABLE';
 
 ALTER TABLE proposals
 ADD COLUMN IF NOT EXISTS state varchar(100) NOT NULL DEFAULT 'PENDING';
+
+ALTER TABLE notifications
+DROP COLUMN IF EXISTS state;
+
+ALTER TABLE notifications
+ADD COLUMN IF NOT EXISTS state varchar(100) NOT NULL DEFAULT 'UNREAD';
 
 -- ALTER TABLE notifications RENAME COLUMN usrId TO userid; --

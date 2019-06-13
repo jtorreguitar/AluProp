@@ -100,8 +100,19 @@
                     <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
-
                     <spring:message code="label.proposal.your_prpoperty"/>
+                    <div class="col-6">
+                        <c:url value="/proposal/accept/${proposal.id}" var="postPath"/>
+                        <form action="${postPath}" method="post">
+                            <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
+                        </form>
+                    </div>
+                    <div class="col-6">
+                        <c:url value="/proposal/decline/${proposal.id}" var="postPath"/>
+                        <form action="${postPath}" method="post">
+                            <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
+                        </form>
+                    </div>
                 </c:otherwise>
             </c:choose>
 

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
+import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
@@ -56,8 +57,6 @@ public class ProposalController {
 
     private final static String SENT_HOST_SUBJECT_CODE= "notifications.proposals.hostProposal.subject";
     private final static String SENT_HOST_BODY_CODE= "notifications.proposals.hostProposal";
-
-
 
     @Autowired
     ProposalService proposalService;
@@ -231,7 +230,7 @@ public class ProposalController {
     }
 
     private void addNotificationsToMav(ModelAndView mav, User u){
-        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId());
+        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }
 
