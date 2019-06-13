@@ -13,11 +13,11 @@ public class Interest {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "propertyId")
+    @JoinColumn(name = "propertyid")
     private Property property;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userid")
     private User user;
 
     /* package */ Interest() { }
