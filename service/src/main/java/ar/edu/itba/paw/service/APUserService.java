@@ -60,8 +60,8 @@ public class APUserService implements UserService {
     }
     
     private void checkRelatedEntitiesExist(User user) {
-        checkUniversityExists(user.getUniversityId());
-        checkCareerExists(user.getCareerId());
+        checkUniversityExists(user.getUniversity().getId());
+        checkCareerExists(user.getCareer().getId());
     }
 
     private void checkUniversityExists(long universityId) {

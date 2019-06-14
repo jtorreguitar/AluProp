@@ -22,6 +22,10 @@ public class Career {
 
     /* package */ Career() { }
 
+    /* package */ Career(long id) {
+        this.id = id;
+    }
+
     public Career(long id, String name) {
         this.id = id;
         this.name = name;

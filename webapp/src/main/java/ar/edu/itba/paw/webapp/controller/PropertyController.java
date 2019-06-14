@@ -64,9 +64,9 @@ public class PropertyController {
     @Autowired
     private ProposalService proposalService;
     @Autowired
-    public APJavaMailSender emailSender;
+    private APJavaMailSender emailSender;
     @Autowired
-    protected NotificationService notificationService;
+    private NotificationService notificationService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,

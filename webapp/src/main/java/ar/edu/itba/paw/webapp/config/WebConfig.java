@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
+import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
+import ar.edu.itba.paw.interfaces.builders.HqlWhereConditionBuilder;
 import ar.edu.itba.paw.webapp.beans.APMailSenderBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -192,8 +194,14 @@ public class WebConfig implements WebMvcConfigurer {
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         final Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
+        properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("format_sql", "true");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
+    }
+
+    @Bean
+    public WhereConditionBuilder whereConditionBuilder() {
+        return new HqlWhereConditionBuilder();
     }
 }

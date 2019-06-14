@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
+@Transactional
 public class APUserDao implements UserDao {
 
     private static final String INTEREST_COUNT_BY_USER_AND_PROPERTY = "SELECT COUNT(i.id) FROM Interest i WHERE i.user.id = :userId AND i.property.id = :propertyId";
@@ -41,7 +42,6 @@ public class APUserDao implements UserDao {
         return entityManager.find(User.class, id);
     }
 
-    @Transactional
     @Override
     public User getWithRelatedEntities(long id){
         User user = entityManager.find(User.class, id);
@@ -83,7 +83,6 @@ public class APUserDao implements UserDao {
         return user;
     }
 
-    @Transactional
     @Override
     public User getUserWithRelatedEntitiesByEmail(String email) {
         User user = getByEmail(email);
@@ -93,7 +92,10 @@ public class APUserDao implements UserDao {
 
     @Override
     public boolean userExistsByEmail(String email) {
-        return !entityManager.createQuery("FROM User u WHERE u.email = :email").getResultList().isEmpty();
+        return !entityManager.createQuery("FROM User u WHERE u.email = :email")
+                            .setParameter("email", email)
+                            .getResultList()
+                            .isEmpty();
     }
 
     @Override

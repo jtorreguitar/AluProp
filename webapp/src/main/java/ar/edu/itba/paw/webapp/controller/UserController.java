@@ -151,18 +151,18 @@ public class UserController {
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {
         return new User.Builder()
-                                        .withEmail(form.getEmail())
-                                        .withGender(Gender.valueOf(form.getGender()))
-                                        .withName(form.getName())
-                                        .withLastName(form.getLastName())
-                                        .withPasswordHash(passwordEncoder.encode(form.getPassword()))
-                                        .withUniversityId(form.getUniversityId())
-                                        .withCareerId(form.getCareerId())
-                                        .withBio(form.getBio())
-                                        .withBirthDate(Date.valueOf(form.getBirthDate()))
-                                        .withContactNumber(form.getPhoneNumber())
-                                        .withRole(Role.valueOf(form.getRole()))
-                                        .build();
+                        .withEmail(form.getEmail())
+                        .withGender(Gender.valueOf(form.getGender()))
+                        .withName(form.getName())
+                        .withLastName(form.getLastName())
+                        .withPasswordHash(passwordEncoder.encode(form.getPassword()))
+                        .withUniversityId(form.getUniversityId())
+                        .withCareerId(form.getCareerId())
+                        .withBio(form.getBio())
+                        .withBirthDate(Date.valueOf(form.getBirthDate()))
+                        .withContactNumber(form.getPhoneNumber())
+                        .withRole(Role.valueOf(form.getRole()))
+                        .build();
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)

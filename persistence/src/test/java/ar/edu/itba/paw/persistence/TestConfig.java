@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
+import ar.edu.itba.paw.interfaces.builders.HqlWhereConditionBuilder;
 import org.hsqldb.jdbc.JDBCDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,6 +49,11 @@ public class TestConfig {
         properties.setProperty("format_sql", "true");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
+    }
+
+    @Bean
+    public WhereConditionBuilder whereConditionBuilder() {
+        return new HqlWhereConditionBuilder();
     }
 
 }

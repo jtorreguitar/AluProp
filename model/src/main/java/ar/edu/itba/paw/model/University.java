@@ -17,9 +17,14 @@ public class University {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "universityId")
     private Collection<User> users;
 
     /* package */ University() { }
+
+    /* package */ University(long id) {
+        this.id = id;
+    }
 
     public University(long id, String name, Collection<User> users) {
         this.id = id;

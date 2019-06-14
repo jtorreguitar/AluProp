@@ -6,10 +6,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.SearchableProperty;
+import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
 import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
@@ -17,10 +17,8 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +31,9 @@ public class APPropertyDao implements PropertyDao {
     private final String GET_PROPERTY_BY_DESCRIPTION_QUERY = "FROM Property p WHERE p.description LIKE CONCAT('%',?1,'%')";
     private final String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
     private final String ALWAYS_TRUE_STRING_AND = "1 = 1 AND ";
+
+    @Autowired
+    WhereConditionBuilder conditionBuilder;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -58,85 +59,89 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property) {
-
         StringBuilder searchString = new StringBuilder("FROM Property p WHERE ");
-        if(property.getDescription() != null && !property.getDescription().equals(""))
-            searchString.append("p.description = :description AND ");
-
-        if(property.getPropertyType() != SearchablePropertyType.NOT_APPLICABLE)
-            searchString.append("p.propertyType = :propertyType AND ");
-        else
-            searchString.append(ALWAYS_TRUE_STRING_AND);
-
-        if(property.getNeighbourhoodId() != SearchableProperty.NOT_APPLICABLE_NEIGHBOURHOOD_ID)
-            searchString.append("p.neighbourhood.id = :neighbourhood AND ");
-        else
-            searchString.append(ALWAYS_TRUE_STRING_AND);
-
-        if(property.getPrivacyLevel() != SearchablePrivacyLevel.NOT_APPLICABLE)
-            searchString.append("p.privacyLevel = :privacyLevel AND ");
-        else
-            searchString.append(ALWAYS_TRUE_STRING_AND);
-
-        if(property.getMinPrice() > 0)
-            searchString.append("p.price > :minPrice AND ");
-        else
-            searchString.append(ALWAYS_TRUE_STRING_AND);
-
-        if(property.getMaxPrice() > 0)
-            searchString.append("p.price < :maxPrice AND ");
-        else
-            searchString.append(ALWAYS_TRUE_STRING_AND);
-
-        if(property.getRuleIds() != null && property.getRuleIds().length > 0) {
-            for(int i = 0; i < property.getRuleIds().length; i++) {
-                searchString.append(":rule");
-                searchString.append(i);
-                searchString.append(" in ( FROM p.rules ) AND ");
-            }
-        }
-
-        if(property.getServiceIds() != null && property.getServiceIds().length > 0) {
-            for(int i = 0; i < property.getServiceIds().length; i++) {
-                searchString.append(":service");
-                searchString.append(i);
-                searchString.append(" in ( FROM p.services ) AND ");
-            }
-        }
-        else
-            searchString.append(ALWAYS_TRUE_STRING_AND);
-
-        if(property.getCapacity() > 0)
-            searchString.append("p.capacity = :capacity AND ");
-        else
-            searchString.append(ALWAYS_TRUE_STRING);
-
+        buildCondition(property);
+        searchString.append(conditionBuilder.buildAsStringBuilder());
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
-        if(property.getDescription() != null && !property.getDescription().equals(""))
-            query.setParameter("description", property.getDescription());
-        if(property.getPropertyType() != SearchablePropertyType.NOT_APPLICABLE)
-            query.setParameter("propertyType", propertyTypeFromSearchablePropertyType(property.getPropertyType()));
-        if(property.getNeighbourhoodId() != SearchableProperty.NOT_APPLICABLE_NEIGHBOURHOOD_ID)
-            query.setParameter("neighbourhood", property.getNeighbourhoodId());
-        if(property.getPrivacyLevel() != SearchablePrivacyLevel.NOT_APPLICABLE)
-            query.setParameter("privacyLevel", property.getPrivacyLevel() != SearchablePrivacyLevel.INDIVIDUAL);
-        if(property.getCapacity() > 0)
-            query.setParameter("capacity", property.getCapacity());
-        if(property.getMinPrice() > 0)
-            query.setParameter("minPrice", property.getMinPrice());
-        if(property.getMaxPrice() > 0)
-            query.setParameter("maxPrice", property.getMaxPrice());
+        addSearchParameters(property, query);
+        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+    }
 
+    private void addSearchParameters(SearchableProperty property, TypedQuery<Property> query) {
+        if(searchableDescription(property))
+            query.setParameter("description", property.getDescription());
+        if(searchablePropertyType(property))
+            query.setParameter("propertyType", propertyTypeFromSearchablePropertyType(property.getPropertyType()));
+        if(searchableNeighbourhood(property))
+            query.setParameter("neighbourhood", property.getNeighbourhoodId());
+        if(searchablePrivacyLevel(property))
+            query.setParameter("privacyLevel", property.getPrivacyLevel() != SearchablePrivacyLevel.INDIVIDUAL);
+        if(searchableCapacity(property))
+            query.setParameter("capacity", property.getCapacity());
+        if(searchableMinPrice(property))
+            query.setParameter("minPrice", property.getMinPrice());
+        if(searchableMaxPrice(property))
+            query.setParameter("maxPrice", property.getMaxPrice());
         for(int i = 0; i < property.getRuleIds().length; i++)
             query.setParameter("rule" + i, entityManager.find(Rule.class, property.getRuleIds()[i]));
         for(int i = 0; i < property.getServiceIds().length; i++)
             query.setParameter("service" + i, entityManager.find(Service.class, property.getServiceIds()[i]));
+    }
 
-        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+    private void buildCondition(SearchableProperty property) {
+        conditionBuilder.begin();
+        if(searchableDescription(property))
+            conditionBuilder.equalityCondition("p.description", ":description");
+        if(searchablePropertyType(property))
+            conditionBuilder.equalityCondition("p.propertyType", ":propertyType");
+        if(searchableNeighbourhood(property))
+            conditionBuilder.equalityCondition("p.neighbourhood.id", ":neighbourhood");
+        if(searchablePrivacyLevel(property))
+            conditionBuilder.equalityCondition("p.privacyLevel", ":privacyLevel");
+        if(searchableMinPrice(property))
+            conditionBuilder.greaterThanCondition("p.price", ":minPrice");
+        if(searchableMaxPrice(property))
+            conditionBuilder.lessThanCondition("p.price", ":maxPrice");
+        if(searchableCapacity(property))
+            conditionBuilder.equalityCondition("p.capacity", ":capacity");
+        if(property.getServiceIds() != null && property.getServiceIds().length > 0)
+            for(int i = 0; i < property.getServiceIds().length; i++)
+                conditionBuilder.simpleInCondition(":service" + i, "p.services");
+        if(property.getRuleIds() != null && property.getRuleIds().length > 0)
+            for(int i = 0; i < property.getRuleIds().length; i++)
+                conditionBuilder.simpleInCondition(":rule" + i, "p.rules");
     }
 
     private PropertyType propertyTypeFromSearchablePropertyType(SearchablePropertyType propertyType) {
         return PropertyType.valueOf(propertyType.getValue());
+    }
+
+    private boolean searchableMaxPrice(SearchableProperty property) {
+        return property.getMaxPrice() > 0;
+    }
+
+    private boolean searchableMinPrice(SearchableProperty property) {
+        return property.getMinPrice() > 0;
+    }
+
+    private boolean searchableCapacity(SearchableProperty property) {
+        return property.getCapacity() > 0;
+    }
+
+    private boolean searchablePrivacyLevel(SearchableProperty property) {
+        return property.getPrivacyLevel() != SearchablePrivacyLevel.NOT_APPLICABLE;
+    }
+
+    private boolean searchableNeighbourhood(SearchableProperty property) {
+        return property.getNeighbourhoodId() != SearchableProperty.NOT_APPLICABLE_NEIGHBOURHOOD_ID;
+    }
+
+    private boolean searchablePropertyType(SearchableProperty property) {
+        return property.getPropertyType() != SearchablePropertyType.NOT_APPLICABLE;
+    }
+
+    private boolean searchableDescription(SearchableProperty property) {
+        return property.getDescription() != null && !property.getDescription().equals("");
     }
 
     @Override

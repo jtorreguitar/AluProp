@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "users_id_seq")
     @SequenceGenerator(sequenceName = "users_id_seq", name = "users_id_seq", allocationSize = 1)
     @Column(name = "id")
     private long id;
@@ -39,19 +39,11 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    @Transient
-    private long universityId;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId
     @JoinColumn(name = "universityId")
     private University university;
 
-    @Transient
-    private long careerId;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId
     @JoinColumn(name = "careerId")
     private Career career;
 
@@ -112,16 +104,8 @@ public class User {
         return passwordHash;
     }
 
-    public long getUniversityId() {
-        return universityId;
-    }
-
     public University getUniversity() {
         return university;
-    }
-
-    public long getCareerId() {
-        return careerId;
     }
 
     public Career getCareer() {
@@ -218,11 +202,11 @@ public class User {
         }
 
         private boolean universityIsValid() {
-            return user.universityId > 0 || user.university != null;
+            return user.university != null;
         }
 
         private boolean careerIsValid() {
-            return user.careerId > 0 || user.career != null;
+            return user.career != null;
         }
 
         private boolean bioIsValid() {
@@ -250,9 +234,7 @@ public class User {
             user.gender = u.gender;
             user.passwordHash = u.passwordHash;
             user.university = u.university;
-            user.universityId = u.universityId;
             user.career = u.career;
-            user.careerId = u.careerId;
             user.bio = u.bio;
             user.contactNumber = u.contactNumber;
             user.interestedProperties = u.interestedProperties;
@@ -295,18 +277,18 @@ public class User {
             return this;
         }
 
-        public Builder withUniversityId(long universityId) {
-            user.universityId = universityId;
-            return this;
-        }
-
         public Builder withUniversity(University university) {
             user.university = university;
             return this;
         }
 
+        public Builder withUniversityId(long universityId) {
+            user.university = new University(universityId);
+            return this;
+        }
+
         public Builder withCareerId(long careerId) {
-            user.careerId = careerId;
+            user.career = new Career(careerId);
             return this;
         }
 
