@@ -31,12 +31,11 @@ public class NotificationController {
     @Autowired
     private NeighbourhoodService neighbourhoodService;
 
-    @RequestMapping(value = "/notifications", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/notifications", method = RequestMethod.GET)
     public ModelAndView notifications(@ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("notifications");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("userRole", user.getRole().toString());
         mav.addObject("currentUser", user);
         addSearchObjectsToMav(mav);
         if (user != null)

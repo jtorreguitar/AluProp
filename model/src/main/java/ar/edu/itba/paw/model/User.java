@@ -147,6 +147,20 @@ public class User {
         return notifications;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Name: ");
+        stringBuilder.append(getFullName());
+        stringBuilder.append("\n");
+        stringBuilder.append("Email: ");
+        stringBuilder.append(getEmail());
+        stringBuilder.append("\n");
+        stringBuilder.append("Id: ");
+        stringBuilder.append(getId());
+        return stringBuilder.toString();
+    }
+
     public static class Builder {
 
         private final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";

@@ -173,12 +173,11 @@ public class UserController {
         if (profileUser == null)
             return new ModelAndView("404").addObject("currentUser", currentUser);
         ModelAndView mav = new ModelAndView("profile");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(profileUser.getId());
         List<Property> properties = (List<Property>) propertyService.getByOwnerId(profileUser.getId());
         mav.addObject("currentUser", currentUser);
         mav.addObject("profileUser", profileUser);
-        mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("userRole", currentUser.getRole().toString());
         mav.addObject("interests", propertyService.getInterestsOfUser(profileUser.getId()));
         mav.addObject("proposals", proposals);
         addNotificationsToMav(mav, profileUser);

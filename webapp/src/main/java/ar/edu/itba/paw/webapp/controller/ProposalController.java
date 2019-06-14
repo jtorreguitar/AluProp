@@ -7,6 +7,7 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
+import ar.edu.itba.paw.webapp.utilities.UserUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +86,7 @@ public class ProposalController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Proposal proposal = proposalService.getById(id);
         if (proposal == null)
             return new ModelAndView("404").addObject("currentUser", u);
@@ -107,14 +107,11 @@ public class ProposalController {
         return mav;
     }
 
-    @RequestMapping(value = "/delete/{proposalId}", method = RequestMethod.POST )
+    @RequestMapping(value = "/user/delete/{proposalId}", method = RequestMethod.POST )
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
-        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || proposal.getCreator().getId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
@@ -126,16 +123,13 @@ public class ProposalController {
         return new ModelAndView("successfulDelete").addObject("currentUser", u);
     }
 
-    @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
+    @RequestMapping(value = "/user/accept/{proposalId}", method = RequestMethod.POST )
     public ModelAndView accept(HttpServletRequest request, @PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
-        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Proposal proposal = proposalService.getById(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
-            return new ModelAndView("404").addObject("currentUser", u);
+            return new ModelAndView("403").addObject("currentUser", u);
         proposalService.setAccept(u.getId(), proposalId);
         proposal = proposalService.getById(proposalId);
         if (proposal.isCompletelyAccepted()){
@@ -153,13 +147,10 @@ public class ProposalController {
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
 
-    @RequestMapping(value = "/decline/{proposalId}", method = RequestMethod.POST )
+    @RequestMapping(value = "/user/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView decline(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
-        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404").addObject("currentUser", u);

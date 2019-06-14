@@ -194,7 +194,6 @@ public class WebConfig implements WebMvcConfigurer {
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         final Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
-        properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("format_sql", "true");
         factoryBean.setJpaProperties(properties);
         return factoryBean;

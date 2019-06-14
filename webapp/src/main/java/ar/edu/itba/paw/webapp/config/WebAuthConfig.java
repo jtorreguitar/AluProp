@@ -42,6 +42,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             .and().authorizeRequests()
                 .antMatchers("/user/logIn", "/user/signUp").anonymous()
                 .antMatchers("**/guest/**").hasRole("GUEST")
+                .antMatchers("/guest/**").hasRole("GUEST")
                 .antMatchers("**/host/**").hasRole("HOST")
                 .antMatchers("/host/**").hasRole("HOST")
                 .antMatchers("**/user/**").authenticated()
@@ -50,7 +51,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/notifications").authenticated()
                 .antMatchers("/**/interest").authenticated()
                 .antMatchers("/**").permitAll()
-
             .and().formLogin()
                 .usernameParameter("email")
                 .passwordParameter("password")

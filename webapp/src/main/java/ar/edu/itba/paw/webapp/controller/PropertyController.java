@@ -73,9 +73,8 @@ public class PropertyController {
                               @ModelAttribute FilteredSearchForm searchForm,
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("userRole", user.getRole().toString());
         mav.addObject("currentUser", user);
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
         mav.addObject("properties", response.getResponseData());
@@ -99,12 +98,11 @@ public class PropertyController {
 
     private ModelAndView addObjectsToMAVForDetailedProperty(long id){
         final ModelAndView mav = new ModelAndView("detailedProperty");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Property prop = propertyService.getPropertyWithRelatedEntities(id);
         if (prop == null)
             return new ModelAndView("404").addObject("currentUser", user);
-        mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("userRole", user.getRole().toString());
         mav.addObject("currentUser", user);
         mav.addObject("property", prop);
 
@@ -158,10 +156,9 @@ public class PropertyController {
 
     private ModelAndView ModelAndViewWithPropertyCreationAttributes() {
         ModelAndView mav = new ModelAndView("createProperty");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("currentUser", user);
-        mav.addObject("userRole", auth.getAuthorities());
+        mav.addObject("userRole", user.getRole().toString());
         mav.addObject("propertyTypes", new IdNamePair[]{new IdNamePair(0, "forms.house"),new IdNamePair(1, "forms.apartment"),new IdNamePair(2, "forms.loft")});
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         addSearchObjectsToMav(mav);
@@ -246,29 +243,23 @@ public class PropertyController {
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors,
                                Locale loc){
+
+        // TODO: esta validación no corresponde a la capa web!
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
         }
-        if (errors.hasErrors()){
+        if (errors.hasErrors())
             return index(pageNumber,searchForm,pageSize);
-        }
         final ModelAndView mav = new ModelAndView("index");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        mav.addObject("currentUser", user);
-        mav.addObject("userRole", auth.getAuthorities());
-        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm));
-        mav.addObject("properties", response.getResponseData());
-        mav.addObject("currentPage", response.getPageNumber());
-        mav.addObject("totalPages", response.getTotalPages());
-        mav.addObject("totalElements", response.getTotalItems());
-        mav.addObject("maxItems",MAX_SIZE);
         mav.addObject("isSearch", true);
+        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm));
+        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        UserUtility.addPaginationAttributes(mav, response, MAX_SIZE);
+        UserUtility.addUserAttributes(mav, user);
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         addSearchObjectsToMav(mav);
-        if (user != null)
-            addNotificationsToMav(mav, user);
+        addNotificationsToMav(mav, user);
         return mav;
     }
 
@@ -289,10 +280,7 @@ public class PropertyController {
     @RequestMapping(value = "/property/delete/{propertyId}", method = RequestMethod.POST)
     public ModelAndView create(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId, @ModelAttribute FilteredSearchForm searchForm) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
-        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Property prop = propertyService.get(propertyId);
         if (prop.getOwnerId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
@@ -300,15 +288,12 @@ public class PropertyController {
         return new ModelAndView("successfulPropertyDelete").addObject("currentUser", u);
     }
 
-    @RequestMapping(value = "/property/changeStatus/{propertyId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/host/property/changeStatus/{propertyId}", method = RequestMethod.POST)
     public ModelAndView changeStatus(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId, @ModelAttribute FilteredSearchForm searchForm) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().equals("anonymousUser"))
-            return new ModelAndView("404");
-        User u = userService.getUserWithRelatedEntitiesByEmail(auth.getName());
+        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         Property prop = propertyService.get(propertyId);
-        if (prop.getOwnerId() != u.getId())
+        if (prop.getOwner().getId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
 
         propertyService.changeStatus(prop,propertyId);
