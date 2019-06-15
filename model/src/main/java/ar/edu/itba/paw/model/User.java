@@ -8,6 +8,7 @@ import com.sun.org.apache.bcel.internal.generic.LoadClass;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -151,9 +152,14 @@ public class User {
     }
 
     public int getAge() {
-        long ageInMillis = new Date().getTime() - getBirthDate().getTime();
-        Date age = new Date(ageInMillis);
-        return age.getYear();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(birthDate);
+        LocalDate date = LocalDate.of(cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH) + 1,
+                cal.get(Calendar.DAY_OF_MONTH));
+        LocalDate now = LocalDate.now();
+        Period diff = Period.between(date, now); //difference between the dates is calculated
+        return diff.getYears();
     }
 
     @Override

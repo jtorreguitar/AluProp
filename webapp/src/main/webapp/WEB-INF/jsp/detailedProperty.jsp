@@ -186,14 +186,14 @@
                                                                                 <li class="list-group-item">
                                                                                 <c:choose>
                                                                                     <c:when test="${currentUser.role != 'ROLE_HOST'}">
-                                                                                        <div style="display: flex;flex-direction: column;">
-                                                                                            <div style="display: flex;justify-content: space-between">
-                                                                                                <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;">
-                                                                                                    <form:checkbox path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
-                                                                                                </label>
+                                                                                        <div style="display: flex;flex-direction: row;justify-content: space-between">
+                                                                                                <div>
+                                                                                                    <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;">
+                                                                                                        <form:checkbox path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
+                                                                                                    </label>
+                                                                                                    <p style="margin-bottom: 0px;margin-left: 26px;"><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
+                                                                                                </div>
                                                                                                 <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
-                                                                                            </div>
-                                                                                            <p style="margin-bottom: 0px;margin-left: 26px;"><small>${user.university.name} - ${user.age} - ${user.gender.toString()}</small></p>
                                                                                         </div>
                                                                                 </li>
                                                                                     </c:when>
