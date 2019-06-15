@@ -9,6 +9,7 @@ import ar.edu.itba.paw.model.enums.UserProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class ProposalController {
     @Autowired
     public APJavaMailSender emailSender;
     @Autowired
-    protected NotificationService notificationService;
+    protected NotificationUtility notificationUtility;
     @Autowired
     private ServiceService serviceService;
     @Autowired
@@ -100,7 +101,7 @@ public class ProposalController {
         mav.addObject("currentUser", u);
         mav.addObject("userStates", proposal.getUserStates());
         addSearchObjectsToMav(mav);
-        addNotificationsToMav(mav, u);
+        notificationUtility.addNotificationsToMav(mav, u);
         mav.setViewName("proposal");
         return mav;
     }
@@ -118,7 +119,7 @@ public class ProposalController {
             return mav;
         }
         Collection<User> retrieveUsers = proposal.getUsers();
-        sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers, u.getId());
+        notificationUtility.sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers, u.getId());
         mav.setViewName("successfulDelete");
         return mav;
     }
@@ -136,12 +137,12 @@ public class ProposalController {
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
             proposal.getUsers().add(creator);
-            sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
+            notificationUtility.sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
 
             Property property = propertyService.getPropertyWithRelatedEntities(proposal.getProperty().getId());
             List<User> owner = new ArrayList<>();
             owner.add(property.getOwner());
-            sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner, u.getId());
+            notificationUtility.sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner, u.getId());
         }
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
@@ -158,7 +159,7 @@ public class ProposalController {
         long affectedRows = proposalService.setDeclineInvite(u.getId(), proposalId);
         if (affectedRows > 0){
             proposalService.delete(proposal, u);
-            sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
+            notificationUtility.sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
             //emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
         }
 
@@ -185,16 +186,6 @@ public class ProposalController {
         proposalService.setAccept(proposalId);
 
         return new ModelAndView("redirect:/proposal/" + proposalId);
-    }
-
-    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users, long currentUserId){
-        for (User user: users){
-            if (user.getId() == currentUserId)
-                continue;
-            Notification result = notificationService.createNotification(user.getId(), subjectCode, textCode, link);
-            if (result == null)
-                logger.error("Failed to deliver notification to user with id: " + user.getId());
-        }
     }
 
     private boolean userIsInvitedToProposal(User user, Proposal proposal){
@@ -245,11 +236,6 @@ public class ProposalController {
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("rules", ruleService.getAll());
         mav.addObject("services", serviceService.getAll());
-    }
-
-    private void addNotificationsToMav(ModelAndView mav, User u){
-        Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
-        mav.addObject("notifications", notifications);
     }
 
     private boolean userOwnsProposalProperty(long proposalId){

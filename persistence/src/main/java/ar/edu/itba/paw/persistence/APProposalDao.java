@@ -34,7 +34,7 @@ public class APProposalDao implements ProposalDao {
         Proposal proposal = entityManager.find(Proposal.class, id);
         if(proposal == null)
             return;
-        proposal.setState(ProposalState.INACTIVE);
+        proposal.setState(ProposalState.DROPPED);
         entityManager.persist(proposal);
     }
 
@@ -76,9 +76,11 @@ public class APProposalDao implements ProposalDao {
     @Transactional
     public long setDeclineInvite(long userId, long proposalId) {
         UserProposal userProposal = getUserProposalByUserAndProposalIds(userId, proposalId);
-        if(userProposal == null)
+        Proposal proposal = entityManager.find(Proposal.class, proposalId);
+        if(userProposal == null || proposal == null)
             return 0;
         userProposal.setState(UserProposalState.REJECTED);
+        proposal.setState(ProposalState.CANCELED);
         return 1;
     }
 
@@ -110,6 +112,8 @@ public class APProposalDao implements ProposalDao {
     @Transactional
     public Proposal getWithRelatedEntities(long id) {
         final Proposal proposal = entityManager.find(Proposal.class, id);
+        if (proposal == null)
+            return null;
         proposal.getUsers().isEmpty();
         proposal.getUserProposals().isEmpty();
         return proposal;
@@ -119,9 +123,9 @@ public class APProposalDao implements ProposalDao {
     @Transactional
     public Collection<Proposal> getProposalsForOwnedProperties(long id) {
         final TypedQuery<Proposal> query = entityManager.createQuery("FROM Proposal p " +
-                                                "WHERE p.state = 'ACCEPTED' OR p.state = 'SENT'" +
-                                                "AND p.property IN ( SELECT u.ownedProperties FROM User u WHERE u.id = :id)", Proposal.class);
-        query.setParameter("id", id);
+                                                "WHERE p.state = 'ACCEPTED' OR p.state = 'SENT'", Proposal.class);
+                                                //"AND p.property IN ( SELECT u.ownedProperties FROM User u WHERE u.id = :id)", Proposal.class);
+        //query.setParameter("id", id);
         return query.getResultList();
     }
 }

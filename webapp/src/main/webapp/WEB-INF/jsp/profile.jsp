@@ -57,8 +57,10 @@
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
+                                        <div class="card-body">
                                             <spring:message code="label.profile.noInterests" />
                                             <a href="<c:url value="/"/>"><spring:message code="label.profile.findAProperty"/></a>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>

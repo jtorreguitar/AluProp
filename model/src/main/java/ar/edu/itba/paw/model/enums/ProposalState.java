@@ -8,7 +8,8 @@ public enum ProposalState {
     SENT(1),
     ACCEPTED(2),
     DECLINED(3),
-    INACTIVE(4);
+    CANCELED(4),
+    DROPPED(5);
 
     private int value;
     private static Map<Integer, ProposalState> map = new HashMap<>();
