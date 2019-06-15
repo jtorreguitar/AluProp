@@ -193,7 +193,9 @@
                                                                                                     </label>
                                                                                                     <p style="margin-bottom: 0px;margin-left: 26px;"><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
                                                                                                 </div>
-                                                                                                <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
+                                                                                                <div style="display: flex;align-items: center;">
+                                                                                                    <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
+                                                                                                </div>
                                                                                         </div>
                                                                                 </li>
                                                                                     </c:when>
@@ -214,12 +216,37 @@
                                                         <br>
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
-                                                            <c:if test="${currentUser.role != 'ROLE_HOST' && interestedUsers.size() > 1}">
-                                                                <input type="submit" value="${createProposal}" style="width: -moz-available;" class="btn btn-primary stretched-link"/>
+                                                            <c:if test="${currentUser.role != 'ROLE_HOST'}">
+                                                                <input value="${createProposal}" style="width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                                                <%--//data-toggle="modal" data-target="#exampleModalCenter"/>--%>
+
+                                                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Proposal creation</h5>
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body" id="lel">
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                                <button type="button" class="btn btn-primary" type="submit" value="${createProposal}">Create</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
                                                             </c:if>
                                                             <c:if test="${maxPeople != null}">
                                                                 <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
                                                             </c:if>
+
+
+
+
                                                         </div>
                                                     </form:form>
                                                 </c:when>
@@ -248,6 +275,12 @@
             </div>
         </div>
     </div>
-
+    <script>
+        //var n = $(":checkbox:checked");//$("input:checkbox:checked").length;
+        $(document).on("click", ".confirm-proposal", function () {
+            var count = 4;
+            $(".modal-body #lel").val( count );
+        });
+    </script>
 </body>
 </html>
