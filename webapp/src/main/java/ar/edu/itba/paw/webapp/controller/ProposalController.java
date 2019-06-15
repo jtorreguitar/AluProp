@@ -3,10 +3,9 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.model.Notification;
-import ar.edu.itba.paw.model.Property;
-import ar.edu.itba.paw.model.Proposal;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.interfaces.service.PropertyService;
+import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.UserProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
@@ -179,7 +178,11 @@ public class ProposalController {
     }
 
     private boolean userHasRepliedToProposal(User user, Proposal proposal){
-        return proposal.getUserProposals().stream().anyMatch(up -> up.getUser().getId() == user.getId());
+        for (UserProposal userProp: proposal.getUserProposals()){
+            if (userProp.getUserId() == user.getId() && userProp.getState() != UserProposalState.PENDING)
+                return true;
+        }
+        return false;
     }
 
     private String generateHostMailBody(Proposal proposal, User host, HttpServletRequest request){
