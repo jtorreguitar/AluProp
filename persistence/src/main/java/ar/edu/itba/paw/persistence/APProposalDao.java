@@ -83,6 +83,7 @@ public class APProposalDao implements ProposalDao {
     }
 
     @Override
+    @Transactional
     public void setAccept(long proposalId) {
         Proposal prop = entityManager.find(Proposal.class, proposalId);
         prop.setState(ProposalState.ACCEPTED);
@@ -90,6 +91,7 @@ public class APProposalDao implements ProposalDao {
     }
 
     @Override
+    @Transactional
     public void setDecline(long proposalId) {
         Proposal prop = entityManager.find(Proposal.class, proposalId);
         prop.setState(ProposalState.DECLINED);
