@@ -55,7 +55,7 @@ public class ErrorController {
     }
 
     @RequestMapping(value = "403", method = RequestMethod.GET)
-    public ModelAndView forbidden() {
+    public ModelAndView forbidden(@ModelAttribute FilteredSearchForm searchForm) {
         final User u = navigationUtility.getCurrentlyLoggedUser();
         if(u != null)
             logger.warn("User tried to access forbidden endpoint: " + u.toString());

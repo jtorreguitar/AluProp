@@ -129,7 +129,7 @@ public class PropertyController {
 
     @RequestMapping(value = "/host/create", method = RequestMethod.GET)
     public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form,
-                               @ModelAttribute FilteredSearchForm searchForm) {
+                               @ModelAttribute("filteredSearchForm") FilteredSearchForm searchForm) {
         return navigationUtility.mavWithGeneralNavigationAttributes("createProperty");
     }
 
