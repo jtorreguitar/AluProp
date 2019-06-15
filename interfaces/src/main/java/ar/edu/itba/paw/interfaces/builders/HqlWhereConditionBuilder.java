@@ -40,10 +40,15 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
     }
 
     @Override
-    public WhereConditionBuilder likeCondition(String left, String right) {
-        condition.append(left);
+    public WhereConditionBuilder descriptionCondition(String description, String caption, String searchQuery) {
+        condition.append("(" + description );
         condition.append(" LIKE ");
-        condition.append(right);
+        condition.append(searchQuery);
+        condition.append(" OR ");
+        condition.append(caption);
+        condition.append(" LIKE ");
+        condition.append(searchQuery);
+        condition.append(")");
         condition.append(" AND ");
         return this;
     }

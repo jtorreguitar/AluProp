@@ -6,7 +6,7 @@ public interface WhereConditionBuilder {
     WhereConditionBuilder greaterThanCondition(String left, String right);
     WhereConditionBuilder lessThanCondition(String left, String right);
     WhereConditionBuilder simpleInCondition(String item, String subquery);
-    WhereConditionBuilder likeCondition(String left, String right);
+    WhereConditionBuilder descriptionCondition(String description, String caption, String searchQuery);
     String build();
     StringBuilder buildAsStringBuilder();
 }

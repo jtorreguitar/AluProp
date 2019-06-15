@@ -62,6 +62,7 @@ public class APPropertyDao implements PropertyDao {
         StringBuilder searchString = new StringBuilder("FROM Property p WHERE ");
         buildCondition(property);
         searchString.append(conditionBuilder.buildAsStringBuilder());
+        System.out.println(searchString);
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
@@ -71,7 +72,6 @@ public class APPropertyDao implements PropertyDao {
         if(searchableDescription(property)) {
             String description = "%" + property.getDescription() + "%";
             query.setParameter("description", description);
-            query.setParameter("caption", description);
         }
         if(searchablePropertyType(property))
             query.setParameter("propertyType", propertyTypeFromSearchablePropertyType(property.getPropertyType()));
@@ -93,10 +93,8 @@ public class APPropertyDao implements PropertyDao {
 
     private void buildCondition(SearchableProperty property) {
         conditionBuilder.begin();
-        if(searchableDescription(property)) {
-            conditionBuilder.likeCondition("p.description", ":description");
-            conditionBuilder.likeCondition("p.description", ":caption");
-        }
+        if(searchableDescription(property))
+            conditionBuilder.descriptionCondition("p.description","p.caption", ":description");
         if(searchablePropertyType(property))
             conditionBuilder.equalityCondition("p.propertyType", ":propertyType");
         if(searchableNeighbourhood(property))
