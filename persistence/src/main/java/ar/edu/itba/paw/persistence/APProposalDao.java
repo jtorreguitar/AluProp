@@ -40,7 +40,7 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     @Transactional
-    public Proposal getById(long id) {
+    public Proposal get(long id) {
         Proposal prop = entityManager.find(Proposal.class, id);
         if (prop != null) prop.getUserProposals().isEmpty();
         return prop;
@@ -87,5 +87,13 @@ public class APProposalDao implements ProposalDao {
         query.setParameter("userId", userId);
         query.setParameter("proposalId", proposalId);
         return query.getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public Proposal getWithRelatedEntities(long id) {
+        final Proposal proposal = entityManager.find(Proposal.class, id);
+        proposal.getUsers().isEmpty();
+        return proposal;
     }
 }

@@ -62,7 +62,6 @@ public class NavigationUtility {
             Collection<Notification> notifications =
                     notificationService.getAllNotificationsForUser(user.getId(), NOTIFICATION_PAGE_REQUEST);
             mav.addObject("currentUser", user);
-            mav.addObject("userRole", user.getRole().toString());
             mav.addObject("notifications", notifications);
         }
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());

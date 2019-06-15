@@ -46,8 +46,6 @@ public class PropertyController {
     private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
 
     @Autowired
-    private MessageSource messageSource;
-    @Autowired
     private PropertyService propertyService;
     @Autowired
     private ImageService imageService;
@@ -59,6 +57,8 @@ public class PropertyController {
     private NotificationService notificationService;
     @Autowired
     private NavigationUtility navigationUtility;
+    @Autowired
+    private MessageSource messageSource;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
@@ -129,7 +129,7 @@ public class PropertyController {
 
     @RequestMapping(value = "/host/create", method = RequestMethod.GET)
     public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form,
-                               @ModelAttribute FilteredSearchForm searchForm) {
+                               @ModelAttribute("filteredSearchForm") FilteredSearchForm searchForm) {
         return navigationUtility.mavWithGeneralNavigationAttributes("createProperty");
     }
 
@@ -214,8 +214,7 @@ public class PropertyController {
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors,
-                               Locale loc){
-        // TODO: esta validación no corresponde a la capa web!
+                               Locale loc) {
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));

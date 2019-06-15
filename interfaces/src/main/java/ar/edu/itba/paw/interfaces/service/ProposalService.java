@@ -10,7 +10,8 @@ import java.util.List;
 public interface ProposalService {
     Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds);
     void delete(long id);
-    Proposal getById(long id);
+    Proposal get(long id);
+    Proposal getWithRelatedEntities(long id);
     Collection<Proposal> getAllProposalForUserId(long id);
     void setAccept(long userId, long proposalId);
     long setDecline(long userId, long proposalId);

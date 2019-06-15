@@ -43,7 +43,7 @@ public class Proposal {
         return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList());
     }
 
-    public List<Integer> getInvitedUserStates() {
+    public List<Integer> getUserStates() {
         return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
     }
 
@@ -55,7 +55,7 @@ public class Proposal {
     public void setState(ProposalState state) { this.state = state; }
 
     public boolean isCompletelyAccepted(){
-        for (Integer state: getInvitedUserStates())
+        for (Integer state: getUserStates())
             if (state != 1)
                 return false;
         return true;
