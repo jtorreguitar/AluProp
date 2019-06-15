@@ -3,8 +3,12 @@ package ar.edu.itba.paw.model;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
+import com.sun.org.apache.bcel.internal.generic.LoadClass;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -145,6 +149,17 @@ public class User {
 
     public Collection<Notification> getNotifications() {
         return notifications;
+    }
+
+    public int getAge() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(birthDate);
+        LocalDate date = LocalDate.of(cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH) + 1,
+                cal.get(Calendar.DAY_OF_MONTH));
+        LocalDate now = LocalDate.now();
+        Period diff = Period.between(date, now); //difference between the dates is calculated
+        return diff.getYears();
     }
 
     @Override

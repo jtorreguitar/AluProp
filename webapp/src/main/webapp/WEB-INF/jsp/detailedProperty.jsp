@@ -144,7 +144,7 @@
                             <spring:message code="user.interested" var="interested"/>
                             <spring:message code="user.not_interested" var="not_interested"/>
                                 <c:choose>
-                                    <c:when test="${userRole == 'ROLE_HOST' && currentUser.id == property.ownerId}">
+                                    <c:when test="${currentUser.role == 'ROLE_HOST' && currentUser.id == property.ownerId}">
                                         <div class="flex-container">
                                             <c:choose>
                                                 <c:when test="${property.availability == 'AVAILABLE'}">
@@ -166,12 +166,12 @@
                                             </form>
                                         </div>
                                     </c:when>
-                                    <c:when test="${userRole == 'ROLE_HOST'}">
+                                    <c:when test="${currentUser.role == 'ROLE_HOST'}">
                                     </c:when>
-                                    <c:when test="${userRole == 'ROLE_GUEST' && userInterested == true}">
+                                    <c:when test="${currentUser.role == 'ROLE_GUEST' && userInterested == true}">
                                         <div class="flex-container" style="justify-content: space-around">
                                             <c:choose>
-                                                <c:when test="${userInterested == true || userRole == 'ROLE_HOST'}">
+                                                <c:when test="${userInterested == true || currentUser.role == 'ROLE_HOST'}">
                                                     <c:url value="/proposal/create/${property.id}" var="postPath"/>
                                                     <form:form modelAttribute="proposalForm" action="${postPath}" style="width: -moz-available;" method="post">
                                                         <div class="card">
@@ -185,12 +185,15 @@
                                                                             <c:if test="${user.id != currentUser.id}">
                                                                                 <li class="list-group-item">
                                                                                 <c:choose>
-                                                                                    <c:when test="${userRole != 'ROLE_HOST'}">
-                                                                                        <div style="display: flex;justify-content: space-between">
-                                                                                            <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;">
-                                                                                                <form:checkbox path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
-                                                                                            </label>
-                                                                                            <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
+                                                                                    <c:when test="${currentUser.role != 'ROLE_HOST'}">
+                                                                                        <div style="display: flex;flex-direction: row;justify-content: space-between">
+                                                                                                <div>
+                                                                                                    <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;">
+                                                                                                        <form:checkbox path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
+                                                                                                    </label>
+                                                                                                    <p style="margin-bottom: 0px;margin-left: 26px;"><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
+                                                                                                </div>
+                                                                                                <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
                                                                                         </div>
                                                                                 </li>
                                                                                     </c:when>
@@ -211,7 +214,7 @@
                                                         <br>
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
-                                                            <c:if test="${userRole != 'ROLE_HOST' && interestedUsers.size() > 1}">
+                                                            <c:if test="${currentUser.role != 'ROLE_HOST' && interestedUsers.size() > 1}">
                                                                 <input type="submit" value="${createProposal}" style="width: -moz-available;" class="btn btn-primary stretched-link"/>
                                                             </c:if>
                                                             <c:if test="${maxPeople != null}">
