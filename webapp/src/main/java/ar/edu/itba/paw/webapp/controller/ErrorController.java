@@ -36,9 +36,8 @@ public class ErrorController {
             case HttpURLConnection.HTTP_BAD_REQUEST:
             case HttpURLConnection.HTTP_NOT_FOUND:
                 return new ModelAndView("404");
-            case HttpURLConnection.HTTP_UNAUTHORIZED:
-                errorMsg = "Http Error Code: 401. Unauthorized";
-                break;
+            case HttpURLConnection.HTTP_FORBIDDEN:
+                return new ModelAndView("403");
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
                 return new ModelAndView("500");
             default:
