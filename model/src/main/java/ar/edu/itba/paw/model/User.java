@@ -3,8 +3,11 @@ package ar.edu.itba.paw.model;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
+import com.sun.org.apache.bcel.internal.generic.LoadClass;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -145,6 +148,12 @@ public class User {
 
     public Collection<Notification> getNotifications() {
         return notifications;
+    }
+
+    public int getAge() {
+        long ageInMillis = new Date().getTime() - getBirthDate().getTime();
+        Date age = new Date(ageInMillis);
+        return age.getYear();
     }
 
     @Override

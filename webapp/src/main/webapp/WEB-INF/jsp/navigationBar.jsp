@@ -155,7 +155,7 @@
             <c:if test="${pageContext.request.userPrincipal.name != null}">
                 <li><div><a class="nav-link mr-1" href="<c:url value="/user/logOut"/>"> <spring:message code="user.logout"/> </a></div></li>
             </c:if>
-            <c:if test="${currentUser.getRole.toString == 'ROLE_HOST'}">
+            <c:if test="${currentUser != null && currentUser.role == 'ROLE_HOST'}">
                 <li><a class="nav-link mr-1 bold active" href="<c:url value="/host/create"/>"> <spring:message code="host.publish_property"/> </a></li>
             </c:if>
             <spring:message code="label.english" var="language_en"/>
