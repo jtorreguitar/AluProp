@@ -91,7 +91,7 @@
                 </c:if>
 
                 <c:if test="${profileUser.role == 'ROLE_HOST'}">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
                                 <spring:message code="label.profile.properties"/>
@@ -103,7 +103,7 @@
                                                 <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action" style="display: flex;justify-content: space-between">${property.description}
                                                     <c:choose>
                                                         <c:when test="${property.availability == 'AVAILABLE'}">
-                                                            <span class="badge badge-success my-badge>"> <spring:message code="property.active"/> </span>
+                                                            <span class="badge badge-success my-badge"> <spring:message code="property.active"/> </span>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <span class="badge badge-secondary my-badge"> <spring:message code="property.inactive"/> </span>
@@ -119,6 +119,43 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <spring:message code="label.profile.proposals"/>
+                            </div>
+                            <div class="list-group">
+                                <c:choose>
+                                    <c:when test="${not empty hostProposals}">
+                                        <c:forEach var="proposal" items="${hostProposals}" varStatus="i">
+                                            <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
+                                                <div style="display: flex;justify-content: space-between">${proposal.property.description} - ${proposal.users}
+                                                    <span>
+                                                        <c:choose>
+                                                            <c:when test="${proposal.state == 1 }">
+                                                                <img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">
+                                                            </c:when>
+                                                            <c:when test="${proposal.state == 2}">
+                                                                <img src="<c:url value="/resources/images/check.png"/>" class="my-span" alt="${language_en}">
+                                                            </c:when>
+                                                            <c:when test="${proposal.state == 3}">
+                                                                <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
+                                                            </c:when>
+                                                        </c:choose>
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="card-body"><spring:message code="label.profile.no_proposals_host" /></div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </div>
+
                 </c:if>
             </div>
         </div>
