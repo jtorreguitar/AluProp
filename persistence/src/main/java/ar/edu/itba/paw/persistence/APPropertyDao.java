@@ -150,6 +150,7 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    @Transactional
     public void changeStatus(Property prop, long id) {
         Availability oldAvail = prop.getAvailability();
         Availability newAvail;
