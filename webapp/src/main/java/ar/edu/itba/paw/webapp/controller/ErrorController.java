@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
-import ar.edu.itba.paw.webapp.utilities.UserUtility;
+import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,9 @@ public class ErrorController {
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+    @Autowired
+    private NavigationUtility navigationUtility;
 
     @RequestMapping(value = "errors", method= RequestMethod.GET)
     public ModelAndView renderErrorPage(@ModelAttribute FilteredSearchForm searchForm,
@@ -57,9 +59,9 @@ public class ErrorController {
 
     @RequestMapping(value = "403", method = RequestMethod.GET)
     public ModelAndView forbidden() {
-        final User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        final User u = navigationUtility.getCurrentlyLoggedUser();
         if(u != null)
             logger.warn("User tried to access forbidden endpoint: " + u.toString());
-        return new ModelAndView("403");
+        return navigationUtility.mavWithGeneralNavigationAttributes("403");
     }
 }

@@ -8,15 +8,15 @@ public class StatusCodeUtility {
 
     private StatusCodeUtility() { }
 
-    public static ModelAndView parseStatusCode(int statusCode, String successJsp) {
+    public static void parseStatusCode(int statusCode, ModelAndView mavWithSuccessView) {
         switch (statusCode) {
             case HttpURLConnection.HTTP_OK:
-                return new ModelAndView(successJsp);
+                break;
             case HttpURLConnection.HTTP_NOT_FOUND:
-                return new ModelAndView("404");
+                mavWithSuccessView.setViewName("404");
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
             default:
-                return new ModelAndView("500");
+                mavWithSuccessView.setViewName("500");
         }
     }
 }

@@ -7,13 +7,10 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
-import ar.edu.itba.paw.webapp.utilities.UserUtility;
+import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -61,32 +58,27 @@ public class ProposalController {
 
     @Autowired
     ProposalService proposalService;
-
     @Autowired
     PropertyService propertyService;
-
     @Autowired
     UserService userService;
-
     @Autowired
     public APJavaMailSender emailSender;
-
     @Autowired
     protected NotificationService notificationService;
-
     @Autowired
     private ServiceService serviceService;
-
     @Autowired
     private RuleService ruleService;
-
     @Autowired
     private NeighbourhoodService neighbourhoodService;
+    @Autowired
+    private NavigationUtility navigationUtility;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
-        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        User u = navigationUtility.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.getById(id);
         if (proposal == null)
             return new ModelAndView("404").addObject("currentUser", u);
@@ -111,7 +103,7 @@ public class ProposalController {
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        User u = navigationUtility.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || proposal.getCreator().getId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
@@ -126,7 +118,7 @@ public class ProposalController {
     @RequestMapping(value = "/user/accept/{proposalId}", method = RequestMethod.POST )
     public ModelAndView accept(HttpServletRequest request, @PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        User u = navigationUtility.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.getById(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
             return new ModelAndView("403").addObject("currentUser", u);
@@ -150,7 +142,7 @@ public class ProposalController {
     @RequestMapping(value = "/user/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView decline(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
-        User u = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        User u = navigationUtility.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.getById(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404").addObject("currentUser", u);
@@ -221,7 +213,7 @@ public class ProposalController {
     }
 
     private void addNotificationsToMav(ModelAndView mav, User u){
-        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
+        Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }
 
