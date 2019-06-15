@@ -70,7 +70,7 @@ public class APPropertyDao implements PropertyDao {
 
     private void addSearchParameters(SearchableProperty property, TypedQuery<Property> query) {
         if(searchableDescription(property)) {
-            String description = "%" + property.getDescription() + "%";
+            String description = "%" + property.getDescription().toLowerCase() + "%";
             query.setParameter("description", description);
         }
         if(searchablePropertyType(property))
@@ -94,7 +94,7 @@ public class APPropertyDao implements PropertyDao {
     private void buildCondition(SearchableProperty property) {
         conditionBuilder.begin();
         if(searchableDescription(property))
-            conditionBuilder.descriptionCondition("p.description","p.caption", ":description");
+            conditionBuilder.descriptionCondition("lower(p.description)","lower(p.caption)", ":description");
         if(searchablePropertyType(property))
             conditionBuilder.equalityCondition("p.propertyType", ":propertyType");
         if(searchableNeighbourhood(property))
