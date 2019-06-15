@@ -16,15 +16,9 @@ public class City {
     @Column(length = 75)
     private String name;
 
-    @Transient
-    private long provinceId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "provinceId")
     private Province province;
-
-    @Transient
-    private long countryId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "countryId")
@@ -44,16 +38,8 @@ public class City {
         return name;
     }
 
-    public long getProvinceId() {
-        return provinceId;
-    }
-
     public Province getProvince() {
         return province;
-    }
-
-    public long getCountryId() {
-        return countryId;
     }
 
     public Country getCountry() {
@@ -76,7 +62,7 @@ public class City {
         }
 
         private void checkEitherProvinceOrCountryGiven() {
-            if(city.countryId < 1 && city.provinceId < 1 && city.country == null && city.province == null)
+            if(city.country == null && city.province == null)
                 throw new IllegalArgumentException(PROVINCE_AND_COUNTRY_NOT_PROVIDED);
         }
 
@@ -90,18 +76,8 @@ public class City {
             return this;
         }
 
-        public CityBuilder withProvinceId(long provinceId) {
-            city.provinceId = provinceId;
-            return this;
-        }
-
         public CityBuilder withProvince(Province province) {
             city.province = province;
-            return this;
-        }
-
-        public CityBuilder withCountryId(long countryId) {
-            city.countryId = countryId;
             return this;
         }
 

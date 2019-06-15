@@ -99,8 +99,8 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     @Transactional
-    public Collection<Proposal> getProposalsForOwnedProperties(User profileUser) {
-        User reattachedProfileUser = entityManager.find(User.class, profileUser.getId());
+    public Collection<Proposal> getProposalsForOwnedProperties(long id) {
+        User reattachedProfileUser = entityManager.find(User.class, id);
         reattachedProfileUser.getOwnedProperties().forEach(p -> p.getProposals().isEmpty());
         Collection<Proposal> proposals = reattachedProfileUser.getOwnedProperties()
                                                     .stream()

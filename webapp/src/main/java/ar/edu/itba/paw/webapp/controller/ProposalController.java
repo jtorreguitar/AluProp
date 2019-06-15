@@ -88,7 +88,7 @@ public class ProposalController {
         }
         final Property property = propertyService.get(proposal.getProperty().getId());
         final User creator = userService.get(proposal.getCreator().getId());
-        if (proposal.getCreator().getId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
+        if (proposal.getCreator().getId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwner().getId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         if (userIsInvitedToProposal(u, proposal)){
             mav.addObject("isInvited", true);
@@ -126,6 +126,7 @@ public class ProposalController {
     @RequestMapping(value = "/user/accept/{proposalId}", method = RequestMethod.POST )
     public ModelAndView accept(HttpServletRequest request, @PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
         User u = navigationUtility.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.get(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
@@ -183,7 +184,7 @@ public class ProposalController {
 
     private boolean userHasRepliedToProposal(User user, Proposal proposal){
         for (UserProposal userProp: proposal.getUserProposals()){
-            if (userProp.getUserId() == user.getId() && userProp.getState() != UserProposalState.PENDING)
+            if (userProp.getUser().getId() == user.getId() && userProp.getState() != UserProposalState.PENDING)
                 return true;
         }
         return false;

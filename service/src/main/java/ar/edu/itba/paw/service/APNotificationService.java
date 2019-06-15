@@ -2,6 +2,7 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.dao.NotificationDao;
+import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.service.NotificationService;
 import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.enums.NotificationState;
@@ -14,7 +15,9 @@ import java.util.Collection;
 public class APNotificationService implements NotificationService {
 
     @Autowired
-    NotificationDao notificationDao;
+    private NotificationDao notificationDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public Collection<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
@@ -29,7 +32,7 @@ public class APNotificationService implements NotificationService {
     @Override
     public Notification createNotification(long userId, String subjectCode, String textCode, String link) {
         Notification.Builder builder = new Notification.Builder();
-        builder.withUserId(userId);
+        builder.withUser(userDao.get(userId));
         builder.withSubjectCode(subjectCode);
         builder.withTextCode(textCode);
         builder.withLink(link);

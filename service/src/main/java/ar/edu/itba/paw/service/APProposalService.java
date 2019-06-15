@@ -103,6 +103,6 @@ public class APProposalService implements ProposalService {
 
     @Override
     public Collection<Proposal> getProposalsForOwnedProperties(User profileUser) {
-        return proposalDao.getProposalsForOwnedProperties(profileUser);
+        return proposalDao.getProposalsForOwnedProperties(profileUser.getId());
     }
 }

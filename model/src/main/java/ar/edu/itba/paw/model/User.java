@@ -80,6 +80,10 @@ public class User {
 
     /* package */ User() { }
 
+    /* package */ User(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

@@ -116,11 +116,11 @@ public class APPropertyService implements PropertyService {
 
     private void checkRelatedEntitiesExist(Property property) {
         List<Image> images = new LinkedList<>(property.getImages());
-        images.add(new Image(property.getMainImageId()));
+        images.add(property.getMainImage());
         checkImagesExist(images);
         checkServicesExist(property.getServices());
         checkRulesExist(property.getRules());
-        checkNeighbourhoodExists(property.getNeighbourhoodId());
+        checkNeighbourhoodExists(property.getNeighbourhood().getId());
     }
 
     private void checkImagesExist(Collection<Image> images) {

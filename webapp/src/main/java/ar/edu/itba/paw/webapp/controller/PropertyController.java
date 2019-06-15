@@ -182,16 +182,16 @@ public class PropertyController {
         return new Property.Builder()
             .withCaption(propertyForm.getCaption())
             .withDescription(propertyForm.getDescription())
-            .withNeighbourhoodId(propertyForm.getNeighbourhoodId())
+            .withNeighbourhood(new Neighbourhood(propertyForm.getNeighbourhoodId()))
             .withPrice(propertyForm.getPrice())
             .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
             .withPrivacyLevel(propertyForm.getPrivacyLevel() > 0)
             .withCapacity(propertyForm.getCapacity())
-            .withMainImageId(propertyForm.getMainImageId())
+            .withMainImage(new Image(propertyForm.getMainImageId()))
             .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
             .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
             .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
-            .withOwnerId(navigationUtility.getCurrentlyLoggedUser().getId())
+            .withOwner(navigationUtility.getCurrentlyLoggedUser())
             .withAvailability(Availability.valueOf("AVAILABLE"))
             .build();
     }
@@ -248,7 +248,7 @@ public class PropertyController {
                                @ModelAttribute FilteredSearchForm searchForm) {
         User u = navigationUtility.getCurrentlyLoggedUser();
         Property prop = propertyService.get(propertyId);
-        if (prop == null || prop.getOwnerId() != u.getId())
+        if (prop == null || prop.getOwner().getId() != u.getId())
             return navigationUtility.mavWithGeneralNavigationAttributes("404");
         propertyService.delete(propertyId);
         return navigationUtility.mavWithGeneralNavigationAttributes("successfulPropertyDelete");

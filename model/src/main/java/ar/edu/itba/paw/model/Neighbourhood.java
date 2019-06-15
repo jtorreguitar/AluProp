@@ -16,9 +16,6 @@ public class Neighbourhood {
     @Column(length = 75)
     private String name;
 
-    @Transient
-    private long cityId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cityId")
     private City city;
@@ -29,10 +26,9 @@ public class Neighbourhood {
 
     /* package */ Neighbourhood() { }
 
-    public Neighbourhood(long id, String name, long cityId, Collection<Property> properties) {
+    public Neighbourhood(long id, String name, Collection<Property> properties) {
         this.id = id;
         this.name = name;
-        this.cityId = cityId;
         this.properties = properties;
     }
 
@@ -41,16 +37,16 @@ public class Neighbourhood {
         this.name = name;
     }
 
+    public Neighbourhood(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public long getCityId() {
-        return cityId;
     }
 
     public Collection<Property> getProperties() {

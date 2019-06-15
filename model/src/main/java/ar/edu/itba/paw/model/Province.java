@@ -13,9 +13,6 @@ public class Province {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long countryId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "countryId")
     private Country country;
@@ -29,38 +26,8 @@ public class Province {
 
     /* package */ Province() { }
 
-    public Province(long id, long countryId, String name, Collection<City> cities) {
-        this.id = id;
-        this.countryId = countryId;
-        this.name = name;
-        this.cities = cities;
-    }
-
-    public Province(long id, Country country, String name, Collection<City> cities) {
-        this.id = id;
-        this.country = country;
-        this.name = name;
-        this.cities = cities;
-    }
-
-    public Province(long id, long countryId, String name) {
-        this.id = id;
-        this.countryId = countryId;
-        this.name = name;
-    }
-
-    public Province(long id, Country country, String name) {
-        this.id = id;
-        this.country = country;
-        this.name = name;
-    }
-
     public long getId() {
         return id;
-    }
-
-    public long getCountryId() {
-        return countryId;
     }
 
     public Country getCountry() {

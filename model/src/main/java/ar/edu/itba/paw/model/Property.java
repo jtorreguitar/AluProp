@@ -30,9 +30,6 @@ public class Property {
     @Enumerated(EnumType.STRING)
     private PropertyType propertyType;
 
-    @Transient
-    private long neighbourhoodId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "neighbourhoodId")
     private Neighbourhood neighbourhood;
@@ -68,15 +65,9 @@ public class Property {
     @JoinColumn(name = "propertyId")
     private Collection<Image> images;
 
-    @Transient
-    private long mainImageId;
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mainImageId")
     private Image mainImage;
-
-    @Transient
-    private long ownerId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ownerId")
@@ -105,10 +96,6 @@ public class Property {
 
     public PropertyType getPropertyType() {
         return propertyType;
-    }
-
-    public long getNeighbourhoodId() {
-        return neighbourhoodId;
     }
 
     public Neighbourhood getNeighbourhood() {
@@ -143,16 +130,8 @@ public class Property {
         return images;
     }
 
-    public long getMainImageId() {
-        return mainImageId;
-    }
-
     public Image getMainImage() {
         return mainImage;
-    }
-
-    public long getOwnerId() {
-        return ownerId;
     }
 
     public User getOwner() {
@@ -183,18 +162,15 @@ public class Property {
             this.property.caption = property.caption;
             this.property.description = property.description;
             this.property.propertyType = property.propertyType;
-            this.property.neighbourhoodId = property.neighbourhoodId;
             this.property.neighbourhood = property.neighbourhood;
             this.property.privacyLevel = property.privacyLevel;
             this.property.capacity = property.capacity;
             this.property.price = property.price;
             this.property.rules = property.rules;
             this.property.interestedUsers = property.interestedUsers;
-            this.property.mainImageId = property.mainImageId;
             this.property.mainImage = property.mainImage;
             this.property.images = property.images;
             this.property.services = property.services;
-            this.property.ownerId = property.ownerId;
             this.property.owner = property.owner;
             this.property.availability = property.availability;
             return this;
@@ -230,7 +206,7 @@ public class Property {
         }
 
         private boolean propertyNeighbourhoodIsValid() {
-            return !(property.neighbourhoodId < 1 && property.neighbourhood == null);
+            return property.neighbourhood != null;
         }
 
         private boolean capacityIsValid() {
@@ -242,11 +218,11 @@ public class Property {
         }
 
         private boolean mainImageIsValid() {
-            return !(property.mainImage == null && property.mainImageId < 1);
+            return property.mainImage != null;
         }
 
         private boolean ownerIsValid() {
-            return !(property.ownerId < 1 && property.owner == null);
+            return property.owner != null;
         }
 
         private void initializeLists() {
@@ -272,11 +248,6 @@ public class Property {
 
         public Builder withPropertyType(PropertyType propertyType) {
             property.propertyType = propertyType;
-            return this;
-        }
-
-        public Builder withNeighbourhoodId(long neighbourhoodId) {
-            property.neighbourhoodId = neighbourhoodId;
             return this;
         }
 
@@ -320,23 +291,18 @@ public class Property {
             return this;
         }
 
-        public Builder withMainImageId(long mainImageId) {
-            this.property.mainImageId = mainImageId;
-            return this;
-        }
-
         public Builder withImages(Collection<Image> images) {
             this.property.images = images;
             return this;
         }
 
-        public Builder withOwnerId(long ownerId) {
-            this.property.ownerId = ownerId;
+        public Builder withOwner(User owner) {
+            this.property.owner = owner;
             return this;
         }
 
-        public Builder withOwner(User owner) {
-            this.property.owner = owner;
+        public Builder withOwnerId(long id) {
+            property.owner = new User(id);
             return this;
         }
 

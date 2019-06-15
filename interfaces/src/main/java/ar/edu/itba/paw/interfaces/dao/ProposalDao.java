@@ -16,5 +16,5 @@ public interface ProposalDao {
 
     long setDecline(long userId, long proposalId);
 
-    Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
+    Collection<Proposal> getProposalsForOwnedProperties(long id);
 }
