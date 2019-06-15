@@ -300,7 +300,7 @@ public class PropertyController {
 //                            generateProposalUrl(proposalOrErrors.value(), request) +
 //                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
 //                    proposalOrErrors.value().getUsers());
-            sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers());
+            sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers(), userId);
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;
         } else {
@@ -324,9 +324,11 @@ public class PropertyController {
         return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
     }
 
-    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users){
+    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users, long currentUserId){
         for (User user: users){
-            Notification result = notificationService.createNotification(user.getId(), subjectCode, link, textCode);
+            if (user.getId() == currentUserId)
+                continue;
+            Notification result = notificationService.createNotification(user.getId(), subjectCode, textCode, link);
             if (result == null)
                 logger.error("Failed to deliver notification to user with id: " + user.getId());
         }

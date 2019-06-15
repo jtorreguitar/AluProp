@@ -47,6 +47,13 @@ public class UserProposal {
         this.state = UserProposalState.PENDING;
     }
 
+    public static UserProposal fromUser(User user) {
+        UserProposal prop = new UserProposal();
+        prop.user = user;
+        prop.state = UserProposalState.PENDING;
+        return prop;
+    }
+
     public long getId() {
         return id;
     }

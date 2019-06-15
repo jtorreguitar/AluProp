@@ -18,7 +18,7 @@ public class Proposal {
     @Column(name = "id")
     private long id;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name = "proposalId")
     private Collection<UserProposal> userProposals;
 

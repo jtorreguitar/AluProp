@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.dao.NotificationDao;
 import ar.edu.itba.paw.interfaces.service.NotificationService;
 import ar.edu.itba.paw.model.Notification;
+import ar.edu.itba.paw.model.enums.NotificationState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class APNotificationService implements NotificationService {
         builder.withSubjectCode(subjectCode);
         builder.withTextCode(textCode);
         builder.withLink(link);
+        builder.withState(NotificationState.UNREAD);
         return notificationDao.createNotification(builder.build());
     }
 }

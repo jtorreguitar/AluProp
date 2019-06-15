@@ -114,7 +114,7 @@ public class ProposalController {
 
         Collection<User> retrieveUsers = proposal.getUsers();
         //emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
-        sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers);
+        sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers, u.getId());
         return new ModelAndView("successfulDelete").addObject("currentUser", u);
     }
 
@@ -131,12 +131,12 @@ public class ProposalController {
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
             proposal.getUsers().add(creator);
             //emailSender.sendEmailToUsers(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
-            sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers());
+            sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
 
             Property property = propertyService.getPropertyWithRelatedEntities(proposal.getProperty().getId());
             List<User> owner = new ArrayList<>();
             owner.add(property.getOwner());
-            sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner);
+            sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner, u.getId());
             //emailSender.sendEmailToSingleUser(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
         }
         return new ModelAndView("redirect:/proposal/" + proposalId);
@@ -154,16 +154,18 @@ public class ProposalController {
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
         if (affectedRows > 0){
             proposalService.delete(proposalId);
-            sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers());
+            sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
             //emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
         }
 
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
 
-    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users){
+    private void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users, long currentUserId){
         for (User user: users){
-            Notification result = notificationService.createNotification(user.getId(), subjectCode, link, textCode);
+            if (user.getId() == currentUserId)
+                continue;
+            Notification result = notificationService.createNotification(user.getId(), subjectCode, textCode, link);
             if (result == null)
                 logger.error("Failed to deliver notification to user with id: " + user.getId());
         }

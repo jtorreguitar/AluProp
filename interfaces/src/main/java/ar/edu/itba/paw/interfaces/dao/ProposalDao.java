@@ -5,7 +5,7 @@ import ar.edu.itba.paw.model.Proposal;
 import java.util.Collection;
 
 public interface ProposalDao {
-    Proposal create(Proposal proposal);
+    Proposal create(Proposal proposal, long[] userIds);
     void delete(long id);
     Proposal get(long id);
     Proposal getWithRelatedEntities(long id);

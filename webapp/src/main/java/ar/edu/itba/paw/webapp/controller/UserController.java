@@ -73,13 +73,13 @@ public class UserController {
 
     @RequestMapping("/logIn")
     public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
-        HttpSession session = request.getSession(false);
-        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
-        if (savedRequest != null){
-            String targetUrl = savedRequest.getRedirectUrl();
-            System.out.println(targetUrl);
-        }
-        return new ModelAndView("logInForm");
+//        HttpSession session = request.getSession(false);
+//        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+//        if (savedRequest != null){
+//            String targetUrl = savedRequest.getRedirectUrl();
+//            System.out.println(targetUrl);
+//        }
+        return navigationUtility.mavWithGeneralNavigationAttributes("logInForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
