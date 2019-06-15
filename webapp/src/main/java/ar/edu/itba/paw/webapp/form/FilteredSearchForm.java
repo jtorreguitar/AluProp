@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
 import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;

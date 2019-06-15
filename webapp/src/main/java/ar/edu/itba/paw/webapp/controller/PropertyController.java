@@ -57,6 +57,8 @@ public class PropertyController {
     private NotificationService notificationService;
     @Autowired
     private NavigationUtility navigationUtility;
+    @Autowired
+    private MessageSource messageSource;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
@@ -211,8 +213,8 @@ public class PropertyController {
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
-                               final BindingResult errors) {
-        // TODO: esta validación no corresponde a la capa web!
+                               final BindingResult errors,
+                               Locale loc) {
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
