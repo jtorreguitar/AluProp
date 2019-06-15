@@ -92,6 +92,7 @@ public class ProposalController {
         }
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
+        mav.addObject("proposalUsers", proposal.getUsers());
         mav.addObject("creator", creator);
         mav.addObject("currentUser", u);
         addSearchObjectsToMav(mav);

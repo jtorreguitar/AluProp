@@ -39,7 +39,9 @@ public class Proposal {
 
     public Collection<UserProposal> getUserProposals() { return userProposals; }
 
-    public Collection<User> getUsers() { return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList()); }
+    public Collection<User> getUsers() {
+        return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList());
+    }
 
     public List<Integer> getInvitedUserStates() {
         return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
@@ -91,6 +93,11 @@ public class Proposal {
 
         public Builder withProperty(Property property) {
             proposal.property = property;
+            return this;
+        }
+
+        public Builder withState(ProposalState state) {
+            proposal.state = state;
             return this;
         }
     }

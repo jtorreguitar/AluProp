@@ -32,7 +32,7 @@
 
 <div class="card" style="width: 80%;">
 
-    <img class="card-img-top" src="<c:url value="/images/${property.getMainImageId()}"/>" alt="Card image cap">
+    <img class="card-img-top" src="<c:url value="/images/${property.mainImage.id}"/>" alt="Card image cap">
     <div class="card-body">
         <h5 class="card-title"><spring:message code="label.proposal.proposal"/>: ${property.description}</h5>
         <p class="card-text">${property.caption}</p>
@@ -42,13 +42,13 @@
     </div>
     <ul class="list-group list-group-flush">
         <c:choose>
-            <c:when test="${not empty proposal.users}">
+            <c:when test="${not empty proposalUsers}">
                 <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
                     <div style="display: flex;justify-content: space-between">${creator.name}
                         <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
                     </div>
                 </a>
-                <c:forEach var="user" items="${proposal.users}" varStatus="i">
+                <c:forEach var="user" items="${proposalUsers}" varStatus="i">
                     <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
                         <div style="display: flex;justify-content: space-between">${user.name}
                             <span>
@@ -76,7 +76,7 @@
     <div class="card-body" id="answer">
         <div class="row">
             <c:choose>
-                <c:when test="${proposal.creatorId == currentUser.id}">
+                <c:when test="${creator.id == currentUser.id}">
                     <c:url value="/proposal/delete/${proposal.id}" var="postPath"/>
                     <form action="${postPath}" method="post">
                         <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>

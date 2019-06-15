@@ -187,7 +187,7 @@ public class UserController {
         addNotificationsToMav(mav, profileUser);
         addSearchObjectsToMav(mav);
         mav.addObject("properties", properties);
-        if (proposals != null)
+        if (proposals != null && proposals.size() != 0)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
 
         return mav;
@@ -205,7 +205,8 @@ public class UserController {
     private List<String> generatePropertyNames(List<Proposal> list){
         List<String> result = new ArrayList<>();
         for (Proposal prop: list)
-            result.add(propertyService.get(prop.getProperty().getId()).getDescription());
+            if (prop != null)
+                result.add(prop.getProperty().getDescription());
         return result;
     }
 

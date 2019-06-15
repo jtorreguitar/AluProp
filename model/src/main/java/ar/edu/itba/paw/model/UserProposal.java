@@ -38,11 +38,13 @@ public class UserProposal {
         this.id = id;
         this.userId = userId;
         this.proposalId = proposalId;
+        this.state = UserProposalState.PENDING;
     }
 
     public UserProposal(User user, Proposal proposal) {
         this.user = user;
         this.proposal = proposal;
+        this.state = UserProposalState.PENDING;
     }
 
     public long getId() {

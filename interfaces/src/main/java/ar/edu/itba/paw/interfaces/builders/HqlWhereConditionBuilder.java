@@ -40,10 +40,15 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
     }
 
     @Override
-    public WhereConditionBuilder likeCondition(String left, String right) {
-        condition.append(left);
+    public WhereConditionBuilder descriptionCondition(String description, String caption, String searchQuery) {
+        condition.append("(" + description );
         condition.append(" LIKE ");
-        condition.append(right);
+        condition.append(searchQuery);
+        condition.append(" OR ");
+        condition.append(caption);
+        condition.append(" LIKE ");
+        condition.append(searchQuery);
+        condition.append(")");
         condition.append(" AND ");
         return this;
     }
@@ -56,6 +61,7 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
 
     @Override
     public StringBuilder buildAsStringBuilder() {
+        condition.length();
         deleteTrailingAnd();
         return condition;
     }
@@ -66,7 +72,7 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
     }
 
     private boolean conditionHasTrailingAnd() {
-        return condition.substring(condition.length() - 5, condition.length()).equals(" AND ");
+        return condition.length() != 0 && condition.substring(condition.length() - 5, condition.length()).equals(" AND ");
     }
 
     private void comparisonCondition(String left, String operator, String right) {

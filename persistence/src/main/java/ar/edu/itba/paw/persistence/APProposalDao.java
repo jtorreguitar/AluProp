@@ -20,8 +20,9 @@ public class APProposalDao implements ProposalDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     public Proposal create(Proposal proposal){
-        entityManager.merge(proposal);
+        entityManager.persist(proposal);
         return proposal;
     }
 
@@ -34,12 +35,15 @@ public class APProposalDao implements ProposalDao {
     }
 
     @Override
+    @Transactional
     public Proposal getById(long id) {
-        return entityManager.find(Proposal.class, id);
+        Proposal prop = entityManager.find(Proposal.class, id);
+        if (prop != null) prop.getUserProposals().isEmpty();
+        return prop;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Collection<Proposal> getAllProposalForUserId(long id){
         User user = entityManager.find(User.class, id);
         includeProposals(user);
@@ -51,8 +55,9 @@ public class APProposalDao implements ProposalDao {
 
     private void includeProposals(User user) {
         user.getUserProposals().isEmpty();
-        for(UserProposal up : user.getUserProposals())
-            up.getProposal().getId();
+        for(UserProposal up: user.getUserProposals())
+            if (up != null && up.getProposal() != null)
+                up.getProposal().getId();
     }
 
     @Override

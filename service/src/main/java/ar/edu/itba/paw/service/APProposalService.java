@@ -4,9 +4,11 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.interfaces.dao.ProposalDao;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UserProposal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,15 +32,23 @@ public class APProposalService implements ProposalService {
     @Autowired
     private PropertyDao propertyDao;
 
+    @Autowired
+    private UserProposalDao userProposalDao;
+
     private List<String> errors;
 
     @Override
-    public Either<Proposal, List<String>> createProposal(Proposal proposal) {
+    public Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds) {
         errors = new LinkedList<>();
         checkRelatedEntitiesExist(proposal);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
-        return Either.valueFrom(proposalDao.create(proposal));
+        Proposal result = proposalDao.create(proposal);
+        for (long userId: userIds){
+            userProposalDao.create(userId, result.getId());
+        }
+
+        return Either.valueFrom(result);
     }
 
     @Override

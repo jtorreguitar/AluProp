@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ProposalService {
-    Either<Proposal, List<String>> createProposal(Proposal proposal);
+    Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds);
     void delete(long id);
     Proposal getById(long id);
     Collection<Proposal> getAllProposalForUserId(long id);
