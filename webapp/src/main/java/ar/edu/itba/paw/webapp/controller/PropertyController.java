@@ -45,8 +45,6 @@ public class PropertyController {
     private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
 
     @Autowired
-    private MessageSource messageSource;
-    @Autowired
     private PropertyService propertyService;
     @Autowired
     private ImageService imageService;
@@ -212,8 +210,7 @@ public class PropertyController {
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "9") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
-                               final BindingResult errors,
-                               Locale loc){
+                               final BindingResult errors) {
         // TODO: esta validación no corresponde a la capa web!
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
