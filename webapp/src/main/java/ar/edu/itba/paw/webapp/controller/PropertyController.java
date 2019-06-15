@@ -74,7 +74,6 @@ public class PropertyController {
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = new ModelAndView("index");
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
-        mav.addObject("userRole", user.getRole().toString());
         mav.addObject("currentUser", user);
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
         mav.addObject("properties", response.getResponseData());
@@ -102,7 +101,7 @@ public class PropertyController {
         Property prop = propertyService.getPropertyWithRelatedEntities(id);
         if (prop == null)
             return new ModelAndView("404").addObject("currentUser", user);
-        mav.addObject("userRole", user.getRole().toString());
+        //mav.addObject("userRole", user.getRole().toString());
         mav.addObject("currentUser", user);
         mav.addObject("property", prop);
 
@@ -158,7 +157,7 @@ public class PropertyController {
         ModelAndView mav = new ModelAndView("createProperty");
         User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
         mav.addObject("currentUser", user);
-        mav.addObject("userRole", user.getRole().toString());
+        //mav.addObject("userRole", user.getRole().toString());
         mav.addObject("propertyTypes", new IdNamePair[]{new IdNamePair(0, "forms.house"),new IdNamePair(1, "forms.apartment"),new IdNamePair(2, "forms.loft")});
         mav.addObject("privacyLevels", new IdNamePair[]{new IdNamePair(0, "forms.privacy.individual"),new IdNamePair(1, "forms.privacy.shared")});
         addSearchObjectsToMav(mav);

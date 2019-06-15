@@ -76,7 +76,7 @@
                                             <c:forEach var="proposal" items="${proposals}" varStatus="i">
                                                 <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
                                                     <div style="display: flex;justify-content: space-between">${proposalPropertyNames[i.index]}
-                                                        <c:if test="${proposal.creatorId == currentUser.id}"><span><img class="my-span" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
+                                                        <c:if test="${proposal.creator.id == currentUser.id}"><span><img class="my-span" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
                                                     </div>
                                                 </a>
                                             </c:forEach>
