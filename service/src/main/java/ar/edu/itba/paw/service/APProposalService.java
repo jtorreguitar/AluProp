@@ -11,7 +11,6 @@ import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -92,13 +91,23 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public void setAccept(long userId, long proposalId) {
-        proposalDao.setAccept(userId, proposalId);
+    public void setAcceptInvite(long userId, long proposalId) {
+        proposalDao.setAcceptInvite(userId, proposalId);
     }
 
     @Override
-    public long setDecline(long userId, long proposalId) {
-        return proposalDao.setDecline(userId, proposalId);
+    public long setDeclineInvite(long userId, long proposalId) {
+        return proposalDao.setDeclineInvite(userId, proposalId);
+    }
+
+    @Override
+    public void setAccept(long proposalId) {
+        proposalDao.setAccept(proposalId);
+    }
+
+    @Override
+    public void setDecline(long proposalId) {
+        proposalDao.setDecline(proposalId);
     }
 
     @Override

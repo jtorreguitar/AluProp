@@ -65,20 +65,35 @@ public class APProposalDao implements ProposalDao {
     }
 
     @Override
-    public void setAccept(long userId, long proposalId) {
+    @Transactional
+    public void setAcceptInvite(long userId, long proposalId) {
         UserProposal userProposal = getUserProposalByUserAndProposalIds(userId, proposalId);
         userProposal.setState(UserProposalState.ACCEPTED);
         entityManager.merge(userProposal);
     }
 
     @Override
-    // TODO: for crying out loud remove magic numbers
-    public long setDecline(long userId, long proposalId) {
+    @Transactional
+    public long setDeclineInvite(long userId, long proposalId) {
         UserProposal userProposal = getUserProposalByUserAndProposalIds(userId, proposalId);
         if(userProposal == null)
             return 0;
         userProposal.setState(UserProposalState.REJECTED);
         return 1;
+    }
+
+    @Override
+    public void setAccept(long proposalId) {
+        Proposal prop = entityManager.find(Proposal.class, proposalId);
+        prop.setState(ProposalState.ACCEPTED);
+        entityManager.merge(prop);
+    }
+
+    @Override
+    public void setDecline(long proposalId) {
+        Proposal prop = entityManager.find(Proposal.class, proposalId);
+        prop.setState(ProposalState.DECLINED);
+        entityManager.merge(prop);
     }
 
     private UserProposal getUserProposalByUserAndProposalIds(long userId, long proposalId) {
@@ -94,6 +109,7 @@ public class APProposalDao implements ProposalDao {
     public Proposal getWithRelatedEntities(long id) {
         final Proposal proposal = entityManager.find(Proposal.class, id);
         proposal.getUsers().isEmpty();
+        proposal.getUserProposals().isEmpty();
         return proposal;
     }
 
@@ -102,7 +118,7 @@ public class APProposalDao implements ProposalDao {
     public Collection<Proposal> getProposalsForOwnedProperties(long id) {
         final TypedQuery<Proposal> query = entityManager.createQuery("FROM Proposal p " +
                                                 "WHERE p.state = 'ACCEPTED' OR p.state = 'SENT'" +
-                                                "AND p.property IN ( SELECT u.ownedProperties FROM USER u WHERE u.id = :id)", Proposal.class);
+                                                "AND p.property IN ( SELECT u.ownedProperties FROM User u WHERE u.id = :id)", Proposal.class);
         query.setParameter("id", id);
         return query.getResultList();
     }

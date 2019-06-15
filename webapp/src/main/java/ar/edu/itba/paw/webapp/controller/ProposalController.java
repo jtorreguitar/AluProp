@@ -9,7 +9,6 @@ import ar.edu.itba.paw.model.enums.UserProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +101,7 @@ public class ProposalController {
         mav.addObject("userStates", proposal.getUserStates());
         addSearchObjectsToMav(mav);
         addNotificationsToMav(mav, u);
+        mav.setViewName("proposal");
         return mav;
     }
 
@@ -131,7 +131,7 @@ public class ProposalController {
         Proposal proposal = proposalService.get(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
             return new ModelAndView("403").addObject("currentUser", u);
-        proposalService.setAccept(u.getId(), proposalId);
+        proposalService.setAcceptInvite(u.getId(), proposalId);
         proposal = proposalService.get(proposalId);
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
@@ -148,19 +148,41 @@ public class ProposalController {
 
     @RequestMapping(value = "/user/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView decline(@PathVariable(value = "proposalId") int proposalId,
-                               @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
+                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
         User u = navigationUtility.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.getWithRelatedEntities(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404").addObject("currentUser", u);
         User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
         proposal.getUsers().add(creator);
-        long affectedRows = proposalService.setDecline(u.getId(), proposalId);
+        long affectedRows = proposalService.setDeclineInvite(u.getId(), proposalId);
         if (affectedRows > 0){
             proposalService.delete(proposal, u);
             sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
             //emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
         }
+
+        return new ModelAndView("redirect:/proposal/" + proposalId);
+    }
+
+    @RequestMapping(value = "/host/decline/{proposalId}", method = RequestMethod.POST )
+    public ModelAndView hostDecline(@PathVariable(value = "proposalId") int proposalId,
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form) {
+        if (!userOwnsProposalProperty(proposalId))
+            return navigationUtility.mavWithGeneralNavigationAttributes("404");
+
+        proposalService.setDecline(proposalId);
+
+        return new ModelAndView("redirect:/proposal/" + proposalId);
+    }
+
+    @RequestMapping(value = "/host/accept/{proposalId}", method = RequestMethod.POST )
+    public ModelAndView hostAccept(@PathVariable(value = "proposalId") int proposalId,
+                               @Valid @ModelAttribute("proposalForm") ProposalForm form) {
+        if (!userOwnsProposalProperty(proposalId))
+            return navigationUtility.mavWithGeneralNavigationAttributes("404");
+
+        proposalService.setAccept(proposalId);
 
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
@@ -228,6 +250,12 @@ public class ProposalController {
     private void addNotificationsToMav(ModelAndView mav, User u){
         Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
+    }
+
+    private boolean userOwnsProposalProperty(long proposalId){
+        User u = navigationUtility.getCurrentlyLoggedUser();
+        Proposal proposal = proposalService.getWithRelatedEntities(proposalId);
+        return (proposal != null && proposal.getProperty().getOwner().getId() == u.getId());
     }
 
     //English text

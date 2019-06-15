@@ -85,13 +85,13 @@
                 </c:when>
                 <c:when test="${isInvited == true && !hasReplied}">
                     <div class="col-6">
-                        <c:url value="/proposal/accept/${proposal.id}" var="postPath"/>
+                        <c:url value="/proposal/user/accept/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
                         </form>
                     </div>
                     <div class="col-6">
-                        <c:url value="/proposal/decline/${proposal.id}" var="postPath"/>
+                        <c:url value="/proposal/user/decline/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>

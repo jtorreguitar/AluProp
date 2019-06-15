@@ -12,9 +12,11 @@ public interface ProposalDao {
     Proposal getWithRelatedEntities(long id);
     Collection<Proposal> getAllProposalForUserId(long id);
 
-    void setAccept(long userId, long proposalId);
+    void setAcceptInvite(long userId, long proposalId);
+    long setDeclineInvite(long userId, long proposalId);
 
-    long setDecline(long userId, long proposalId);
+    void setAccept(long proposalId);
+    void setDecline(long proposalId);
 
     Collection<Proposal> getProposalsForOwnedProperties(long id);
 }
