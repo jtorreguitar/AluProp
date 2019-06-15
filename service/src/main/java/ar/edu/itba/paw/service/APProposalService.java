@@ -12,6 +12,7 @@ import ar.edu.itba.paw.model.UserProposal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,10 +44,11 @@ public class APProposalService implements ProposalService {
         checkRelatedEntitiesExist(proposal);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
-        Proposal result = proposalDao.create(proposal);
-        for (long userId: userIds){
-            userProposalDao.create(userId, result.getId());
-        }
+        Proposal result = proposalDao.create(proposal, userIds);
+//        for (long userId: userIds){
+//            userProposalDao.create(userId, result.getId());
+//        }
+//
 
         return Either.valueFrom(result);
     }

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,17 +22,20 @@ public class APProposalDao implements ProposalDao {
     private EntityManager entityManager;
 
     @Transactional
-    public Proposal create(Proposal proposal){
+    public Proposal create(Proposal proposal, long[] ids){
+        Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));
         entityManager.persist(proposal);
         return proposal;
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Proposal proposal = entityManager.find(Proposal.class, id);
         if(proposal == null)
             return;
-        entityManager.remove(proposal);
+        proposal.setState(ProposalState.INACTIVE);
+        entityManager.persist(proposal);
     }
 
     @Override

@@ -15,6 +15,7 @@ public class Notification {
     private long id;
 
     @Transient
+    @Column
     private long userId;
 
     @ManyToOne(fetch = FetchType.EAGER)

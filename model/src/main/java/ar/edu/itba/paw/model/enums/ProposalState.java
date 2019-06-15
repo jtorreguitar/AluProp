@@ -6,7 +6,8 @@ import java.util.Map;
 public enum ProposalState {
     PENDING(0),
     ACCEPTED(1),
-    DECLINED(2);
+    DECLINED(2),
+    INACTIVE(3);
 
     private int value;
     private static Map<Integer, ProposalState> map = new HashMap<>();
