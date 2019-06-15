@@ -80,7 +80,7 @@ public class ProposalController {
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = new ModelAndView("proposal");
         User u = navigationUtility.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.getById(id);
+        Proposal proposal = proposalService.getWithRelatedEntities(id);
         if (proposal == null)
             return new ModelAndView("404").addObject("currentUser", u);
         Property property = propertyService.get(proposal.getProperty().getId());
@@ -96,7 +96,7 @@ public class ProposalController {
         mav.addObject("proposalUsers", proposal.getUsers());
         mav.addObject("creator", creator);
         mav.addObject("currentUser", u);
-        mav.addObject("userStates", proposal.getInvitedUserStates());
+        mav.addObject("userStates", proposal.getUserStates());
         addSearchObjectsToMav(mav);
         addNotificationsToMav(mav, u);
         return mav;
@@ -107,7 +107,7 @@ public class ProposalController {
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
         User u = navigationUtility.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.getById(proposalId);
+        Proposal proposal = proposalService.get(proposalId);
         if (proposal == null || proposal.getCreator().getId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         proposalService.delete(proposalId);
@@ -122,11 +122,11 @@ public class ProposalController {
     public ModelAndView accept(HttpServletRequest request, @PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
         User u = navigationUtility.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.getById(proposalId);
+        Proposal proposal = proposalService.get(proposalId);
         if (!userIsInvitedToProposal(u, proposal))
             return new ModelAndView("403").addObject("currentUser", u);
         proposalService.setAccept(u.getId(), proposalId);
-        proposal = proposalService.getById(proposalId);
+        proposal = proposalService.get(proposalId);
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
             proposal.getUsers().add(creator);
@@ -146,7 +146,7 @@ public class ProposalController {
     public ModelAndView decline(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors) {
         User u = navigationUtility.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.getById(proposalId);
+        Proposal proposal = proposalService.getWithRelatedEntities(proposalId);
         if (proposal == null || !userIsInvitedToProposal(u, proposal))
             return new ModelAndView("404").addObject("currentUser", u);
         User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());

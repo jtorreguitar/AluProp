@@ -7,8 +7,6 @@ import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.model.Proposal;
-import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.UserProposal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,8 +70,13 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public Proposal getById(long id) {
-        return proposalDao.getById(id);
+    public Proposal get(long id) {
+        return proposalDao.get(id);
+    }
+
+    @Override
+    public Proposal getWithRelatedEntities(long id) {
+        return proposalDao.getWithRelatedEntities(id);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class UserProposal {
     @JoinColumn(name = "proposalId")
     private Proposal proposal;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private UserProposalState state;
 
     /* package */ UserProposal() { }
