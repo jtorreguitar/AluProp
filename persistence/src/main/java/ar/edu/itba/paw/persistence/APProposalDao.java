@@ -100,12 +100,10 @@ public class APProposalDao implements ProposalDao {
     @Override
     @Transactional
     public Collection<Proposal> getProposalsForOwnedProperties(long id) {
-        User reattachedProfileUser = entityManager.find(User.class, id);
-        reattachedProfileUser.getOwnedProperties().forEach(p -> p.getProposals().isEmpty());
-        Collection<Proposal> proposals = reattachedProfileUser.getOwnedProperties()
-                                                    .stream()
-                                                    .flatMap(p -> p.getProposals().stream())
-                                                    .collect(Collectors.toList());
-        return proposals;
+        final TypedQuery<Proposal> query = entityManager.createQuery("FROM Proposal p " +
+                                                "WHERE p.state = 'ACCEPTED' OR p.state = 'SENT'" +
+                                                "AND p.property IN ( SELECT u.ownedProperties FROM USER u WHERE u.id = :id)", Proposal.class);
+        query.setParameter("id", id);
+        return query.getResultList();
     }
 }
