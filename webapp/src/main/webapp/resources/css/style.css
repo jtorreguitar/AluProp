@@ -22,6 +22,11 @@ img {
     object-fit: cover;
 }
 
+.grayscale {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+
 .checkbox{
     padding-right:3px;
     padding-left:3px;

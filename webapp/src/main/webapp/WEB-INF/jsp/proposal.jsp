@@ -32,7 +32,7 @@
 
 <div class="card" style="width: 80%;">
 
-    <img class="card-img-top" src="<c:url value="/images/${property.mainImage.id}"/>" alt="Card image cap">
+    <img class="card-img-top ${proposal.state == 'ACCEPTED'?'':proposal.state == 'PENDING'?'':proposal.state == 'SENT'?'':'grayscale'}" src="<c:url value="/images/${property.mainImage.id}"/>" alt="Card image cap">
     <div class="card-body">
         <h5 class="card-title"><spring:message code="label.proposal.proposal"/>: ${property.description}</h5>
         <p class="card-text">${property.caption}</p>
@@ -93,6 +93,11 @@
                     <div class="card-body">
                         <spring:message code="proposal.proposal_declined"/>
                         <a href="<c:url value="/"/>"><spring:message code="proposal.findAnotherProperty"/></a>
+                    </div>
+                </c:when>
+                <c:when test="${proposal.state == 'ACCEPTED'}">
+                    <div class="card-body">
+                        <spring:message code="proposal.proposal_accepted"/>
                     </div>
                 </c:when>
                 <c:when test="${creator.id == currentUser.id}">
