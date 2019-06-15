@@ -8,10 +8,11 @@ import ar.edu.itba.paw.model.User;
 
 import java.util.Collection;
 
-public interface PropertyDao extends Dao<Property>{
+public interface PropertyDao {
+    Property get(long id);
+    Collection<Property> getAll(PageRequest pageRequest);
 	boolean showInterest(long propertyId, User user);
 	boolean undoInterest(long propertyId, User user);
-
     Property getPropertyWithRelatedEntities(long id);
     Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description);
     Property create(Property property);
@@ -21,6 +22,5 @@ public interface PropertyDao extends Dao<Property>{
     Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);
     Long count();
     Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property);
-
     void changeStatus(Property prop, long id);
 }

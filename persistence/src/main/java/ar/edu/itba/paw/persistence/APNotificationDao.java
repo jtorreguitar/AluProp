@@ -34,7 +34,6 @@ public class APNotificationDao implements NotificationDao {
 
     @Override
     public List<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
-        //TypedQuery<Notification> query = entityManager.createQuery("FROM Notification", Notification.class);
         return entityManager.createQuery("FROM Notification", Notification.class).getResultList();
     }
 

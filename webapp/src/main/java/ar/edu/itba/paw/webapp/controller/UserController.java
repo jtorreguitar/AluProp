@@ -11,7 +11,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
-import ar.edu.itba.paw.webapp.utilities.UserUtility;
+import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import org.slf4j.Logger;
@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -55,17 +56,20 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    public APJavaMailSender emailSender;
+    private APJavaMailSender emailSender;
     @Autowired
-    public NeighbourhoodService neighbourhoodService;
+    private NeighbourhoodService neighbourhoodService;
     @Autowired
-    public RuleService ruleService;
+    private RuleService ruleService;
     @Autowired
-    public ServiceService serviceService;
+    private ServiceService serviceService;
     @Autowired
-    protected AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     @Autowired
-    protected NotificationService notificationService;
+    private NotificationService notificationService;
+    @Autowired
+    private NavigationUtility navigationUtility;
+
 
     @RequestMapping("/logIn")
     public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
@@ -81,7 +85,7 @@ public class UserController {
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
     public ModelAndView signUp(HttpServletRequest request, @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        User user = navigationUtility.getCurrentlyLoggedUser();
         ModelAndView mav = new ModelAndView("signUpForm");
 
         mav.addObject("currentUser", user);
@@ -167,7 +171,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
-        String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
+        String email = navigationUtility.getUsernameOfCurrentlyLoggedUser();
         User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
         User profileUser = userService.get(userId);
         if (profileUser == null)
@@ -212,7 +216,7 @@ public class UserController {
     }
 
     private void addNotificationsToMav(ModelAndView mav, User u){
-        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
+        Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }
 }
