@@ -7,10 +7,12 @@ import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.model.Proposal;
+import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.beans.Transient;
+import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,8 +54,11 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public void delete(long id) {
-        proposalDao.delete(id);
+    public int delete(Proposal proposal, User u) {
+        if(proposal.getCreator().getId() != u.getId())
+            return HttpURLConnection.HTTP_NOT_FOUND;
+        proposalDao.delete(proposal.getId());
+        return HttpURLConnection.HTTP_OK;
     }
 
     private void checkRelatedEntitiesExist(Proposal proposal) {
@@ -94,5 +99,10 @@ public class APProposalService implements ProposalService {
     @Override
     public long setDecline(long userId, long proposalId) {
         return proposalDao.setDecline(userId, proposalId);
+    }
+
+    @Override
+    public Collection<Proposal> getProposalsForOwnedProperties(User profileUser) {
+        return proposalDao.getProposalsForOwnedProperties(profileUser);
     }
 }

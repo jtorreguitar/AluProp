@@ -9,10 +9,12 @@ import java.util.List;
 
 public interface ProposalService {
     Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds);
-    void delete(long id);
+    int delete(Proposal proposal, User u);
     Proposal get(long id);
     Proposal getWithRelatedEntities(long id);
     Collection<Proposal> getAllProposalForUserId(long id);
     void setAccept(long userId, long proposalId);
     long setDecline(long userId, long proposalId);
+
+    Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
 }

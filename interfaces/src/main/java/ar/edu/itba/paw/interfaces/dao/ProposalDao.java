@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.model.Proposal;
+import ar.edu.itba.paw.model.User;
 
 import java.util.Collection;
 
@@ -14,4 +15,6 @@ public interface ProposalDao {
     void setAccept(long userId, long proposalId);
 
     long setDecline(long userId, long proposalId);
+
+    Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
 }

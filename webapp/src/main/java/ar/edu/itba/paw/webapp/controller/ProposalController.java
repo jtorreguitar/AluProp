@@ -10,6 +10,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,13 +80,15 @@ public class ProposalController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
-        final ModelAndView mav = new ModelAndView("proposal");
-        User u = navigationUtility.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.getWithRelatedEntities(id);
-        if (proposal == null)
-            return new ModelAndView("404").addObject("currentUser", u);
-        Property property = propertyService.get(proposal.getProperty().getId());
-        User creator = userService.get(proposal.getCreator().getId());
+        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        final User u = navigationUtility.getCurrentlyLoggedUser();
+        final Proposal proposal = proposalService.getWithRelatedEntities(id);
+        if (proposal == null) {
+            mav.setViewName("404");
+            return mav;
+        }
+        final Property property = propertyService.get(proposal.getProperty().getId());
+        final User creator = userService.get(proposal.getCreator().getId());
         if (proposal.getCreator().getId() != u.getId() && !userIsInvitedToProposal(u, proposal) && property.getOwnerId() != u.getId())
             return new ModelAndView("404").addObject("currentUser", u);
         if (userIsInvitedToProposal(u, proposal)){
@@ -106,16 +110,18 @@ public class ProposalController {
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User u = navigationUtility.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.get(proposalId);
-        if (proposal == null || proposal.getCreator().getId() != u.getId())
-            return new ModelAndView("404").addObject("currentUser", u);
-        proposalService.delete(proposalId);
-
+        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        final User u = navigationUtility.getCurrentlyLoggedUser();
+        final Proposal proposal = proposalService.getWithRelatedEntities(proposalId);
+        final int statusCode = proposalService.delete(proposal, u);
+        if(statusCode == HttpURLConnection.HTTP_NOT_FOUND) {
+            mav.setViewName("404");
+            return mav;
+        }
         Collection<User> retrieveUsers = proposal.getUsers();
-        //emailSender.sendEmailToUsers(DELETE_SUBJECT, DELETE_BODY, retrieveUsers);
         sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers, u.getId());
-        return new ModelAndView("successfulDelete").addObject("currentUser", u);
+        mav.setViewName("successfulDelete");
+        return mav;
     }
 
     @RequestMapping(value = "/user/accept/{proposalId}", method = RequestMethod.POST )
@@ -130,14 +136,12 @@ public class ProposalController {
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
             proposal.getUsers().add(creator);
-            //emailSender.sendEmailToUsers(SENT_SUBJECT, SENT_BODY, proposal.getUsers());
             sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
 
             Property property = propertyService.getPropertyWithRelatedEntities(proposal.getProperty().getId());
             List<User> owner = new ArrayList<>();
             owner.add(property.getOwner());
             sendNotifications(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), owner, u.getId());
-            //emailSender.sendEmailToSingleUser(SENT_HOST_SUBJECT, generateHostMailBody(proposal, property.getOwner(), request), property.getOwner());
         }
         return new ModelAndView("redirect:/proposal/" + proposalId);
     }
@@ -153,7 +157,7 @@ public class ProposalController {
         proposal.getUsers().add(creator);
         long affectedRows = proposalService.setDecline(u.getId(), proposalId);
         if (affectedRows > 0){
-            proposalService.delete(proposalId);
+            proposalService.delete(proposal, u);
             sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
             //emailSender.sendEmailToUsers(DECLINE_SUBJECT, DECLINE_BODY, proposal.getUsers());
         }

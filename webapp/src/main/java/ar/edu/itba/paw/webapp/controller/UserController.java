@@ -171,25 +171,21 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
-        String email = navigationUtility.getUsernameOfCurrentlyLoggedUser();
-        User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
-        User profileUser = userService.get(userId);
-        if (profileUser == null)
-            return new ModelAndView("404").addObject("currentUser", currentUser);
-        ModelAndView mav = new ModelAndView("profile");
-        List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(profileUser.getId());
-        List<Property> properties = (List<Property>) propertyService.getByOwnerId(profileUser.getId());
-        mav.addObject("currentUser", currentUser);
+        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        final User profileUser = userService.getWithRelatedEntities(userId);
+        if (profileUser == null) {
+            mav.setViewName("404");
+            return mav;
+        }
+        mav.setViewName("profile");
+        Collection<Proposal> proposals = proposalService.getAllProposalForUserId(profileUser.getId());
         mav.addObject("profileUser", profileUser);
-        mav.addObject("userRole", currentUser.getRole().toString());
-        mav.addObject("interests", propertyService.getInterestsOfUser(profileUser.getId()));
+        mav.addObject("interests", profileUser.getInterestedProperties());
         mav.addObject("proposals", proposals);
-        addNotificationsToMav(mav, profileUser);
-        addSearchObjectsToMav(mav);
-        mav.addObject("properties", properties);
+        mav.addObject("properties", profileUser.getOwnedProperties());
+        mav.addObject("hostProposals", proposalService.getProposalsForOwnedProperties(profileUser));
         if (proposals != null && proposals.size() != 0)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
-
         return mav;
     }
 
@@ -202,7 +198,7 @@ public class UserController {
                                     userService.getUsersInterestedInProperty(propertyId, new PageRequest(pageNumber, pageSize)));
     }
 
-    private List<String> generatePropertyNames(List<Proposal> list){
+    private Collection<String> generatePropertyNames(Collection<Proposal> list){
         List<String> result = new ArrayList<>();
         for (Proposal prop: list)
             if (prop != null)

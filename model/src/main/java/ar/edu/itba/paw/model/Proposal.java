@@ -2,6 +2,7 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 import ar.edu.itba.paw.model.enums.ProposalState;
+import ar.edu.itba.paw.model.enums.UserProposalState;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -54,15 +55,15 @@ public class Proposal {
     public ProposalState getState() { return state;}
     public void setState(ProposalState state) { this.state = state; }
 
-    public boolean isCompletelyAccepted(){
-        for (Integer state: getUserStates())
-            if (state != 1)
-                return false;
-        return true;
-    }
-
     public User getCreator() {
         return creator;
+    }
+
+    public boolean isCompletelyAccepted() {
+        for(UserProposal up : getUserProposals())
+            if(up.getState() != UserProposalState.ACCEPTED)
+                return false;
+        return true;
     }
 
     public static class Builder {
