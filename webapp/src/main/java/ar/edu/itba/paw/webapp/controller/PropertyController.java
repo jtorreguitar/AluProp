@@ -14,6 +14,7 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
@@ -285,11 +286,10 @@ public class PropertyController {
         Proposal proposal = new Proposal.Builder()
                 .withCreator(userService.get(userId))
                 .withProperty(propertyService.get(propertyId))
+                .withState(ProposalState.PENDING)
 //                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
                 .build();
-        for (Long id: form.getInvitedUsersIds())
-            proposal.getInvitedUserStates().add(0);
-        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal);
+        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
         if(proposalOrErrors.hasValue()){
 //            emailSender.sendEmailToUsers("AluProp - You have been invited to a proposal!",
 //                    "You can reply to the proposal using the following link: \n" +
