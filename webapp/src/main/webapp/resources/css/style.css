@@ -37,12 +37,11 @@ img {
     grid-gap: 1rem; /* 3 */
     justify-content: space-between; /* 4 */
     width: 85%;
-}
-
-.safari_only .elem-container{
-    display:flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
+    .safari_only{
+        display:flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+    }
 }
 
 .my-elem-container {
