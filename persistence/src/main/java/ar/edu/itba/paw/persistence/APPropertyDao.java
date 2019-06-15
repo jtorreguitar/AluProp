@@ -62,7 +62,9 @@ public class APPropertyDao implements PropertyDao {
         StringBuilder searchString = new StringBuilder("FROM Property p WHERE ");
         buildCondition(property);
         searchString.append(conditionBuilder.buildAsStringBuilder());
-        System.out.println(searchString);
+        if(searchString.toString().equals("FROM Property p WHERE "))
+            return getAll(pageRequest);
+
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();

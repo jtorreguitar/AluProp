@@ -61,6 +61,7 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
 
     @Override
     public StringBuilder buildAsStringBuilder() {
+        condition.length();
         deleteTrailingAnd();
         return condition;
     }
@@ -71,7 +72,7 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
     }
 
     private boolean conditionHasTrailingAnd() {
-        return condition.substring(condition.length() - 5, condition.length()).equals(" AND ");
+        return condition.length() != 0 && condition.substring(condition.length() - 5, condition.length()).equals(" AND ");
     }
 
     private void comparisonCondition(String left, String operator, String right) {
