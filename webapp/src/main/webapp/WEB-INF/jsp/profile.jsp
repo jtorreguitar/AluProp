@@ -132,10 +132,14 @@
                                     <c:when test="${not empty hostProposals}">
                                         <c:forEach var="proposal" items="${hostProposals}" varStatus="i">
                                             <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
-                                                <div style="display: flex;justify-content: space-between">${proposal.property.description} - ${proposal.users}
+                                                <div style="display: flex;justify-content: space-between">${proposal.property.description} - <spring:message code="proposal_profile_created_by"/> ${proposal.creator.name}
+                                                    <c:if test="${proposal.users.size() > 0}"><spring:message code="proposal_profile_including"/>
+                                                        <c:forEach var="user" items="${proposal.users}" varStatus="i">
+                                                            ${user.name}
+                                                        </c:forEach>
+                                                    </c:if>
                                                     <span>
                                                         <c:choose>
-                                                            <%-- is there a way to declare constants in jsp? The teacher doesn't like magic numbers--%>
                                                             <c:when test="${proposal.state == 'SENT' }">
                                                                 <img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">
                                                             </c:when>
