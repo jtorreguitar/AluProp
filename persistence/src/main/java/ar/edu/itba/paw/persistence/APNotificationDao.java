@@ -22,7 +22,7 @@ public class APNotificationDao implements NotificationDao {
     private static final String USER_NOTIFICATIONS_QUERY = "FROM Notification n WHERE n.user.id = :id ORDER BY n.id";
     private static final String UNREAD_USER_NOTIFICATIONS_QUERY = "FROM Notification n " +
                                                                     "WHERE n.state = 'UNREAD' AND n.user.id = :id " +
-                                                                    "ORDER BY n.id";
+                                                                    "ORDER BY n.id DESC";
 
     @PersistenceContext
     EntityManager entityManager;
