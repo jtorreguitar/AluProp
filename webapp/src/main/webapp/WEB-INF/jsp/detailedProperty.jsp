@@ -188,10 +188,8 @@
                                                                                     <c:when test="${currentUser.role != 'ROLE_HOST'}">
                                                                                         <div style="display: flex;flex-direction: row;justify-content: space-between">
                                                                                                 <div>
-                                                                                                    <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;">
-                                                                                                        <form:checkbox path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
-                                                                                                    </label>
-                                                                                                    <p style="margin-bottom: 0px;margin-left: 26px;"><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
+                                                                                                    ${user.name}
+                                                                                                    <p><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
                                                                                                 </div>
                                                                                                 <div style="display: flex;align-items: center;">
                                                                                                     <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
@@ -218,33 +216,65 @@
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
                                                             <c:if test="${currentUser.role != 'ROLE_HOST'}">
                                                                 <input value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
-                                                                <%--//data-toggle="modal" data-target="#exampleModalCenter"/>--%>
-
                                                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title" id="exampleModalCenterTitle"><spring:message code="user.create_proposal"/></h5>
-                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                </button>
+                                                                        <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
+                                                                            <div class="modal-header" style="flex-direction: column">
+                                                                                <div style="display: flex;justify-content: space-between;width:100%;padding-bottom: 5px;">
+                                                                                    <h5 class="modal-title" id="exampleModalCenterTitle"><spring:message code="user.create_proposal"/></h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <spring:message code="proposal.createExplanation" arguments="${property.capacity-1}"/>
                                                                             </div>
-                                                                            <div class="modal-body" id="lel">
-
+                                                                            <div class="modal-body">
+                                                                                <c:choose>
+                                                                                    <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
+                                                                                        <c:forEach var="user" items="${interestedUsers}">
+                                                                                            <c:if test="${user.id != currentUser.id}">
+                                                                                                <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;width:100%;">
+                                                                                                    <div class="list-group-item" style="width: 100%;display: flex;flex-direction: row;justify-content: space-between">
+                                                                                                        <div>
+                                                                                                            <form:checkbox class="proposal-checkbox" path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
+                                                                                                            <p style="margin-bottom: 0px;margin-left: 26px;"><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
+                                                                                                        </div>
+                                                                                                        <div class="d" style="display: flex;align-items: center;">
+                                                                                                            <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </label>
+                                                                                            </c:if>
+                                                                                        </c:forEach>
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        <li class="list-group-item"><spring:message code="property.no_users_interested"/></li>
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
                                                                             </div>
                                                                             <div class="modal-footer">
+                                                                                <div>
+                                                                                    <span id="selected-guests" style="display: none;">
+                                                                                        <spring:message code="proposal.youHaveSelected"/>
+                                                                                        <span style="font-weight:bold;" id="selected-users"></span>
+                                                                                        <spring:message code="proposal.eachGuestWillBePaying"/>
+                                                                                    </span>
+                                                                                    <span id="selected-no-guests">
+                                                                                        <spring:message code="proposal.youWillBePaying"/>
+                                                                                    </span>
+                                                                                    <span style="font-weight: bold;" id="price-per-person">${property.price}</span>
+                                                                                    <span style="font-weight: bold;"><spring:message code="proposal.month"/></span>
+                                                                                </div>
                                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="label.close"/></button>
-                                                                                <button type="button" class="btn btn-primary" type="submit" value="${createProposal}"><spring:message code="proposal.create"/></button>
+                                                                                <button type="submit" class="btn btn-primary" type="submit" value="${createProposal}"><spring:message code="proposal.create"/></button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                             </c:if>
                                                             <c:if test="${maxPeople != null}">
                                                                 <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
                                                             </c:if>
-
                                                         </div>
                                                     </form:form>
                                                 </c:when>
@@ -278,6 +308,25 @@
         $(document).on("click", ".confirm-proposal", function () {
             var count = 4;
             $(".modal-body #lel").val( count );
+        });
+        var totalPrice =<c:out value="${property.price}"/>;
+        var checkedBoxes = 0;
+        $('.proposal-checkbox').change(function() {
+            if ($(this).is(':checked')){
+                checkedBoxes = checkedBoxes + 1;
+            } else{
+                checkedBoxes = checkedBoxes - 1;
+            }
+            $('#selected-users').html(checkedBoxes);
+            $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
+            if (checkedBoxes === 0){
+                $('#selected-no-guests').show();
+                $('#selected-guests').css('display', 'none');
+            } else {
+                $('#selected-no-guests').css('display', 'none');
+                $('#selected-guests').show();
+            }
+
         });
     </script>
 </body>
