@@ -66,7 +66,7 @@ public class GuestController {
         }
         Collection<User> retrieveUsers = proposal.getUsers();
         notificationUtility.sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), retrieveUsers, u.getId());
-        mav.setViewName("successfulDelete");
+        mav.setViewName("redirect:/proposal/" + proposalId);
         return mav;
     }
 
