@@ -5,7 +5,7 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+    import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,6 +30,8 @@ public class APProposalDao implements ProposalDao {
     @Transactional
     public Proposal create(Proposal proposal, long[] ids){
         Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));
+        long creatorID = proposal.getCreator().getId();
+        proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, creatorID)));
         entityManager.persist(proposal);
         return proposal;
     }
@@ -52,6 +54,34 @@ public class APProposalDao implements ProposalDao {
         return prop;
     }
 
+    @Override
+    @Transactional
+    public boolean isProposalUnique(Proposal proposal, long[] userIds){
+        Set<Long> invitedUserIds = new HashSet<>();
+
+        for(Long uid : userIds){
+            invitedUserIds.add(uid);
+        }
+
+        boolean foundIdentical;
+        //TODO Get only the proposal for specific property
+        for(Proposal p : getAllProposalForUserId(proposal.getCreator().getId())){
+            foundIdentical=true;
+            if(invitedUserIds.size() == p.getUserProposals().size() &&  p.getProperty().getId() == proposal.getProperty().getId()) {
+                for (UserProposal up : p.getUserProposals()) {
+                    if (!invitedUserIds.contains(up.getUser().getId())) {
+                        foundIdentical = false;
+                        break;
+                    }
+                }
+                if (foundIdentical) { //Found duplicate proposal
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
     @Override
     @Transactional
     public Collection<Proposal> getAllProposalForUserId(long id){

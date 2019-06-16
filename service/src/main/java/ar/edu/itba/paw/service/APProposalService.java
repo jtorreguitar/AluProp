@@ -16,11 +16,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+
 @Service
 public class APProposalService implements ProposalService {
 
     static final String PROPERTY_NOT_EXISTS = "The property for this proposal does not exist.";
     static final String CREATOR_NOT_EXISTS = "The creator of this proposal does not exist.";
+    static final String DUPLICATE_PROPOSAL = "Proposal duplicada amego";
 
 
     @Autowired
@@ -40,7 +42,7 @@ public class APProposalService implements ProposalService {
     @Override
     public Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds) {
         errors = new LinkedList<>();
-        checkRelatedEntitiesExist(proposal);
+        checkRelatedEntitiesExist(proposal, userIds);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
         Proposal result = proposalDao.create(proposal, userIds);
@@ -60,11 +62,18 @@ public class APProposalService implements ProposalService {
         return HttpURLConnection.HTTP_OK;
     }
 
-    private void checkRelatedEntitiesExist(Proposal proposal) {
+    private void checkRelatedEntitiesExist(Proposal proposal, long[] userIds) {
         checkPropertyExists(proposal.getProperty().getId());
         checkCreatorExists(proposal.getCreator().getId());
+        checkProposalIsUnique(proposal, userIds);
     }
 
+
+    private void checkProposalIsUnique(Proposal proposal, long[] userIds){
+        if(!proposalDao.isProposalUnique(proposal, userIds)){
+            errors.add(DUPLICATE_PROPOSAL);
+        }
+    }
     private void checkPropertyExists(long propertyId) {
         if(propertyDao.get(propertyId) == null)
             errors.add(PROPERTY_NOT_EXISTS);

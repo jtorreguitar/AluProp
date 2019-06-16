@@ -220,6 +220,12 @@
                                                             <c:if test="${maxPeople != null}">
                                                                 <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
                                                             </c:if>
+                                                            <c:if test="${errors != null}">
+                                                                <c:forEach var="error" items="${errors}">
+                                                                    <span class="formError"> ${error} </span>
+                                                                </c:forEach>
+                                                            </c:if>
+
                                                         </div>
                                                     </form:form>
                                                 </c:when>

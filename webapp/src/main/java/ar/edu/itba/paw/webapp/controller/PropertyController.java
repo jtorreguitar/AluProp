@@ -1,22 +1,22 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import java.net.URI;
-import java.util.*;
-
-import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
-import ar.edu.itba.paw.interfaces.service.*;
+import ar.edu.itba.paw.interfaces.SearchableProperty;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
-import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.interfaces.service.ProposalService;
+import ar.edu.itba.paw.interfaces.service.UserService;
+import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.Proposal;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.Role;
-import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
-import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
+import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
+import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class PropertyController {
@@ -208,9 +212,10 @@ public class PropertyController {
                 .withCreator(userService.get(userId))
                 .withProperty(propertyService.get(propertyId))
                 .withState(ProposalState.PENDING)
-//                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
                 .build();
+
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
+
         if(proposalOrErrors.hasValue()){
 //            emailSender.sendEmailToUsers("AluProp - You have been invited to a proposal!",
 //                    "You can reply to the proposal using the following link: \n" +
@@ -227,7 +232,7 @@ public class PropertyController {
             return mav;
         } else {
             mav.setViewName("redirect:/" + propertyId);
-            mav.addObject("proposalFailed", true);
+            mav.addObject("errors", proposalOrErrors.alternative());
             return mav;
         }
     }
