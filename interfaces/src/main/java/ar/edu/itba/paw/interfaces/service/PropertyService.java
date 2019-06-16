@@ -9,6 +9,7 @@ import ar.edu.itba.paw.model.User;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface PropertyService {
 

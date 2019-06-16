@@ -11,7 +11,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
-import ar.edu.itba.paw.webapp.utilities.UserUtility;
+import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import org.slf4j.Logger;
@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -55,33 +56,36 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    public APJavaMailSender emailSender;
+    private APJavaMailSender emailSender;
     @Autowired
-    public NeighbourhoodService neighbourhoodService;
+    private NeighbourhoodService neighbourhoodService;
     @Autowired
-    public RuleService ruleService;
+    private RuleService ruleService;
     @Autowired
-    public ServiceService serviceService;
+    private ServiceService serviceService;
     @Autowired
-    protected AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     @Autowired
-    protected NotificationService notificationService;
+    private NotificationService notificationService;
+    @Autowired
+    private NavigationUtility navigationUtility;
+
 
     @RequestMapping("/logIn")
     public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
-        HttpSession session = request.getSession(false);
-        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
-        if (savedRequest != null){
-            String targetUrl = savedRequest.getRedirectUrl();
-            System.out.println(targetUrl);
-        }
-        return new ModelAndView("logInForm");
+//        HttpSession session = request.getSession(false);
+//        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+//        if (savedRequest != null){
+//            String targetUrl = savedRequest.getRedirectUrl();
+//            System.out.println(targetUrl);
+//        }
+        return navigationUtility.mavWithGeneralNavigationAttributes("logInForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
     public ModelAndView signUp(HttpServletRequest request, @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User user = UserUtility.getCurrentlyLoggedUser(SecurityContextHolder.getContext(), userService);
+        User user = navigationUtility.getCurrentlyLoggedUser();
         ModelAndView mav = new ModelAndView("signUpForm");
 
         mav.addObject("currentUser", user);
@@ -167,41 +171,29 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
-        String email = UserUtility.getUsernameOfCurrentlyLoggedUser(SecurityContextHolder.getContext());
-        User currentUser = userService.getUserWithRelatedEntitiesByEmail(email);
-        User profileUser = userService.get(userId);
-        if (profileUser == null)
-            return new ModelAndView("404").addObject("currentUser", currentUser);
-        ModelAndView mav = new ModelAndView("profile");
-        List<Proposal> proposals = (List<Proposal>) proposalService.getAllProposalForUserId(profileUser.getId());
-        List<Property> properties = (List<Property>) propertyService.getByOwnerId(profileUser.getId());
-        mav.addObject("currentUser", currentUser);
+        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        final User profileUser = userService.getWithRelatedEntities(userId);
+        if (profileUser == null) {
+            mav.setViewName("404");
+            return mav;
+        }
+        mav.setViewName("profile");
+        Collection<Proposal> proposals = proposalService.getAllProposalForUserId(profileUser.getId());
         mav.addObject("profileUser", profileUser);
-        mav.addObject("userRole", currentUser.getRole().toString());
-        mav.addObject("interests", propertyService.getInterestsOfUser(profileUser.getId()));
+        mav.addObject("interests", profileUser.getInterestedProperties());
         mav.addObject("proposals", proposals);
-        addNotificationsToMav(mav, profileUser);
-        addSearchObjectsToMav(mav);
-        mav.addObject("properties", properties);
-        if (proposals != null)
+        mav.addObject("properties", profileUser.getOwnedProperties());
+        mav.addObject("hostProposals", proposalService.getProposalsForOwnedProperties(profileUser));
+        if (proposals != null && proposals.size() != 0)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
-
         return mav;
     }
 
-    @RequestMapping(value = "/interested/{propertyId}")
-    public ModelAndView interested(@PathVariable long propertyId,
-                                   @RequestParam("pageNumber") int pageNumber,
-                                   @RequestParam("pageSize") int pageSize) {
-        return new ModelAndView("interested")
-                        .addObject("users",
-                                    userService.getUsersInterestedInProperty(propertyId, new PageRequest(pageNumber, pageSize)));
-    }
-
-    private List<String> generatePropertyNames(List<Proposal> list){
+    private Collection<String> generatePropertyNames(Collection<Proposal> list){
         List<String> result = new ArrayList<>();
         for (Proposal prop: list)
-            result.add(propertyService.get(prop.getProperty().getId()).getDescription());
+            if (prop != null)
+                result.add(prop.getProperty().getDescription());
         return result;
     }
 
@@ -212,7 +204,7 @@ public class UserController {
     }
 
     private void addNotificationsToMav(ModelAndView mav, User u){
-        List<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
+        Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }
 }

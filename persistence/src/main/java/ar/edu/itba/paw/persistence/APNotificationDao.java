@@ -6,6 +6,7 @@ import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,7 +35,6 @@ public class APNotificationDao implements NotificationDao {
 
     @Override
     public List<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
-        //TypedQuery<Notification> query = entityManager.createQuery("FROM Notification", Notification.class);
         return entityManager.createQuery("FROM Notification", Notification.class).getResultList();
     }
 
@@ -44,6 +44,7 @@ public class APNotificationDao implements NotificationDao {
     }
 
     @Override
+    @Transactional
     public Notification createNotification(Notification notification){//long userId, String subjectCode, String textCode, String link) {
         if (notification != null)
             entityManager.persist(notification);

@@ -4,12 +4,14 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.interfaces.dao.ProposalDao;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,20 +32,32 @@ public class APProposalService implements ProposalService {
     @Autowired
     private PropertyDao propertyDao;
 
+    @Autowired
+    private UserProposalDao userProposalDao;
+
     private List<String> errors;
 
     @Override
-    public Either<Proposal, List<String>> createProposal(Proposal proposal) {
+    public Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds) {
         errors = new LinkedList<>();
         checkRelatedEntitiesExist(proposal);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
-        return Either.valueFrom(proposalDao.create(proposal));
+        Proposal result = proposalDao.create(proposal, userIds);
+//        for (long userId: userIds){
+//            userProposalDao.create(userId, result.getId());
+//        }
+//
+
+        return Either.valueFrom(result);
     }
 
     @Override
-    public void delete(long id) {
-        proposalDao.delete(id);
+    public int delete(Proposal proposal, User u) {
+        if(proposal.getCreator().getId() != u.getId())
+            return HttpURLConnection.HTTP_NOT_FOUND;
+        proposalDao.delete(proposal.getId());
+        return HttpURLConnection.HTTP_OK;
     }
 
     private void checkRelatedEntitiesExist(Proposal proposal) {
@@ -62,8 +76,13 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public Proposal getById(long id) {
-        return proposalDao.getById(id);
+    public Proposal get(long id) {
+        return proposalDao.get(id);
+    }
+
+    @Override
+    public Proposal getWithRelatedEntities(long id) {
+        return proposalDao.getWithRelatedEntities(id);
     }
 
     @Override
@@ -72,12 +91,27 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public void setAccept(long userId, long proposalId) {
-        proposalDao.setAccept(userId, proposalId);
+    public void setAcceptInvite(long userId, long proposalId) {
+        proposalDao.setAcceptInvite(userId, proposalId);
     }
 
     @Override
-    public long setDecline(long userId, long proposalId) {
-        return proposalDao.setDecline(userId, proposalId);
+    public long setDeclineInvite(long userId, long proposalId) {
+        return proposalDao.setDeclineInvite(userId, proposalId);
+    }
+
+    @Override
+    public void setAccept(long proposalId) {
+        proposalDao.setAccept(proposalId);
+    }
+
+    @Override
+    public void setDecline(long proposalId) {
+        proposalDao.setDecline(proposalId);
+    }
+
+    @Override
+    public Collection<Proposal> getProposalsForOwnedProperties(User profileUser) {
+        return proposalDao.getProposalsForOwnedProperties(profileUser.getId());
     }
 }

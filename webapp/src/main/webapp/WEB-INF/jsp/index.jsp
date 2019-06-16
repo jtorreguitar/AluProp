@@ -61,26 +61,22 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top: 30px;margin-bottom: 20px">
+        <c:set var="maxItems" value ="12" />
         <c:set var="total" value="${(totalElements%maxItems)>0? totalPages+1:totalPages}" />
         <c:set var="current" value="${currentPage+1}" />
         <c:choose>
             <c:when test="${not empty properties}">
-                <ul class="pagination center">
+                <nav aria-label="Page navigation">
+                <ul class="pagination">
                     <c:choose>
                         <c:when test="${current == 1}">
-                            <li class="disabled page">
-                                <a class="disabled">
-                                    <i class="material-icons disabled"><</i>
-                                </a>
+                            <li class="page-item disabled">
+                                <a class="page-link" aria-disabled="true">Previous</a>
                             </li>
                         </c:when>
                         <c:otherwise>
-                            <li class="waves-effect page">
-                                <a href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current - 2}"/> </c:url>">
-                                    <i class="material-icons"><</i>
-                                </a>
-                            </li>
+                            <li class="page-item"><a class="page-link" href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current - 2}"/> </c:url>">Previous</a></li>
                         </c:otherwise>
                     </c:choose>
                     <c:set var="just_one"
@@ -94,39 +90,39 @@
                     <c:forEach var="pageIt"
                                begin="${just_one ? 1 : no_more_prev ? total - 9 : current - 4}"
                                end="${no_more_next ? total : the_first_ones ? 10 : current + 5}">
-                        <li id="page" class=${pageIt == current ? "active" : "waves-effect"}>
                             <c:choose>
                                 <c:when test="${pageIt == current}">
-                                    <a>
+                                    <li class="page-item disabled">
+                                    <a class="page-link" aria-disabled="true">
                                             ${pageIt}
                                     </a>
+                                    </li>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${pageIt-1}"/> </c:url>">
+                                    <li class="page-item">
+                                    <a class="page-link" href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${pageIt-1}"/> </c:url>">
                                             ${pageIt}
                                     </a>
+                                    </li>
                                 </c:otherwise>
                             </c:choose>
-
-                        </li>
                     </c:forEach>
                     <c:choose>
                         <c:when test="${current == total}">
-                            <li class="disabled page">
-                                <a class="disabled">
-                                    <i class="material-icons disabled">></i>
-                                </a>
+                            <li class="page-item disabled">
+                            <a class="page-link"  aria-disabled="true">Next</a>
                             </li>
                         </c:when>
                         <c:otherwise>
-                            <li class="waves-effect page">
-                                <a href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current}"/> </c:url>">
-                                    <i class="material-icons">></i>
+                            <li class="page-item">
+                                <a class="page-link" href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current}"/> </c:url>">
+                                    Next
                                 </a>
                             </li>
                         </c:otherwise>
                     </c:choose>
                 </ul>
+                </nav>
             </c:when>
         </c:choose>
     </div>

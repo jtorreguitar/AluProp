@@ -15,15 +15,9 @@ public class UserProposal {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long userId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private User user;
-
-    @Transient
-    private long proposalId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "proposalId")
@@ -34,15 +28,22 @@ public class UserProposal {
 
     /* package */ UserProposal() { }
 
-    public UserProposal(long id, long userId, long proposalId){
+    public UserProposal(long id){
         this.id = id;
-        this.userId = userId;
-        this.proposalId = proposalId;
+        this.state = UserProposalState.PENDING;
     }
 
     public UserProposal(User user, Proposal proposal) {
         this.user = user;
         this.proposal = proposal;
+        this.state = UserProposalState.PENDING;
+    }
+
+    public static UserProposal fromUser(User user) {
+        UserProposal prop = new UserProposal();
+        prop.user = user;
+        prop.state = UserProposalState.PENDING;
+        return prop;
     }
 
     public long getId() {
@@ -51,22 +52,6 @@ public class UserProposal {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public long getProposalId() {
-        return proposalId;
-    }
-
-    public void setProposalId(long proposalId) {
-        this.proposalId = proposalId;
     }
 
     public UserProposalState getState() {

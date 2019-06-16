@@ -5,13 +5,16 @@ import java.util.Map;
 
 public enum ProposalState {
     PENDING(0),
-    ACCEPTED(1),
-    DECLINED(2);
+    SENT(1),
+    ACCEPTED(2),
+    DECLINED(3),
+    CANCELED(4),
+    DROPPED(5);
 
     private int value;
     private static Map<Integer, ProposalState> map = new HashMap<>();
 
-    private ProposalState(int value){
+    ProposalState(int value){
         this.value = value;
     }
 

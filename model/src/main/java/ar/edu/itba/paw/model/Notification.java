@@ -14,9 +14,6 @@ public class Notification {
     @Column(name = "id")
     private long id;
 
-    @Transient
-    private long userId;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private User user;
@@ -45,11 +42,6 @@ public class Notification {
             return this;
         }
 
-        public Builder withUserId(long id) {
-            notification.userId = id;
-            return this;
-        }
-
         public Builder withTextCode(String textCode) {
             notification.textCode = textCode;
             return this;
@@ -70,6 +62,11 @@ public class Notification {
             return this;
         }
 
+        public Builder withUser(User user) {
+            notification.user = user;
+            return this;
+        }
+
         public Notification build(){
             return notification;
         }
@@ -77,9 +74,6 @@ public class Notification {
 
     public long getId() {return id; }
     public void setId(long id) { this.id = id; }
-
-    public long getUserId() { return userId; }
-    public void setUserId(long userId) { this.userId = userId; }
 
     public String getSubjectCode() { return subjectCode; }
     public void setSubjectCode(String subjectCode) { this.subjectCode = subjectCode; }

@@ -8,10 +8,15 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ProposalService {
-    Either<Proposal, List<String>> createProposal(Proposal proposal);
-    void delete(long id);
-    Proposal getById(long id);
+    Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds);
+    int delete(Proposal proposal, User u);
+    Proposal get(long id);
+    Proposal getWithRelatedEntities(long id);
     Collection<Proposal> getAllProposalForUserId(long id);
-    void setAccept(long userId, long proposalId);
-    long setDecline(long userId, long proposalId);
+    void setAcceptInvite(long userId, long proposalId);
+    long setDeclineInvite(long userId, long proposalId);
+    void setAccept(long proposalId);
+    void setDecline(long proposalId);
+
+    Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
 }

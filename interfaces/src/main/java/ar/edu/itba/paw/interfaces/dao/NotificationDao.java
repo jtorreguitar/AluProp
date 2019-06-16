@@ -4,10 +4,11 @@ import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.model.Notification;
 
 import java.util.Collection;
-import java.util.List;
 
-public interface NotificationDao extends Dao<Notification>{
-    List<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest);
-    List<Notification> getAllUnreadNotificationsForUser(long id);
+public interface NotificationDao {
+    Notification get(long id);
+    Collection<Notification> getAll(PageRequest pageRequest);
+    Collection<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest);
+    Collection<Notification> getAllUnreadNotificationsForUser(long id);
     Notification createNotification(Notification notification);
 }

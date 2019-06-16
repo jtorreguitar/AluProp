@@ -5,11 +5,13 @@ import ar.edu.itba.paw.model.PropertyRule;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UserProposal;
+import ar.edu.itba.paw.model.enums.UserProposalState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +28,7 @@ public class APUserProposalDao implements UserProposalDao {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void create(long userId, long proposalId) {
         final UserProposal userProposal = new UserProposal(entityManager.find(User.class, userId),
                                                             entityManager.find(Proposal.class, proposalId));

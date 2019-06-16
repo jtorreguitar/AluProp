@@ -42,12 +42,6 @@ public class APPropertyServiceTest {
     ImageDao imageDao;
 
     @Mock
-    RuleDao ruleDao;
-
-    @Mock
-    ServiceDao serviceDao;
-
-    @Mock
     NeighbourhoodDao neighbourhoodDao;
 
     @Mock
@@ -59,23 +53,23 @@ public class APPropertyServiceTest {
     User user;
 
     private Property createDummyProperty() {
-        Property.Builder builder = new Property.Builder();
-        return builder.withId(PROPERTY_ID)
-                .withCaption(CAPTION)
-                .withDescription(CAPTION)
-                .withPropertyType(PropertyType.APARTMENT)
-                .withNeighbourhoodId(NEIGHBOURHOOD_ID)
-                .withPrivacyLevel(true)
-                .withCapacity(CAPACITY)
-                .withPrice(PRICE)
-                .withRules(new HashSet<>())
-                .withInterestedUsers(new HashSet<>())
-                .withServices(new HashSet<>())
-                .withImages(new HashSet<>())
-                .withMainImageId(IMAGE_ID)
-                .withOwnerId(OWNER_ID)
-                .withAvailability(Availability.valueOf("AVAILABLE"))
-                .build();
+        return new Property.Builder()
+                        .withId(PROPERTY_ID)
+                        .withCaption(CAPTION)
+                        .withDescription(CAPTION)
+                        .withPropertyType(PropertyType.APARTMENT)
+                        .withNeighbourhood(new Neighbourhood(NEIGHBOURHOOD_ID))
+                        .withPrivacyLevel(true)
+                        .withCapacity(CAPACITY)
+                        .withPrice(PRICE)
+                        .withRules(new HashSet<>())
+                        .withInterestedUsers(new HashSet<>())
+                        .withServices(new HashSet<>())
+                        .withImages(new HashSet<>())
+                        .withMainImage(new Image(IMAGE_ID))
+                        .withOwnerId(OWNER_ID)
+                        .withAvailability(Availability.valueOf("AVAILABLE"))
+                        .build();
     }
 
     private User createDummyUser(){

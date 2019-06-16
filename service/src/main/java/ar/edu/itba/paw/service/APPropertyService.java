@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Service
 public class APPropertyService implements PropertyService {
@@ -115,11 +116,11 @@ public class APPropertyService implements PropertyService {
 
     private void checkRelatedEntitiesExist(Property property) {
         List<Image> images = new LinkedList<>(property.getImages());
-        images.add(new Image(property.getMainImageId()));
+        images.add(property.getMainImage());
         checkImagesExist(images);
         checkServicesExist(property.getServices());
         checkRulesExist(property.getRules());
-        checkNeighbourhoodExists(property.getNeighbourhoodId());
+        checkNeighbourhoodExists(property.getNeighbourhood().getId());
     }
 
     private void checkImagesExist(Collection<Image> images) {

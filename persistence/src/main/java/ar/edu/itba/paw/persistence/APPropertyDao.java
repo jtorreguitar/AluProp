@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public class APPropertyDao implements PropertyDao {
 
     private static final String ALWAYS_TRUE_STRING = "1 = 1 ";
@@ -62,14 +63,19 @@ public class APPropertyDao implements PropertyDao {
         StringBuilder searchString = new StringBuilder("FROM Property p WHERE ");
         buildCondition(property);
         searchString.append(conditionBuilder.buildAsStringBuilder());
+        if(searchString.toString().equals("FROM Property p WHERE "))
+            return getAll(pageRequest);
+
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     private void addSearchParameters(SearchableProperty property, TypedQuery<Property> query) {
-        if(searchableDescription(property))
-            query.setParameter("description", property.getDescription());
+        if(searchableDescription(property)) {
+            String description = "%" + property.getDescription().toLowerCase() + "%";
+            query.setParameter("description", description);
+        }
         if(searchablePropertyType(property))
             query.setParameter("propertyType", propertyTypeFromSearchablePropertyType(property.getPropertyType()));
         if(searchableNeighbourhood(property))
@@ -91,7 +97,7 @@ public class APPropertyDao implements PropertyDao {
     private void buildCondition(SearchableProperty property) {
         conditionBuilder.begin();
         if(searchableDescription(property))
-            conditionBuilder.equalityCondition("p.description", ":description");
+            conditionBuilder.descriptionCondition("lower(p.description)","lower(p.caption)", ":description");
         if(searchablePropertyType(property))
             conditionBuilder.equalityCondition("p.propertyType", ":propertyType");
         if(searchableNeighbourhood(property))
@@ -164,7 +170,6 @@ public class APPropertyDao implements PropertyDao {
     }
     
     @Override
-    @Transactional
     public boolean showInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
         if(interest != null) return false;
@@ -174,7 +179,6 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    @Transactional
     public boolean undoInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
         if(interest != null) {
@@ -197,7 +201,6 @@ public class APPropertyDao implements PropertyDao {
         return interest;
     }
 
-    @Transactional
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
         Property property = entityManager.find(Property.class, id);
@@ -210,7 +213,6 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    @Transactional
     public Property create(Property property) {
         if(property != null)
             entityManager.persist(property);
@@ -223,7 +225,6 @@ public class APPropertyDao implements PropertyDao {
         entityManager.remove(property);
     }
 
-    @Transactional
     @Override
     public Collection<Property> getInterestsOfUser(long id) {
         User user = entityManager.find(User.class, id);
@@ -231,7 +232,6 @@ public class APPropertyDao implements PropertyDao {
         return user.getInterestedProperties();
     }
 
-    @Transactional
     @Override
     public Collection<Property> getByOwnerId(long id) {
         User user = entityManager.find(User.class, id);

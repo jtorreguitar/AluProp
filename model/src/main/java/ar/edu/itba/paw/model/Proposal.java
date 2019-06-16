@@ -2,6 +2,7 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 import ar.edu.itba.paw.model.enums.ProposalState;
+import ar.edu.itba.paw.model.enums.UserProposalState;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,7 +19,7 @@ public class Proposal {
     @Column(name = "id")
     private long id;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "proposalId")
     private Collection<UserProposal> userProposals;
 
@@ -39,9 +40,11 @@ public class Proposal {
 
     public Collection<UserProposal> getUserProposals() { return userProposals; }
 
-    public Collection<User> getUsers() { return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList()); }
+    public Collection<User> getUsers() {
+        return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList());
+    }
 
-    public List<Integer> getInvitedUserStates() {
+    public List<Integer> getUserStates() {
         return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
     }
 
@@ -52,15 +55,15 @@ public class Proposal {
     public ProposalState getState() { return state;}
     public void setState(ProposalState state) { this.state = state; }
 
-    public boolean isCompletelyAccepted(){
-        for (Integer state: getInvitedUserStates())
-            if (state != 1)
-                return false;
-        return true;
-    }
-
     public User getCreator() {
         return creator;
+    }
+
+    public boolean isCompletelyAccepted() {
+        for(UserProposal up : getUserProposals())
+            if(up.getState() != UserProposalState.ACCEPTED)
+                return false;
+        return true;
     }
 
     public static class Builder {
@@ -91,6 +94,11 @@ public class Proposal {
 
         public Builder withProperty(Property property) {
             proposal.property = property;
+            return this;
+        }
+
+        public Builder withState(ProposalState state) {
+            proposal.state = state;
             return this;
         }
     }
