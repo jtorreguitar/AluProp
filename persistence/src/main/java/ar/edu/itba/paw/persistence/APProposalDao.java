@@ -27,6 +27,7 @@ public class APProposalDao implements ProposalDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Override
     @Transactional
     public Proposal create(Proposal proposal, long[] ids){
         Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));

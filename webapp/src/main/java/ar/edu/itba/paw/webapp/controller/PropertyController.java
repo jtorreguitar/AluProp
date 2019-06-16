@@ -36,9 +36,6 @@ public class PropertyController {
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
     private static final Integer MAX_SIZE = 12;
 
-    private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
-    private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
-
     @Autowired
     private PropertyService propertyService;
     @Autowired
@@ -204,7 +201,6 @@ public class PropertyController {
         Proposal proposal = builder.build();
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
         if(proposalOrErrors.hasValue()){
-            notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers(), userId);
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;
         } else {

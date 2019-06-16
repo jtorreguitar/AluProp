@@ -39,6 +39,9 @@ public class APProposalService implements ProposalService {
     private final static String DECLINE_SUBJECT_CODE= "notifications.proposals.declined.subject";
     private final static String DECLINE_BODY_CODE = "notifications.proposals.declined";
 
+    private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
+    private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
+
     @Autowired
     private ProposalDao proposalDao;
     @Autowired
@@ -58,11 +61,14 @@ public class APProposalService implements ProposalService {
         checkRelatedEntitiesExist(proposal);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
+
         Proposal result = proposalDao.create(proposal, userIds);
-//        for (long userId: userIds){
-//            userProposalDao.create(userId, result.getId());
-//        }
-//
+
+        User u = userService.getCurrentlyLoggedUser();
+        if (result.getUsers().size() > 0)
+            notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + result.getId(), result.getUsers(), u.getId());
+        else
+            notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + result.getId(), result.getProperty().getOwner());
 
         return Either.valueFrom(result);
     }

@@ -143,7 +143,7 @@
                                 </c:otherwise>
                             </c:choose>
                             <div class="notifications-footer">
-                                <a href="<c:url value="/notifications"/>" class="list-group-item list-group-item-action">
+                                <a href="<c:url value="/user/notifications"/>" class="list-group-item list-group-item-action">
                                     <spring:message code="notifications.viewAll"/>
                                 </a>
                             </div>
