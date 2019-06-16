@@ -86,6 +86,12 @@ public class PropertyController {
         }
     }
 
+    @RequestMapping(value = "/{id}/interest/", method = RequestMethod.GET)
+    public ModelAndView interestGet(@PathVariable(value = "id") int propertyId,
+                                 @ModelAttribute FilteredSearchForm searchForm) {
+        return navigationUtility.mavWithGeneralNavigationAttributes("redirect:/" + propertyId);
+    }
+
     @RequestMapping(value = "/{id}/interest/", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId,
                                  @ModelAttribute FilteredSearchForm searchForm) {
