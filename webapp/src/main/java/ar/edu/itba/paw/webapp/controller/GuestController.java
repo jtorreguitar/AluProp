@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.service.ProposalService;
-import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

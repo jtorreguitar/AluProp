@@ -194,24 +194,16 @@ public class PropertyController {
 
         long userId = userService.getCurrentlyLoggedUser().getId();
 
-        Proposal proposal = new Proposal.Builder()
+        Proposal.Builder builder = new Proposal.Builder()
                 .withCreator(userService.get(userId))
-                .withProperty(propertyService.get(propertyId))
-                .withState(ProposalState.PENDING)
-//                .withUserProposals(getUsersByIds(form.getInvitedUsersIds()))
-                .build();
+                .withProperty(propertyService.get(propertyId));
+        if(form.getInvitedUsersIds().length == 0)
+            builder.withState(ProposalState.SENT);
+        else
+            builder.withState(ProposalState.PENDING);
+        Proposal proposal = builder.build();
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
         if(proposalOrErrors.hasValue()){
-//            emailSender.sendEmailToUsers("AluProp - You have been invited to a proposal!",
-//                    "You can reply to the proposal using the following link: \n" +
-//                            generateProposalUrl(proposalOrErrors.value(), request) +
-//                            "\nIf you can't see the proposal, remember to log in!\n Cheers!",
-//                    proposalOrErrors.value().getUsers());
-//            emailSender.sendEmailToUsers("AluProp - Te han invitado a una propuesta!",
-//                    "Puedes responder a la propuesta usando el siguiente enlace: \n" +
-//                            generateProposalUrl(proposalOrErrors.value(), request) +
-//                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
-//                    proposalOrErrors.value().getUsers());
             notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers(), userId);
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;
