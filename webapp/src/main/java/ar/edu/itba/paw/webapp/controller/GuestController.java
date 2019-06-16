@@ -40,7 +40,7 @@ public class GuestController {
             mav.setViewName("404");
             return mav;
         }
-        mav.setViewName("successfulDelete");
+        mav.setViewName("redirect:/" + proposalId);
         return mav;
     }
 
