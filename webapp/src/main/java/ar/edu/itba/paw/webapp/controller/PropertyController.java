@@ -243,7 +243,7 @@ public class PropertyController {
             .build();
     }
 
-    @RequestMapping(value = "/property/delete/{propertyId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/host/delete/{propertyId}", method = RequestMethod.POST)
     public ModelAndView create(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId,
                                @ModelAttribute FilteredSearchForm searchForm) {
@@ -255,7 +255,7 @@ public class PropertyController {
         return navigationUtility.mavWithGeneralNavigationAttributes("successfulPropertyDelete");
     }
 
-    @RequestMapping(value = "/host/property/changeStatus/{propertyId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/host/changeStatus/{propertyId}", method = RequestMethod.POST)
     public ModelAndView changeStatus(HttpServletRequest request,
                                         @PathVariable(value = "propertyId") int propertyId,
                                         @ModelAttribute FilteredSearchForm searchForm) {

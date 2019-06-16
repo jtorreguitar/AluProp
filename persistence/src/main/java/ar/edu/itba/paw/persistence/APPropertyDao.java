@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public class APPropertyDao implements PropertyDao {
 
     private static final String ALWAYS_TRUE_STRING = "1 = 1 ";
@@ -150,7 +151,6 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    @Transactional
     public void changeStatus(Property prop, long id) {
         Availability oldAvail = prop.getAvailability();
         Availability newAvail;
@@ -170,7 +170,6 @@ public class APPropertyDao implements PropertyDao {
     }
     
     @Override
-    @Transactional
     public boolean showInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
         if(interest != null) return false;
@@ -180,7 +179,6 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    @Transactional
     public boolean undoInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
         if(interest != null) {
@@ -203,7 +201,6 @@ public class APPropertyDao implements PropertyDao {
         return interest;
     }
 
-    @Transactional
     @Override
     public Property getPropertyWithRelatedEntities(long id) {
         Property property = entityManager.find(Property.class, id);
@@ -216,7 +213,6 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    @Transactional
     public Property create(Property property) {
         if(property != null)
             entityManager.persist(property);
@@ -229,7 +225,6 @@ public class APPropertyDao implements PropertyDao {
         entityManager.remove(property);
     }
 
-    @Transactional
     @Override
     public Collection<Property> getInterestsOfUser(long id) {
         User user = entityManager.find(User.class, id);
@@ -237,7 +232,6 @@ public class APPropertyDao implements PropertyDao {
         return user.getInterestedProperties();
     }
 
-    @Transactional
     @Override
     public Collection<Property> getByOwnerId(long id) {
         User user = entityManager.find(User.class, id);

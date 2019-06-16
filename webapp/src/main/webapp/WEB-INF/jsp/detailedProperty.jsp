@@ -148,19 +148,19 @@
                                         <div class="flex-container" style="display: flex;flex-direction: column;">
                                             <c:choose>
                                                 <c:when test="${property.availability == 'AVAILABLE'}">
-                                                    <c:url value="/property/changeStatus/" var="postPath"/>
+                                                    <c:url value="/host/changeStatus/" var="postPath"/>
                                                     <form class="my-form" action="${postPath}${property.id}" method="post">
                                                         <button type="submit" class="btn btn-secondary" style="width: -moz-available;margin-bottom: 12px;"><spring:message code="label.properties.pause"/></button>
                                                     </form>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:url value="/property/changeStatus/" var="postPath"/>
+                                                    <c:url value="/host/changeStatus/" var="postPath"/>
                                                     <form class="my-form" action="${postPath}${property.id}" method="post">
                                                         <button type="submit" class="btn btn-success" style="width: -moz-available;margin-bottom: 12px;"><spring:message code="label.properties.activate"/></button>
                                                     </form>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <c:url value="/property/delete/" var="postPath"/>
+                                            <c:url value="/host/delete/" var="postPath"/>
                                             <form class="my-form" action="${postPath}${property.id}" method="post">
                                                 <button type="submit" class="btn btn-danger" style="width: -moz-available;"><spring:message code="label.properties.delete"/></button>
                                             </form>
