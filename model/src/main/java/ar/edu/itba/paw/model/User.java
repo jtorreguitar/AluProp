@@ -137,10 +137,11 @@ public class User {
     }
 
     public String getFullName(){
-        StringBuilder builder = new StringBuilder(name);
+        /*StringBuilder builder = new StringBuilder(name);
         builder.append(' ');
         builder.append(lastName);
-        return builder.toString();
+        return builder.toString();*/
+        return email;
     }
 
     public Collection<UserProposal> getUserProposals() {

@@ -14,7 +14,7 @@ public enum ProposalState {
     private int value;
     private static Map<Integer, ProposalState> map = new HashMap<>();
 
-    private ProposalState(int value){
+    ProposalState(int value){
         this.value = value;
     }
 

@@ -135,13 +135,14 @@
                                                 <div style="display: flex;justify-content: space-between">${proposal.property.description} - ${proposal.users}
                                                     <span>
                                                         <c:choose>
-                                                            <c:when test="${proposal.state == 1 }">
+                                                            <%-- is there a way to declare constants in jsp? The teacher doesn't like magic numbers--%>
+                                                            <c:when test="${proposal.state == 'SENT' }">
                                                                 <img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">
                                                             </c:when>
-                                                            <c:when test="${proposal.state == 2}">
+                                                            <c:when test="${proposal.state == 'ACCEPTED' }">
                                                                 <img src="<c:url value="/resources/images/check.png"/>" class="my-span" alt="${language_en}">
                                                             </c:when>
-                                                            <c:when test="${proposal.state == 3}">
+                                                            <c:when test="${proposal.state == 'DECLINED' }">
                                                                 <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
                                                             </c:when>
                                                         </c:choose>

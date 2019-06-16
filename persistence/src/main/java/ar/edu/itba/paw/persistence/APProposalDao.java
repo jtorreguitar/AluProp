@@ -17,6 +17,12 @@ import java.util.stream.Collectors;
 public class APProposalDao implements ProposalDao {
 
     private static final String USER_PROPOSAL_BY_USER_AND_PROPOSAL = "FROM UserProposal up WHERE up.user.id = :userId AND up.proposal.id = :proposalId";
+    private static final String PROPOSALS_ON_OWNED_PROPERTYIES = "FROM Proposal p " +
+                                                                    "WHERE (p.state != 'PENDING') " +
+                                                                    "AND p.property IN ( SELECT op " +
+                                                                                        "FROM User u " +
+                                                                                        "LEFT OUTER JOIN u.ownedProperties op " +
+                                                                                        "WHERE u.id = :id)";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -122,10 +128,16 @@ public class APProposalDao implements ProposalDao {
     @Override
     @Transactional
     public Collection<Proposal> getProposalsForOwnedProperties(long id) {
-        final TypedQuery<Proposal> query = entityManager.createQuery("FROM Proposal p " +
-                                                "WHERE p.state = 'ACCEPTED' OR p.state = 'SENT'", Proposal.class);
-                                                //"AND p.property IN ( SELECT u.ownedProperties FROM User u WHERE u.id = :id)", Proposal.class);
-        //query.setParameter("id", id);
-        return query.getResultList();
+        /*final TypedQuery<Proposal> query = entityManager.createQuery(PROPOSALS_ON_OWNED_PROPERTYIES, Proposal.class);
+        query.setParameter("id", id);
+        return query.getResultList();*/
+        final User owner = entityManager.find(User.class, id);
+        Collection<Proposal> proposals = owner.getOwnedProperties().stream()
+                                                .flatMap(property -> property.getProposals().stream())
+                                                .filter(proposal -> proposal.getState() != ProposalState.PENDING)
+                                                .collect(Collectors.toList());
+        proposals.isEmpty();
+        proposals.forEach(p -> p.getUserProposals().isEmpty());
+        return proposals;
     }
 }
