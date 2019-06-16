@@ -173,7 +173,7 @@
                                                                                                 <a href="<c:url value="/user/${user.id}"/>"><button type="button" class="btn btn-link"><spring:message code="label.profile"/></button></a>
                                                                                             </div>
                                                                                         </div>
-                                                                                        </li>
+                                                                                </li>
                                                                         </c:forEach>
                                                                     </c:when>
                                                                     <c:otherwise>
@@ -237,8 +237,9 @@
                                                                                     <c:when test="${not empty interestedUsers and interestedUsers.size() > 1}">
                                                                                         <c:forEach var="user" items="${interestedUsers}">
                                                                                             <c:if test="${user.id != currentUser.id}">
+                                                                                                <li class="list-group-item">
                                                                                                 <label class="checkbox" style="align-self: center;margin-bottom: 0px;display: flex;align-content: center;width:100%;">
-                                                                                                    <div class="list-group-item" style="width: 100%;display: flex;flex-direction: row;justify-content: space-between">
+                                                                                                    <div style="width: 100%;display: flex;flex-direction: row;justify-content: space-between">
                                                                                                         <div>
                                                                                                             <form:checkbox class="proposal-checkbox" path="invitedUsersIds" style="margin-right: 6px;" value="${user.id}"/> ${user.name}
                                                                                                             <p style="margin-bottom: 0px;margin-left: 26px;"><em><small>${user.university.name} - ${user.age} - ${user.gender.toString().toLowerCase()}</small></em></p>
@@ -248,6 +249,7 @@
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </label>
+                                                                                                </li>
                                                                                             </c:if>
                                                                                         </c:forEach>
                                                                                     </c:when>
