@@ -101,7 +101,7 @@
                     </div>
                 </c:when>
                 <c:when test="${creator.id == currentUser.id}">
-                    <c:url value="/proposal/user/delete/${proposal.id}" var="postPath"/>
+                    <c:url value="/proposal/guest/delete/${proposal.id}" var="postPath"/>
                     <form action="${postPath}" method="post">
                         <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
                     </form>

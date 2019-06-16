@@ -189,15 +189,6 @@ public class UserController {
         return mav;
     }
 
-    @RequestMapping(value = "/interested/{propertyId}")
-    public ModelAndView interested(@PathVariable long propertyId,
-                                   @RequestParam("pageNumber") int pageNumber,
-                                   @RequestParam("pageSize") int pageSize) {
-        return new ModelAndView("interested")
-                        .addObject("users",
-                                    userService.getUsersInterestedInProperty(propertyId, new PageRequest(pageNumber, pageSize)));
-    }
-
     private Collection<String> generatePropertyNames(Collection<Proposal> list){
         List<String> result = new ArrayList<>();
         for (Proposal prop: list)

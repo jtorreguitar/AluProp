@@ -265,7 +265,7 @@ public class PropertyController {
             return navigationUtility.mavWithGeneralNavigationAttributes("404");
 
         propertyService.changeStatus(prop,propertyId);
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("redirect:/" + propertyId);
         addObjectsToMavForDetailedProperty(prop, mav);
         return mav;
     }

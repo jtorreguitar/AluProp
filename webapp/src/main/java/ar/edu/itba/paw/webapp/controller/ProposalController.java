@@ -106,7 +106,7 @@ public class ProposalController {
         return mav;
     }
 
-    @RequestMapping(value = "/user/delete/{proposalId}", method = RequestMethod.POST )
+    @RequestMapping(value = "/guest/delete/{proposalId}", method = RequestMethod.POST )
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
                                @Valid @ModelAttribute("proposalForm") ProposalForm form, final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
