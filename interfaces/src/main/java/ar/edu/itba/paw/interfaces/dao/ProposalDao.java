@@ -13,7 +13,7 @@ public interface ProposalDao {
     Collection<Proposal> getAllProposalForUserId(long id);
 
     void setAcceptInvite(long userId, long proposalId);
-    long setDeclineInvite(long userId, long proposalId);
+    void setDeclineInvite(long userId, long proposalId);
 
     void setAccept(long proposalId);
     void setDecline(long proposalId);

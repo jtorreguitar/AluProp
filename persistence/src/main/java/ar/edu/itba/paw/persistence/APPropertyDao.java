@@ -18,6 +18,8 @@ import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class APPropertyDao implements PropertyDao {
+
+    private final static Logger logger = LoggerFactory.logger(PropertyDao.class);
 
     private static final String ALWAYS_TRUE_STRING = "1 = 1 ";
     private final String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
@@ -151,21 +155,19 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public void changeStatus(Property prop, long id) {
-        Availability oldAvail = prop.getAvailability();
-        Availability newAvail;
-        switch(oldAvail){
+    public void changeStatus(long propertyId) {
+        Property prop = entityManager.find(Property.class, propertyId);
+        switch(prop.getAvailability()) {
             case AVAILABLE:
-                newAvail=Availability.RENTED;
+                prop.setAvailability(Availability.RENTED);
                 break;
             case RENTED:
-                newAvail=Availability.AVAILABLE;
+                prop.setAvailability(Availability.AVAILABLE);
                 break;
             default:
-                System.out.println("Error"); //TODO Remove
+                logger.warn("property without availability, property id: " + prop.getId());
                 return;
         }
-        prop.setAvailability(newAvail);
         entityManager.merge(prop);
     }
     
@@ -209,6 +211,7 @@ public class APPropertyDao implements PropertyDao {
         property.getRules().isEmpty();
         property.getServices().isEmpty();
         property.getImages().isEmpty();
+        property.getInterestedUsers().isEmpty();
         return property;
     }
 

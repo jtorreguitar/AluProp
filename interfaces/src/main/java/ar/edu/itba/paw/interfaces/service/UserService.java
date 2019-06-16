@@ -11,6 +11,7 @@ public interface UserService {
     User get(long id);
     User getWithRelatedEntities(long id);
     User getByEmail(String username);
+    User getCurrentlyLoggedUser();
     Either<User, List<String>> CreateUser(User user);
     User getUserWithRelatedEntitiesByEmail(String email);
     PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);

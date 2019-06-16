@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.SearchableProperty;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
+import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -33,8 +34,6 @@ public class APPropertyService implements PropertyService {
     @Autowired
     private PropertyDao propertyDao;
     @Autowired
-    private UserDao userDao;
-    @Autowired
     private ServiceDao serviceDao;
     @Autowired
     private ImageDao imageDao;
@@ -42,6 +41,10 @@ public class APPropertyService implements PropertyService {
     private RuleDao ruleDao;
     @Autowired
     private NeighbourhoodDao neighbourhoodDao;
+
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Property get(long id) {
@@ -110,8 +113,11 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public void delete(long id) {
+    public int delete(long id, User currentUser) {
+        if(currentUser.getId() != id)
+            return HttpURLConnection.HTTP_FORBIDDEN;
         propertyDao.delete(id);
+        return HttpURLConnection.HTTP_OK;
     }
 
     private void checkRelatedEntitiesExist(Property property) {
@@ -167,8 +173,14 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public void changeStatus(Property prop, long id){
-
-        propertyDao.changeStatus(prop, id);
+    public int changeStatus(long propertyId) {
+        User currentUser = userService.getCurrentlyLoggedUser();
+        Property prop = propertyDao.get(propertyId);
+        if(prop == null)
+            return HttpURLConnection.HTTP_NOT_FOUND;
+        if(prop.getOwner().getId() != currentUser.getId())
+            return HttpURLConnection.HTTP_FORBIDDEN;
+        propertyDao.changeStatus(propertyId);
+        return HttpURLConnection.HTTP_OK;
     }
 }

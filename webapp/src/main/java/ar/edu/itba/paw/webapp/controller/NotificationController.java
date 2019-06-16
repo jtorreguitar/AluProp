@@ -17,7 +17,7 @@ public class NotificationController {
 
     @RequestMapping(value = "/user/notifications", method = RequestMethod.GET)
     public ModelAndView notifications(@ModelAttribute FilteredSearchForm searchForm) {
-        return navigationUtility.mavWithGeneralNavigationAttributes("notifications");
+        return navigationUtility.mavWithNavigationAttributes("notifications");
     }
 
 }

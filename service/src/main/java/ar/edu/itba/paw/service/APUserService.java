@@ -9,6 +9,8 @@ import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -89,5 +91,13 @@ public class APUserService implements UserService {
     @Override
     public boolean getUserIsInterestedInProperty(long userId, long propertyId) {
         return userDao.isUserInterestedInProperty(userId, propertyId);
+    }
+
+    @Override
+    public User getCurrentlyLoggedUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof UserDetails)
+            return userDao.getUserWithRelatedEntitiesByEmail(((UserDetails) principal).getUsername());
+        else return userDao.getUserWithRelatedEntitiesByEmail(principal.toString());
     }
 }

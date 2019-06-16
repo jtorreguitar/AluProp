@@ -1,20 +1,17 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
-import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
-import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,28 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
-
-    private final static String DELETE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
-    private final static String DELETE_BODY = "Lamentablemente, el creador de la propuesta la ha cancelado.\nSaludos,\nEl equipo de AluProp.";
-
-    private final static String DECLINE_SUBJECT= "AluProp - Una propuesta se ha cancelado.";
-    private final static String DECLINE_BODY = "Lamentablemente, alguien ha rechazado la propuesta y por lo tanto se ha cancelado.\nSaludos,\nEl equipo de AluProp.";
-
-    private final static String SENT_SUBJECT= "AluProp - Una propuesta ha sido enviada!";
-    private final static String SENT_BODY = "Todos los miembros de la propuesta han aceptado, así que fue enviada al dueño de la propiedad!\nSaludos,\nEl equipo de AluProp.";
-
-    private final static String SENT_HOST_SUBJECT= "AluProp - Hay una propuesta nueva para tu propiedad!";
 
     @Autowired
     private ProposalService proposalService;
@@ -51,10 +32,6 @@ public class ProposalController {
     private PropertyService propertyService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private APJavaMailSender emailSender;
-    @Autowired
-    private NotificationUtility notificationUtility;
     @Autowired
     private ServiceService serviceService;
     @Autowired
@@ -66,8 +43,8 @@ public class ProposalController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
-        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
-        final User u = navigationUtility.getCurrentlyLoggedUser();
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
+        final User u = userService.getCurrentlyLoggedUser();
         final Proposal proposal = proposalService.getWithRelatedEntities(id);
         if (proposal == null) {
             mav.setViewName("404");
@@ -88,7 +65,6 @@ public class ProposalController {
         mav.addObject("currentUser", u);
         mav.addObject("userStates", proposal.getUserStates());
         addSearchObjectsToMav(mav);
-        notificationUtility.addNotificationsToMav(mav, u);
         mav.setViewName("proposal");
         return mav;
     }

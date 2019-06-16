@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.model.Notification;
-import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
@@ -50,8 +49,6 @@ public class UserController {
     @Autowired
     private CareerService careerService;
     @Autowired
-    private PropertyService propertyService;
-    @Autowired
     private ProposalService proposalService;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -79,13 +76,13 @@ public class UserController {
 //            String targetUrl = savedRequest.getRedirectUrl();
 //            System.out.println(targetUrl);
 //        }
-        return navigationUtility.mavWithGeneralNavigationAttributes("logInForm");
+        return navigationUtility.mavWithNavigationAttributes("logInForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
     public ModelAndView signUp(HttpServletRequest request, @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User user = navigationUtility.getCurrentlyLoggedUser();
+        User user = userService.getCurrentlyLoggedUser();
         ModelAndView mav = new ModelAndView("signUpForm");
 
         mav.addObject("currentUser", user);
@@ -171,7 +168,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
-        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
         final User profileUser = userService.getWithRelatedEntities(userId);
         if (profileUser == null) {
             mav.setViewName("404");
