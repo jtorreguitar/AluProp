@@ -9,6 +9,6 @@ public interface NotificationDao {
     Notification get(long id);
     Collection<Notification> getAll(PageRequest pageRequest);
     Collection<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest);
-    Collection<Notification> getAllUnreadNotificationsForUser(long id);
+    Collection<Notification> getAllUnreadNotificationsForUser(long id, PageRequest pageRequest);
     Notification createNotification(Notification notification);
 }

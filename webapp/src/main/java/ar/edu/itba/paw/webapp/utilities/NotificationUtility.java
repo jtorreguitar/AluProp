@@ -20,17 +20,7 @@ public class NotificationUtility {
     @Autowired
     NotificationService notificationService;
 
-    public void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users, long currentUserId){
-        for (User user: users){
-            if (user.getId() == currentUserId)
-                continue;
-            Notification result = notificationService.createNotification(user.getId(), subjectCode, textCode, link);
-            if (result == null)
-                logger.error("Failed to deliver notification to user with id: " + user.getId());
-        }
-    }
-
-    public void addNotificationsToMav(ModelAndView mav, User u){
+    public void add_Notifications_To_Mav(ModelAndView mav, User u){
         Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
         mav.addObject("notifications", notifications);
     }

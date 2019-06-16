@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.service.ImageService;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
+import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
@@ -39,12 +40,14 @@ public class HostController {
     private PropertyService propertyService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView hostDecline(@PathVariable(value = "proposalId") int proposalId,
                                     @Valid @ModelAttribute("proposalForm") ProposalForm form) {
         if (!userOwnsProposalProperty(proposalId))
-            return navigationUtility.mavWithGeneralNavigationAttributes("404");
+            return navigationUtility.mavWithNavigationAttributes("404");
 
         proposalService.setDecline(proposalId);
 
@@ -55,7 +58,7 @@ public class HostController {
     public ModelAndView hostAccept(@PathVariable(value = "proposalId") int proposalId,
                                    @Valid @ModelAttribute("proposalForm") ProposalForm form) {
         if (!userOwnsProposalProperty(proposalId))
-            return navigationUtility.mavWithGeneralNavigationAttributes("404");
+            return navigationUtility.mavWithNavigationAttributes("404");
 
         proposalService.setAccept(proposalId);
 
@@ -65,7 +68,7 @@ public class HostController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form,
                                @ModelAttribute("filteredSearchForm") FilteredSearchForm searchForm) {
-        return navigationUtility.mavWithGeneralNavigationAttributes("createProperty");
+        return navigationUtility.mavWithNavigationAttributes("createProperty");
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -91,12 +94,12 @@ public class HostController {
                 return create(propertyOrErrors.alternative());
         }
         catch(IllegalPropertyStateException e) {
-            return navigationUtility.mavWithGeneralNavigationAttributes("404");
+            return navigationUtility.mavWithNavigationAttributes("404");
         }
     }
 
     private boolean userOwnsProposalProperty(long proposalId){
-        User u = navigationUtility.getCurrentlyLoggedUser();
+        User u = userService.getCurrentlyLoggedUser();
         Proposal proposal = proposalService.getWithRelatedEntities(proposalId);
         return (proposal != null && proposal.getProperty().getOwner().getId() == u.getId());
     }
@@ -126,7 +129,7 @@ public class HostController {
                 .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
                 .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
                 .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
-                .withOwner(navigationUtility.getCurrentlyLoggedUser())
+                .withOwner(userService.getCurrentlyLoggedUser())
                 .withAvailability(Availability.valueOf("AVAILABLE"))
                 .build();
     }
@@ -139,7 +142,7 @@ public class HostController {
     }
 
     private ModelAndView create(Collection<String> errors) {
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("createProperty");
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("createProperty");
         mav.addObject("errors", errors);
         return mav;
     }

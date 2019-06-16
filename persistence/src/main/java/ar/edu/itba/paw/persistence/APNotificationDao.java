@@ -19,6 +19,11 @@ import java.util.Random;
 @Repository
 public class APNotificationDao implements NotificationDao {
 
+    private static final String USER_NOTIFICATIONS_QUERY = "FROM Notification n WHERE n.user.id = :id ORDER BY n.id";
+    private static final String UNREAD_USER_NOTIFICATIONS_QUERY = "FROM Notification n " +
+                                                                    "WHERE n.state = 'UNREAD' AND n.user.id = :id " +
+                                                                    "ORDER BY n.id";
+
     @PersistenceContext
     EntityManager entityManager;
 
@@ -34,18 +39,24 @@ public class APNotificationDao implements NotificationDao {
     }
 
     @Override
-    public List<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
-        return entityManager.createQuery("FROM Notification", Notification.class).getResultList();
+    public Collection<Notification> getAllNotificationsForUser(long id, PageRequest pageRequest) {
+        TypedQuery<Notification> query = entityManager
+                                    .createQuery(USER_NOTIFICATIONS_QUERY, Notification.class);
+        query.setParameter("id", id);
+        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
-    public List<Notification> getAllUnreadNotificationsForUser(long id) {
-        return null;
+    public Collection<Notification> getAllUnreadNotificationsForUser(long id, PageRequest pageRequest) {
+        TypedQuery<Notification> query = entityManager
+                .createQuery(UNREAD_USER_NOTIFICATIONS_QUERY, Notification.class);
+        query.setParameter("id", id);
+        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
     @Transactional
-    public Notification createNotification(Notification notification){//long userId, String subjectCode, String textCode, String link) {
+    public Notification createNotification(Notification notification) {
         if (notification != null)
             entityManager.persist(notification);
         return notification;

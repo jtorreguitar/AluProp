@@ -12,8 +12,12 @@ public class StatusCodeUtility {
         switch (statusCode) {
             case HttpURLConnection.HTTP_OK:
                 break;
+            case HttpURLConnection.HTTP_FORBIDDEN:
+                mavWithSuccessView.setViewName("redirect:/403");
+                break;
             case HttpURLConnection.HTTP_NOT_FOUND:
                 mavWithSuccessView.setViewName("404");
+                break;
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
             default:
                 mavWithSuccessView.setViewName("500");

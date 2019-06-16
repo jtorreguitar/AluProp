@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import java.net.URI;
+import java.net.HttpURLConnection;
 import java.util.*;
 
 import ar.edu.itba.paw.interfaces.*;
@@ -46,17 +46,19 @@ public class PropertyController {
     @Autowired
     private ProposalService proposalService;
     @Autowired
-    private NotificationUtility notificationUtility;
-    @Autowired
-    private NavigationUtility navigationUtility;
+    private NotificationService notificationService;
+
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private NavigationUtility navigationUtility;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
-        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("index");
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
         navigationUtility.addPaginationAttributes(mav, response, MAX_SIZE);
         return mav;
@@ -66,45 +68,38 @@ public class PropertyController {
     public ModelAndView get(@ModelAttribute("proposalForm") final ProposalForm form,
                             @ModelAttribute FilteredSearchForm searchForm,
                             @PathVariable("id") long id) {
-        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
-        final Property prop = propertyService.getPropertyWithRelatedEntities(id);
-        addObjectsToMavForDetailedProperty(prop, mav);
-        mav.setViewName("detailedProperty");
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("detailedProperty");
+        addObjectsToMavForDetailedProperty(id, mav);
         return mav;
     }
 
-    private void addObjectsToMavForDetailedProperty(Property prop, ModelAndView mav) {
+    private void addObjectsToMavForDetailedProperty(long propertyId, ModelAndView mav) {
+        Property prop = propertyService.getPropertyWithRelatedEntities(propertyId);
         if(prop == null) {
             mav.setViewName("404");
             return;
         }
-        User user = navigationUtility.getCurrentlyLoggedUser();
+        User user = userService.getCurrentlyLoggedUser();
         mav.addObject("property", prop);
         if (user != null) {
-            mav.addObject("userInterested",userService.getUserIsInterestedInProperty(user.getId(), prop.getId()));
-            mav.addObject("interestedUsers", userService.getUsersInterestedInProperty(prop.getId(), new PageRequest(0, 100)).getResponseData());
+            mav.addObject("userInterested", prop.getInterestedUsers().stream().anyMatch(u -> u.getId() == user.getId()));
+            mav.addObject("interestedUsers", prop.getInterestedUsers());
         }
     }
 
     @RequestMapping(value = "/{id}/interest/", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId,
                                  @ModelAttribute FilteredSearchForm searchForm) {
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
-        User user = navigationUtility.getCurrentlyLoggedUser();
-        if (user != null){
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        User user = userService.getCurrentlyLoggedUser();
+        if (user != null) {
             if (user.getRole().equals(Role.ROLE_GUEST)){
                 final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
-                mav.setViewName("redirect:/" + propertyId);
                 StatusCodeUtility.parseStatusCode(code, mav);
             }
-            else
-                mav.setViewName("redirect:/" + propertyId);
         }
-        else {
-            mav.setViewName("redirect:/" + propertyId);
-            mav.addObject("noLogin", true)
-                .addObject("currentUser", user);
-        }
+        else
+            mav.addObject("noLogin", true);
         return mav;
     }
 
@@ -112,8 +107,8 @@ public class PropertyController {
     @RequestMapping(value = "/{id}/deInterest", method = RequestMethod.POST)
     public ModelAndView deInterest(@PathVariable(value = "id") int propertyId,
                                    @ModelAttribute FilteredSearchForm searchForm) {
-        User user = navigationUtility.getCurrentlyLoggedUser();
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("redirect:/" + propertyId);
+        User user = userService.getCurrentlyLoggedUser();
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         final int code = propertyService.undoInterestOrReturnErrors(propertyId, user);
         StatusCodeUtility.parseStatusCode(code, mav);
         return mav;
@@ -121,7 +116,7 @@ public class PropertyController {
 
     @RequestMapping(value = "/interestsOfUser/{userId}")
     public ModelAndView interestsOfUser(@PathVariable(value = "userId") long userId) {
-        return navigationUtility.mavWithGeneralNavigationAttributes("interestsOfUser")
+        return navigationUtility.mavWithNavigationAttributes("interestsOfUser")
                 .addObject("interests", propertyService.getInterestsOfUser(userId));
     }
 
@@ -136,8 +131,8 @@ public class PropertyController {
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
         }
         if (errors.hasErrors())
-            return index(pageNumber,searchForm,pageSize);
-        final ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("index");
+            return index(pageNumber,searchForm, pageSize);
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         mav.addObject("isSearch", true);
         PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm));
         navigationUtility.addPaginationAttributes(mav, response, MAX_SIZE);
@@ -162,26 +157,21 @@ public class PropertyController {
     public ModelAndView delete(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User u = navigationUtility.getCurrentlyLoggedUser();
-        Property prop = propertyService.get(propertyId);
-        if (prop == null || prop.getOwner().getId() != u.getId())
-            return navigationUtility.mavWithGeneralNavigationAttributes("404");
-        propertyService.delete(propertyId);
-        return navigationUtility.mavWithGeneralNavigationAttributes("successfulPropertyDelete");
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("successfulPropertyDelete");
+        User u = userService.getCurrentlyLoggedUser();
+        StatusCodeUtility.parseStatusCode(propertyService.delete(propertyId, u), mav);
+        return mav;
     }
 
     @RequestMapping(value = "/host/changeStatus/{propertyId}", method = RequestMethod.POST)
     public ModelAndView changeStatus(HttpServletRequest request,
                                         @PathVariable(value = "propertyId") int propertyId,
                                         @ModelAttribute FilteredSearchForm searchForm) {
-        User u = navigationUtility.getCurrentlyLoggedUser();
-        Property prop = propertyService.get(propertyId);
-        if (prop == null || prop.getOwner().getId() != u.getId())
-            return navigationUtility.mavWithGeneralNavigationAttributes("404");
-
-        propertyService.changeStatus(prop,propertyId);
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("redirect:/" + propertyId);
-        addObjectsToMavForDetailedProperty(prop, mav);
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        int statusCode = propertyService.changeStatus(propertyId);
+        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        if(statusCode == HttpURLConnection.HTTP_OK)
+            addObjectsToMavForDetailedProperty(propertyId, mav);
         return mav;
     }
 
@@ -191,12 +181,12 @@ public class PropertyController {
                                @Valid @ModelAttribute("proposalForm") ProposalForm form,
                                final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes();
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
         Property prop = propertyService.get(propertyId);
         if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
 
-        long userId = navigationUtility.getCurrentlyLoggedUser().getId();
+        long userId = userService.getCurrentlyLoggedUser().getId();
 
         Proposal proposal = new Proposal.Builder()
                 .withCreator(userService.get(userId))
@@ -216,7 +206,7 @@ public class PropertyController {
 //                            generateProposalUrl(proposalOrErrors.value(), request) +
 //                            "\nSi no puedes ver la propuesta, recuerda iniciar sesión!\nSaludos,\nEl equipo de AluProp.",
 //                    proposalOrErrors.value().getUsers());
-            notificationUtility.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers(), userId);
+            notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers(), userId);
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;
         } else {
@@ -224,19 +214,5 @@ public class PropertyController {
             mav.addObject("proposalFailed", true);
             return mav;
         }
-    }
-
-    private List<User> getUsersByIds(long[] ids){
-        List<User> list = new LinkedList<>();
-        if (ids != null && ids.length > 0)
-            for (long i = 0; i < ids.length; i++){
-                list.add(userService.get(ids[(int)i]));
-            }
-        return list;
-    }
-
-    private String generateProposalUrl(Proposal proposal, HttpServletRequest request){
-        URI contextUrl = URI.create(request.getRequestURL().toString()).resolve(request.getContextPath());
-        return contextUrl.toString().split("/proposal")[0] + "/proposal/" + proposal.getId();
     }
 }

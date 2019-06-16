@@ -22,5 +22,5 @@ public interface PropertyDao {
     Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);
     Long count();
     Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property);
-    void changeStatus(Property prop, long id);
+    void changeStatus(long propertyId);
 }

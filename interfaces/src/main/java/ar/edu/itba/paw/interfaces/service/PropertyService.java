@@ -21,8 +21,8 @@ public interface PropertyService {
 	int undoInterestOrReturnErrors(long propertyId, User user);
     Property getPropertyWithRelatedEntities(long id);
     Either<Property, Collection<String>> create(Property property);
-    void delete(long id);
+    int delete(long id, User currentUser);
     Collection<Property> getInterestsOfUser(long id);
     Collection<Property> getByOwnerId(long id);
-    void changeStatus(Property prop, long id);
+    int changeStatus(long propertyId);
 }
