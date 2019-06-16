@@ -62,6 +62,7 @@
         </c:choose>
     </div>
     <div class="row">
+        <c:set var="maxItems" value ="12" />
         <c:set var="total" value="${(totalElements%maxItems)>0? totalPages+1:totalPages}" />
         <c:set var="current" value="${currentPage+1}" />
         <c:choose>

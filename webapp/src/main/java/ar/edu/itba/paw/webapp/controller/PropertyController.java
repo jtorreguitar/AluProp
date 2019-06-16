@@ -34,7 +34,7 @@ import javax.validation.Valid;
 public class PropertyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
-    private static final Integer MAX_SIZE = 9;
+    private static final Integer MAX_SIZE = 12;
 
     private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
     private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";

@@ -53,7 +53,7 @@ public class NavigationUtility {
         mav.addObject("currentPage", response.getPageNumber());
         mav.addObject("totalPages", response.getTotalPages());
         mav.addObject("totalElements", response.getTotalItems());
-        mav.addObject("maxItems",maxItems);
+        //mav.addObject("maxItems",maxItems);
     }
 
     public void addGeneralNavigationAttributes(ModelAndView mav) {
