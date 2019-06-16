@@ -217,23 +217,24 @@
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
                                                             <c:if test="${currentUser.role != 'ROLE_HOST'}">
-                                                                <input value="${createProposal}" style="width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                                                <input value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                                                 <%--//data-toggle="modal" data-target="#exampleModalCenter"/>--%>
 
                                                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                                         <div class="modal-content">
                                                                             <div class="modal-header">
-                                                                                <h5 class="modal-title" id="exampleModalCenterTitle">Proposal creation</h5>
+                                                                                <h5 class="modal-title" id="exampleModalCenterTitle"><spring:message code="user.create_proposal"/></h5>
                                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                     <span aria-hidden="true">&times;</span>
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body" id="lel">
+
                                                                             </div>
                                                                             <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                                <button type="button" class="btn btn-primary" type="submit" value="${createProposal}">Create</button>
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="label.close"/></button>
+                                                                                <button type="button" class="btn btn-primary" type="submit" value="${createProposal}"><spring:message code="proposal.create"/></button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -243,9 +244,6 @@
                                                             <c:if test="${maxPeople != null}">
                                                                 <span class="formError"><spring:message code="forms.proposal.max" arguments="${maxPeople}"/></span>
                                                             </c:if>
-
-
-
 
                                                         </div>
                                                     </form:form>
