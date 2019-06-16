@@ -101,20 +101,20 @@
                     </div>
                 </c:when>
                 <c:when test="${creator.id == currentUser.id}">
-                    <c:url value="/proposal/guest/delete/${proposal.id}" var="postPath"/>
+                    <c:url value="/guest/delete/${proposal.id}" var="postPath"/>
                     <form action="${postPath}" method="post">
                         <button type="submit" class="btn btn-secondary"><spring:message code="label.proposal.cancel"/></button>
                     </form>
                 </c:when>
                 <c:when test="${isInvited == true && !hasReplied}">
                     <div class="col-6">
-                        <c:url value="/proposal/user/accept/${proposal.id}" var="postPath"/>
+                        <c:url value="/guest/accept/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
                         </form>
                     </div>
                     <div class="col-6">
-                        <c:url value="/proposal/user/decline/${proposal.id}" var="postPath"/>
+                        <c:url value="/geust/decline/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>
@@ -126,13 +126,13 @@
                 <c:otherwise>
                     <div style="margin-bottom:6px"><spring:message code="label.proposal.your_prpoperty"/></div>
                     <div class="col-4" style="display:flex;justify-content:center;">
-                        <c:url value="/proposal/host/accept/${proposal.id}" var="postPath"/>
+                        <c:url value="/host/accept/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post" style="margin-block-end:0;">
                             <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
                         </form>
                     </div>
                     <div class="col-4" style="display:flex;justify-content:center;">
-                        <c:url value="/proposal/host/decline/${proposal.id}" var="postPath"/>
+                        <c:url value="/host/decline/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post" style="margin-block-end:0;">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>

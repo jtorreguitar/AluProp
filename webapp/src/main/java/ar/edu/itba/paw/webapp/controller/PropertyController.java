@@ -2,8 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import java.net.URI;
 import java.util.*;
-import java.util.function.LongFunction;
-import java.util.stream.Collectors;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.Either;
@@ -12,16 +10,12 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.enums.Availability;
-import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.Role;
-import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
-import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +25,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,8 +41,6 @@ public class PropertyController {
 
     @Autowired
     private PropertyService propertyService;
-    @Autowired
-    private ImageService imageService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -128,82 +119,6 @@ public class PropertyController {
         return mav;
     }
 
-    @RequestMapping(value = "/host/create", method = RequestMethod.GET)
-    public ModelAndView create(@ModelAttribute("propertyCreationForm") final PropertyCreationForm form,
-                               @ModelAttribute("filteredSearchForm") FilteredSearchForm searchForm) {
-        return navigationUtility.mavWithGeneralNavigationAttributes("createProperty");
-    }
-
-    private ModelAndView create(Collection<String> errors) {
-        ModelAndView mav = navigationUtility.mavWithGeneralNavigationAttributes("createProperty");
-        mav.addObject("errors", errors);
-        return mav;
-    }
-
-    private long[] loadImagesToDatabase(MultipartFile[] files){
-        ArrayList<Long> images = new ArrayList<>();
-        for (int i = 0; i < files.length; i++)
-            if (!files[i].isEmpty())
-                images.add(imageService.create(files[i]));
-
-        long[] imageArray = new long[images.size()];
-        for (int i = 0; i < images.size(); i++)
-            imageArray[i] = images.get(i);
-        return imageArray;
-    }
-
-    @RequestMapping(value = "/host/create", method = RequestMethod.POST)
-    public ModelAndView create(@RequestParam("file") MultipartFile[] files,
-                               @Valid @ModelAttribute PropertyCreationForm propertyForm,
-                               final BindingResult errors,
-                               @ModelAttribute FilteredSearchForm searchForm) {
-        int numFiles = 0;
-        for (int i = 0; i < files.length; i++)
-            if (!files[i].isEmpty()) numFiles++;
-        if (numFiles == 0)
-            return create(propertyForm, searchForm).addObject("noImages", true);
-        if (errors.hasErrors())
-            return create(propertyForm, searchForm);
-        long[] uploadedFiles = loadImagesToDatabase(files);
-        propertyForm.setMainImageId(uploadedFiles[0]);
-        propertyForm.setImageIds(uploadedFiles);
-        try {
-            Either<Property, Collection<String>> propertyOrErrors = propertyService.create(buildPropertyForCreation(propertyForm));
-            if(propertyOrErrors.hasValue())
-                return new ModelAndView("redirect:/" + propertyOrErrors.value().getId());
-            else
-                return create(propertyOrErrors.alternative());
-        }
-        catch(IllegalPropertyStateException e) {
-            return navigationUtility.mavWithGeneralNavigationAttributes("404");
-        }
-    }
-
-    private Property buildPropertyForCreation(@ModelAttribute @Valid PropertyCreationForm propertyForm) {
-        return new Property.Builder()
-            .withCaption(propertyForm.getCaption())
-            .withDescription(propertyForm.getDescription())
-            .withNeighbourhood(new Neighbourhood(propertyForm.getNeighbourhoodId()))
-            .withPrice(propertyForm.getPrice())
-            .withPropertyType(PropertyType.valueOf(propertyForm.getPropertyType()))
-            .withPrivacyLevel(propertyForm.getPrivacyLevel() > 0)
-            .withCapacity(propertyForm.getCapacity())
-            .withMainImage(new Image(propertyForm.getMainImageId()))
-            .withServices(generateObjects(propertyForm.getServiceIds(), Service::new))
-            .withRules(generateObjects(propertyForm.getRuleIds(), Rule::new))
-            .withImages(generateObjects(propertyForm.getImageIds(), Image::new))
-            .withOwner(navigationUtility.getCurrentlyLoggedUser())
-            .withAvailability(Availability.valueOf("AVAILABLE"))
-            .build();
-    }
-
-    private <T> Collection<T> generateObjects(long[] objectIds, LongFunction<T> function) {
-        if(objectIds != null && objectIds.length > 0)
-            return Arrays.stream(objectIds).mapToObj(function).collect(Collectors.toList());
-        else
-            return new LinkedList<>();
-    }
-
     @RequestMapping(value = "/interestsOfUser/{userId}")
     public ModelAndView interestsOfUser(@PathVariable(value = "userId") long userId) {
         return navigationUtility.mavWithGeneralNavigationAttributes("interestsOfUser")
@@ -244,7 +159,7 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/host/delete/{propertyId}", method = RequestMethod.POST)
-    public ModelAndView create(HttpServletRequest request,
+    public ModelAndView delete(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId,
                                @ModelAttribute FilteredSearchForm searchForm) {
         User u = navigationUtility.getCurrentlyLoggedUser();
