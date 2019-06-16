@@ -34,7 +34,7 @@ import javax.validation.Valid;
 public class PropertyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
-    private static final Integer MAX_SIZE = 9;
+    private static final Integer MAX_SIZE = 12;
 
     private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
     private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
@@ -85,6 +85,12 @@ public class PropertyController {
             mav.addObject("userInterested", prop.getInterestedUsers().stream().anyMatch(u -> u.getId() == user.getId()));
             mav.addObject("interestedUsers", prop.getInterestedUsers());
         }
+    }
+
+    @RequestMapping(value = "/{id}/interest/", method = RequestMethod.GET)
+    public ModelAndView interestGet(@PathVariable(value = "id") int propertyId,
+                                 @ModelAttribute FilteredSearchForm searchForm) {
+        return navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
     }
 
     @RequestMapping(value = "/{id}/interest/", method = RequestMethod.POST)

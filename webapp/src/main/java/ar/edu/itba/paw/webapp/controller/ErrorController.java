@@ -41,6 +41,9 @@ public class ErrorController {
             case HttpURLConnection.HTTP_FORBIDDEN:
                 errorPage.setViewName("403");
                 break;
+            case HttpURLConnection.HTTP_BAD_METHOD:
+                errorPage.setViewName("500");
+                break;
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
                 errorPage.setViewName("500");
                 break;
