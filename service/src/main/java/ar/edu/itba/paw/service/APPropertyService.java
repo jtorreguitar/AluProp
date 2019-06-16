@@ -82,9 +82,7 @@ public class APPropertyService implements PropertyService {
     public int showInterestOrReturnErrors(long propertyId, User user) {
         if (propertyId < 1 || propertyDao.get(propertyId) == null)
             return HttpURLConnection.HTTP_NOT_FOUND;
-        boolean wasCreated = propertyDao.showInterest(propertyId, user);
-        if(!wasCreated) 
-            return HttpURLConnection.HTTP_INTERNAL_ERROR;
+        propertyDao.showInterest(propertyId, user);
         return HttpURLConnection.HTTP_OK;
     }
 

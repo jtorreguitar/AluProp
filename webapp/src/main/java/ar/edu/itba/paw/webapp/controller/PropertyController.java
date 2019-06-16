@@ -93,19 +93,13 @@ public class PropertyController {
         return navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
     }
 
-    @RequestMapping(value = "/{id}/interest/", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/guest/interest/", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId,
                                  @ModelAttribute FilteredSearchForm searchForm) {
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         User user = userService.getCurrentlyLoggedUser();
-        if (user != null) {
-            if (user.getRole().equals(Role.ROLE_GUEST)){
-                final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
-                StatusCodeUtility.parseStatusCode(code, mav);
-            }
-        }
-        else
-            mav.addObject("noLogin", true);
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
+        StatusCodeUtility.parseStatusCode(code, mav);
         return mav;
     }
 

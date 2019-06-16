@@ -11,7 +11,7 @@ import java.util.Collection;
 public interface PropertyDao {
     Property get(long id);
     Collection<Property> getAll(PageRequest pageRequest);
-	boolean showInterest(long propertyId, User user);
+	void showInterest(long propertyId, User user);
 	boolean undoInterest(long propertyId, User user);
     Property getPropertyWithRelatedEntities(long id);
     Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description);

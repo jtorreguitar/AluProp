@@ -127,9 +127,6 @@ public class APProposalDao implements ProposalDao {
     @Override
     @Transactional
     public Collection<Proposal> getProposalsForOwnedProperties(long id) {
-        /*final TypedQuery<Proposal> query = entityManager.createQuery(PROPOSALS_ON_OWNED_PROPERTYIES, Proposal.class);
-        query.setParameter("id", id);
-        return query.getResultList();*/
         final User owner = entityManager.find(User.class, id);
         Collection<Proposal> proposals = owner.getOwnedProperties().stream()
                                                 .flatMap(property -> property.getProposals().stream())

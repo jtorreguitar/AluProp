@@ -172,12 +172,12 @@ public class APPropertyDao implements PropertyDao {
     }
     
     @Override
-    public boolean showInterest(long propertyId, User user) {
+    public void showInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
-        if(interest != null) return false;
+        if(interest != null) return;
         interest = new Interest(entityManager.find(Property.class, propertyId), user);
         entityManager.persist(interest);
-        return interest.getId() > 0;
+        return;
     }
 
     @Override

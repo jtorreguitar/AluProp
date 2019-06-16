@@ -288,7 +288,7 @@
                                         </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:url value="/${property.id}/interest/" var="postPath"/>
+                                        <c:url value="/${property.id}/guest/interest/" var="postPath"/>
                                         <form class="my-form" action="${postPath}" method="POST">
                                             <input type="submit" value="${interested}" style="width: 100%" class="btn btn-primary stretched-link"/>
                                         </form>
