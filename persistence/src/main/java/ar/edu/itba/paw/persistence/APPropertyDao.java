@@ -216,6 +216,7 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    @Transactional
     public Property create(Property property) {
         if(property != null)
             entityManager.persist(property);

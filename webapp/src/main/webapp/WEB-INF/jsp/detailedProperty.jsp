@@ -219,7 +219,7 @@
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
                                                             <c:if test="${currentUser.role != 'ROLE_HOST'}">
-                                                                <input value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                                                <input type="button" value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                                         <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
@@ -310,28 +310,36 @@
         </div>
     </div>
     <script>
-        //var n = $(":checkbox:checked");//$("input:checkbox:checked").length;
         $(document).on("click", ".confirm-proposal", function () {
             var count = 4;
             $(".modal-body #lel").val( count );
         });
         var totalPrice =<c:out value="${property.price}"/>;
-        var checkedBoxes = 0;
+        var maxUsers = <c:out value="${property.capacity - 1}"/>;
+        var checkedBoxes = $("input:checked").length;
+        $('#selected-users').html(checkedBoxes);
+        $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
+        if (checkedBoxes === 0){
+            $('#selected-no-guests').show();
+            $('#selected-guests').css('display', 'none');
+        } else {
+            $('#selected-no-guests').css('display', 'none');
+            $('#selected-guests').show();
+        }
         $('.proposal-checkbox').change(function() {
-            if ($(this).is(':checked')){
-                checkedBoxes = checkedBoxes + 1;
-            } else{
-                checkedBoxes = checkedBoxes - 1;
-            }
-            $('#selected-users').html(checkedBoxes);
-            $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
+            checkedBoxes = $("input:checked").length;
             if (checkedBoxes === 0){
                 $('#selected-no-guests').show();
                 $('#selected-guests').css('display', 'none');
+            } else if (checkedBoxes > maxUsers) {
+                $(this).prop('checked', false)
+                checkedBoxes -= 1;
             } else {
                 $('#selected-no-guests').css('display', 'none');
                 $('#selected-guests').show();
             }
+            $('#selected-users').html(checkedBoxes);
+            $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
 
         });
     </script>

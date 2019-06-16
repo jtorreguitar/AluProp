@@ -145,7 +145,6 @@
                             </c:if>
                         </div>
 
-
                         <div class="form-group">
                             <button id="btn-publish" type="submit" class="btn btn-primary btn-block"><spring:message code="host.publish_property_button"/></button>
                         </div> <!-- form-group// -->
