@@ -86,6 +86,8 @@ public class APUserDao implements UserDao {
     @Override
     public User getUserWithRelatedEntitiesByEmail(String email) {
         User user = getByEmail(email);
+        if (user == null)
+            return null;
         initializeRelatedEntities(user);
         return user;
     }
