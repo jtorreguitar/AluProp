@@ -19,4 +19,5 @@ public interface ProposalService {
     int setDecline(long proposalId);
 
     Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
+    long findDuplicateProposal(Proposal proposal, long[] userIds);
 }

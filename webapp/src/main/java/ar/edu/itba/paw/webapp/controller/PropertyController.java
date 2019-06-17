@@ -1,15 +1,16 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import java.net.HttpURLConnection;
-import java.util.*;
-
-import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
-import ar.edu.itba.paw.interfaces.service.*;
+import ar.edu.itba.paw.interfaces.SearchableProperty;
+import ar.edu.itba.paw.interfaces.service.NotificationService;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
-import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.interfaces.service.ProposalService;
+import ar.edu.itba.paw.interfaces.service.UserService;
+import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.Proposal;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
@@ -28,6 +29,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class PropertyController {
@@ -185,18 +189,27 @@ public class PropertyController {
         Proposal.Builder builder = new Proposal.Builder()
                 .withCreator(userService.get(userId))
                 .withProperty(propertyService.get(propertyId));
+
         if(form.getInvitedUsersIds().length == 0)
             builder.withState(ProposalState.SENT);
         else
             builder.withState(ProposalState.PENDING);
+
         Proposal proposal = builder.build();
+
+        long duplicateId= proposalService.findDuplicateProposal(proposal, form.getInvitedUsersIds());
+        if(duplicateId != -1){
+            mav.setViewName("redirect:/proposal/" + duplicateId);
+        }
+
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
+
         if(proposalOrErrors.hasValue()){
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;
         } else {
             mav.setViewName("redirect:/" + propertyId);
-            mav.addObject("proposalFailed", true);
+            mav.addObject("errors", proposalOrErrors.alternative());
             return mav;
         }
     }
