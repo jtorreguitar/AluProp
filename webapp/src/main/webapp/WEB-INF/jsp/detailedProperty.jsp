@@ -146,7 +146,7 @@
                                 <c:choose>
                                     <c:when test="${currentUser.role == 'ROLE_HOST' && currentUser.id == property.owner.id}">
                                         <div class="flex-container" style="display: flex;flex-direction: column;">
-                                            <input value="<spring:message code="user.interested_users"/>" style="cursor:pointer;width: -moz-available;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                            <input type="button" value="<spring:message code="user.interested_users"/>" style="cursor:pointer;width: -moz-available;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
