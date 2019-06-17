@@ -11,13 +11,14 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.form.SignUpForm;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
+import ar.edu.itba.paw.webapp.form.SignUpForm;
+import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +41,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/user")
@@ -70,6 +75,9 @@ public class UserController {
     private NotificationService notificationService;
     @Autowired
     private NavigationUtility navigationUtility;
+    @Autowired
+    private MessageSource messageSource;
+
 
 
     @RequestMapping("/logIn")
@@ -101,7 +109,8 @@ public class UserController {
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
     public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("signUpForm") SignUpForm form,
                                  final BindingResult errors,
-                                 @ModelAttribute FilteredSearchForm searchForm) {
+                                 @ModelAttribute FilteredSearchForm searchForm,
+                                 Locale loc) {
         if(errors.hasErrors()){
             return signUp(request, form, searchForm);
         }
@@ -123,8 +132,8 @@ public class UserController {
                 return signUp(request, form, searchForm).addObject("uniqueEmail", false);
             }
             User user = maybeUser.value();
-            String title = redactConfirmationTitle(user);
-            String body = redactConfirmationBody();
+            String title = redactConfirmationTitle(user, loc);
+            String body = redactConfirmationBody(loc);
             emailSender.sendEmailToSingleUser(title, body, user);
             logger.debug("Confirmation email sent to: " + user.getEmail());
             authenticateUserAndSetSession(form, request);
@@ -146,12 +155,13 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     }
 
-    private String redactConfirmationTitle(User user) {
-        return "Hola " + user.getName() + ", bienvenido a AluProp!";
+    private String redactConfirmationTitle(User user,
+                                           Locale loc) {
+        return messageSource.getMessage("email.confirmation.title", new String[]{user.getName()}, loc);
     }
 
-    private String redactConfirmationBody() {
-        return "Muchas gracias por elegirnos!\n Ingresa a http://pawserver.it.itba.edu.ar/paw-2019a-5/ para ver las propiedades disponibles, mostrar tu interés y crear propuestas, o bien publicar tus propiedades!\nSaludos,\nEl equipo de AluProp.";
+    private String redactConfirmationBody(Locale loc) {
+        return messageSource.getMessage("email.confirmation.body", null, loc);
     }
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {

@@ -29,6 +29,22 @@
     <c:if test="${isSearch == true}">
         <H1><spring:message code="label.search_results"/></H1>
     </c:if>
+    <div class="row" style="margin-top: 30px;margin-bottom: 20px;width: 85%;margin-left: 16px">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <spring:message code="order_by"/>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="?orderBy=NEWEST&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_most_recent"/></a>
+                <a class="dropdown-item" href="?orderBy=CAPACITY_DESC&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_capacity_desc"/></a>
+                <a class="dropdown-item" href="?orderBy=CAPACITY&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_capacity_ascen"/></a>
+                <a class="dropdown-item" href="?orderBy=PRICE_DESC&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_price_desc"/></a>
+                <a class="dropdown-item" href="?orderBy=PRICE&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_price_ascen"/></a>
+                <a class="dropdown-item" href="?orderBy=BUDGET_DESC&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_budget_desc"/></a>
+                <a class="dropdown-item" href="?orderBy=BUDGET&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_budget_ascen"/></a>
+            </div>
+        </div>
+    </div>
     <div class="elem-container">
         <c:choose>
             <c:when test="${not empty properties}">
