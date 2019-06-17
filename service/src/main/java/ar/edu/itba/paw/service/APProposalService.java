@@ -24,7 +24,6 @@ public class APProposalService implements ProposalService {
 
     static final String PROPERTY_NOT_EXISTS = "The property for this proposal does not exist.";
     static final String CREATOR_NOT_EXISTS = "The creator of this proposal does not exist.";
-    static final String DUPLICATE_PROPOSAL = "You are trying to create a duplicated proposal";
 
     private final static String DELETE_SUBJECT_CODE= "notifications.proposals.deleted.subject";
     private final static String DELETE_BODY_CODE = "notifications.proposals.deleted";

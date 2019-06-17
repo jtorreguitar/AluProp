@@ -31,6 +31,18 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
     }
 
     @Override
+    public HqlWhereConditionBuilder greaterOrEqualThanCondition(String left, String right) {
+        comparisonCondition(left, " >= ", right);
+        return this;
+    }
+
+    @Override
+    public HqlWhereConditionBuilder lessOrEqualThanCondition(String left, String right) {
+        comparisonCondition(left, " <= ", right);
+        return this;
+    }
+
+    @Override
     public HqlWhereConditionBuilder simpleInCondition(String item, String subgroup) {
         condition.append(item);
         condition.append(" in ( FROM ");
