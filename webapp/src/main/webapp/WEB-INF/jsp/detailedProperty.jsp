@@ -47,7 +47,7 @@
                     <c:forEach var="image" items="${property.images}" varStatus="i">
                         <div class="carousel-item ${i.index == 0?"active":""}">
                             <c:url value="/images/" var="imageUrl"/>
-                            <img src="${imageUrl}/${image.id}" class="d-block w-100 carousel-image">
+                            <img src="${imageUrl}/${image.id}" class="d-block w-100 carousel-image ${property.availability == 'RENTED'?'grayscale':''}">
                         </div>
                     </c:forEach>
                 </div>
@@ -74,7 +74,11 @@
                             <div>
                                 <spring:message code="forms.privacy.shared" var="privacy_shared"/>
                                 <spring:message code="forms.privacy.individual" var="privacy_individual"/>
-                                <H2>${property.description}</H2>
+                                <H2>${property.description}
+                                    <c:if test="${property.availability == 'RENTED'}">
+                                        [<spring:message code="property.inactive"/>]
+                                    </c:if>
+                                </H2>
                                 <H6>
                                     <c:choose>
                                         <c:when test="${property.propertyType == 'HOUSE'}">
@@ -144,6 +148,9 @@
                             <spring:message code="user.interested" var="interested"/>
                             <spring:message code="user.not_interested" var="not_interested"/>
                                 <c:choose>
+                                    <c:when test="${property.availability == 'RENTED' && currentUser.id != property.owner.id}">
+                                        <spring:message code="property.inactiveExplanation"/>
+                                    </c:when>
                                     <c:when test="${currentUser.role == 'ROLE_HOST' && currentUser.id == property.owner.id}">
                                         <div class="flex-container" style="display: flex;flex-direction: column;">
                                             <input type="button" value="<spring:message code="user.interested_users"/>" style="cursor:pointer;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
