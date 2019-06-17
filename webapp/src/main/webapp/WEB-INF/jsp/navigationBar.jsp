@@ -2,11 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%--<head>--%>
-<%--<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">--%>
-<%--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>--%>
-<%--<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>--%>
-<%--</head>--%>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a style="margin-left: 2rem;padding-top: 0.0px;padding-bottom: 0.0px;margin-left: 0px" class="navbar-brand" href="<c:url value="/"/>"><img src="<c:url value="/resources/images/logo.png"/>" class="navbar-logo"/></a>
@@ -102,7 +97,7 @@
         <ul class="navbar-nav" style="float: right">
             <c:if test="${pageContext.request.userPrincipal.name == null}">
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/signUp' ? 'active':''}" style="padding-right:0px;" href="<c:url value="/user/signUp"/>"><spring:message code="label.signup" /></a></li>
-                <li><span class="nav-link mr-1" style="padding-left:0px;padding-right:0px;"><spring:message code="label.nav.or" /></span></li>
+                <li><span class="nav-link mr-1" style="cursor: default;padding-left:0px;padding-right:0px;"><spring:message code="label.nav.or" /></span></li>
                 <li><a class="nav-link mr-1 bold ${requestScope['javax.servlet.forward.request_uri'] == '/user/logIn' ? 'active':''}" style="padding-left:0px;" href="<c:url value="/user/logIn"/>"><spring:message code="label.login" /></a></li>
             </c:if>
             <c:if test="${pageContext.request.userPrincipal.name != null}">

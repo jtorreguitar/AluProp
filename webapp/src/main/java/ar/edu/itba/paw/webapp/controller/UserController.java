@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.model.Notification;
+import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
@@ -16,6 +17,7 @@ import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,6 +43,8 @@ import java.util.List;
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
+
+    private static final int STANDARD_PAGE_SIZE = 6;
 
     @Autowired
     private UserService userService;
@@ -167,7 +171,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public ModelAndView profile(@ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
+    public ModelAndView profile(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
         final User profileUser = userService.getWithRelatedEntities(userId);
         if (profileUser == null) {
@@ -176,11 +180,38 @@ public class UserController {
         }
         mav.setViewName("profile");
         Collection<Proposal> proposals = proposalService.getAllProposalForUserId(profileUser.getId());
+
+        String interestPage = request.getParameter("interestPage");
+        String hostProposalPage = request.getParameter("hostProposalPage");
+        String proposalPage = request.getParameter("proposalPage");
+        String propertyPage = request.getParameter("propertyPage");
+
+        PagedListHolder<Property> interestList = new PagedListHolder<>((List<Property>)profileUser.getInterestedProperties());
+        PagedListHolder<Proposal> hostProposalList = new PagedListHolder<>((List<Proposal>)proposalService.getProposalsForOwnedProperties(profileUser));
+        PagedListHolder<Proposal> proposalList = new PagedListHolder<>((List<Proposal>)proposalService.getAllProposalForUserId(profileUser.getId()));
+        PagedListHolder<Property> hostPropertyList = new PagedListHolder<>((List<Property>)profileUser.getOwnedProperties());
+
+        interestList.setPageSize(STANDARD_PAGE_SIZE);
+        hostProposalList.setPageSize(STANDARD_PAGE_SIZE);
+        proposalList.setPageSize(STANDARD_PAGE_SIZE);
+        hostPropertyList.setPageSize(STANDARD_PAGE_SIZE);
+
+        interestList.setPage(interestPage != null ? Integer.parseInt(interestPage) : 0);
+        hostProposalList.setPage(hostProposalPage != null ? Integer.parseInt(hostProposalPage) : 0);
+        proposalList.setPage(proposalPage != null ? Integer.parseInt(proposalPage) : 0);
+        hostPropertyList.setPage(propertyPage != null ? Integer.parseInt(propertyPage) : 0);
+
+        request.getSession().setAttribute("interests", interestList);
+        request.getSession().setAttribute("hostProposals", hostProposalList);
+        request.getSession().setAttribute("proposals", proposalList);
+        request.getSession().setAttribute("properties", hostPropertyList);
+
         mav.addObject("profileUser", profileUser);
-        mav.addObject("interests", profileUser.getInterestedProperties());
-        mav.addObject("proposals", proposals);
-        mav.addObject("properties", profileUser.getOwnedProperties());
-        mav.addObject("hostProposals", proposalService.getProposalsForOwnedProperties(profileUser));
+        //mav.addObject("interests", profileUser.getInterestedProperties());
+        //mav.addObject("proposals", proposals);
+
+        //mav.addObject("properties", profileUser.getOwnedProperties());
+        //mav.addObject("hostProposals", proposalService.getProposalsForOwnedProperties(profileUser));
         if (proposals != null && proposals.size() != 0)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
         return mav;

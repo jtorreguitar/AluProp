@@ -51,8 +51,8 @@
                             </div>
                             <div class="list-group">
                                 <c:choose>
-                                    <c:when test="${not empty interests}">
-                                        <c:forEach var="interest" items="${interests}">
+                                    <c:when test="${not empty interests.pageList}">
+                                        <c:forEach var="interest" items="${interests.pageList}">
                                             <a href="<c:url value="/${interest.id}"/>" class="list-group-item list-group-item-action">${interest.description}</a>
                                         </c:forEach>
                                     </c:when>
@@ -62,6 +62,54 @@
                                             <a href="<c:url value="/"/>"><spring:message code="label.profile.findAProperty"/></a>
                                         </div>
                                     </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="card-footer" style="display:flex;justify-content: center" style="display: flex;justify-content: center">
+                                <c:choose>
+                                    <c:when test="${not empty interests.pageList}">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination" style="margin-bottom: 0">
+                                                <c:choose>
+                                                    <c:when test="${interests.firstPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link" aria-disabled="true"> < </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?interestPage=${interests.page-1}&${requestScope['javax.servlet.forward.query_string']}"><</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <c:forEach begin="1" end="${interests.pageCount}" step="1"  varStatus="i">
+                                                    <c:choose>
+                                                        <c:when test="${(interests.page + 1) == i.index}">
+                                                            <li class="page-item disabled">
+                                                                <a class="page-link" aria-disabled="true">${i.index}</a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="?interestPage=${i.index - 1}&${requestScope['javax.servlet.forward.query_string']}">${i.index}</a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                                <c:choose>
+                                                    <c:when test="${interests.lastPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link"  aria-disabled="true"> > </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?interestPage=${interests.page+1}&${requestScope['javax.servlet.forward.query_string']}"> > </a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </ul>
+                                        </nav>
+                                    </c:when>
                                 </c:choose>
                             </div>
                         </div>
@@ -74,18 +122,66 @@
                             </div>
                             <div class="list-group">
                                 <c:choose>
-                                    <c:when test="${not empty proposals}">
-                                            <c:forEach var="proposal" items="${proposals}" varStatus="i">
-                                                <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
-                                                    <div style="display: flex;justify-content: space-between">${proposalPropertyNames[i.index]}
-                                                        <c:if test="${proposal.creator.id == currentUser.id}"><span><img class="my-span" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
-                                                    </div>
-                                                </a>
-                                            </c:forEach>
+                                    <c:when test="${not empty proposals.pageList}">
+                                        <c:forEach var="proposal" items="${proposals.pageList}" varStatus="i">
+                                            <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
+                                                <div style="display: flex;justify-content: space-between">${proposal.property.description}
+                                                    <c:if test="${proposal.creator.id == currentUser.id}"><span><img class="my-span" src="<c:url value="/resources/images/star.png"/>"/></span></c:if>
+                                                </div>
+                                            </a>
+                                        </c:forEach>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="card-body"><spring:message code="label.profile.no_proposals" /></div>
                                     </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="card-footer" style="display:flex;justify-content: center">
+                                <c:choose>
+                                    <c:when test="${not empty proposals.pageList}">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination" style="margin-bottom: 0">
+                                                <c:choose>
+                                                    <c:when test="${proposals.firstPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link" aria-disabled="true"> < </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?proposalPage=${proposals.page-1}&${requestScope['javax.servlet.forward.query_string']}"><</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <c:forEach begin="1" end="${proposals.pageCount}" step="1"  varStatus="i">
+                                                    <c:choose>
+                                                        <c:when test="${(proposals.page + 1) == i.index}">
+                                                            <li class="page-item disabled">
+                                                                <a class="page-link" aria-disabled="true">${i.index}</a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="?proposalPage=${i.index - 1}&${requestScope['javax.servlet.forward.query_string']}">${i.index}</a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                                <c:choose>
+                                                    <c:when test="${proposals.lastPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link"  aria-disabled="true">Next</a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?proposalPage=${proposals.page+1}&${requestScope['javax.servlet.forward.query_string']}"> > </a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </ul>
+                                        </nav>
+                                    </c:when>
                                 </c:choose>
                             </div>
                         </div>
@@ -100,8 +196,8 @@
                             </div>
                             <div class="list-group">
                                 <c:choose>
-                                    <c:when test="${not empty properties}">
-                                            <c:forEach var="property" items="${properties}">
+                                    <c:when test="${not empty properties.pageList}">
+                                            <c:forEach var="property" items="${properties.pageList}">
                                                 <a href="<c:url value="/${property.id}"/>" class="list-group-item list-group-item-action" style="display: flex;justify-content: space-between">${property.description}
                                                     <c:choose>
                                                         <c:when test="${property.availability == 'AVAILABLE'}">
@@ -119,6 +215,54 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
+                            <div class="card-footer" style="display:flex;justify-content: center">
+                                <c:choose>
+                                    <c:when test="${not empty properties.pageList}">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination" style="margin-bottom: 0" style="margin-bottom:0;">
+                                                <c:choose>
+                                                    <c:when test="${properties.firstPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link" aria-disabled="true"> < </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?propertyPage=${properties.page-1}&${requestScope['javax.servlet.forward.query_string']}"><</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <c:forEach begin="1" end="${properties.pageCount}" step="1"  varStatus="i">
+                                                    <c:choose>
+                                                        <c:when test="${(properties.page + 1) == i.index}">
+                                                            <li class="page-item disabled">
+                                                                <a class="page-link" aria-disabled="true">${i.index}</a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="?propertyPage=${i.index - 1}&${requestScope['javax.servlet.forward.query_string']}">${i.index}</a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                                <c:choose>
+                                                    <c:when test="${properties.lastPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link"  aria-disabled="true"> > </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?propertyPage=${properties.page+1}&${requestScope['javax.servlet.forward.query_string']}"> > </a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </ul>
+                                        </nav>
+                                    </c:when>
+                                </c:choose>
+                            </div>
                         </div>
 
                     </div>
@@ -130,8 +274,8 @@
                             </div>
                             <div class="list-group">
                                 <c:choose>
-                                    <c:when test="${not empty hostProposals}">
-                                        <c:forEach var="proposal" items="${hostProposals}" varStatus="i">
+                                    <c:when test="${not empty hostProposals.pageList}">
+                                        <c:forEach var="proposal" items="${hostProposals.pageList}" varStatus="i">
                                             <a href="<c:url value="/proposal/${proposal.id}"/>" class="list-group-item list-group-item-action">
                                                 <div style="display: flex;justify-content: space-between">${proposal.property.description} - <spring:message code="proposal_profile_created_by"/> ${proposal.creator.name}
                                                     <c:if test="${proposal.users.size() > 0}"><spring:message code="proposal_profile_including"/>
@@ -162,6 +306,54 @@
                                     <c:otherwise>
                                         <div class="card-body"><spring:message code="label.profile.no_proposals_host" /></div>
                                     </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="card-footer" style="display:flex;justify-content: center">
+                                <c:choose>
+                                    <c:when test="${not empty hostProposals.pageList}">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination" style="margin-bottom: 0">
+                                                <c:choose>
+                                                    <c:when test="${hostProposals.firstPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link" aria-disabled="true"> < </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?hostProposalPage=${hostProposals.page-1}&${requestScope['javax.servlet.forward.query_string']}"><</a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <c:forEach begin="1" end="${hostProposals.pageCount}" step="1"  varStatus="i">
+                                                    <c:choose>
+                                                        <c:when test="${(hostProposals.page + 1) == i.index}">
+                                                            <li class="page-item disabled">
+                                                                <a class="page-link" aria-disabled="true">${i.index}</a>
+                                                            </li>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="?hostProposalPage=${i.index - 1}&${requestScope['javax.servlet.forward.query_string']}">${i.index}</a>
+                                                            </li>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                                <c:choose>
+                                                    <c:when test="${hostProposals.lastPage}">
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link"  aria-disabled="true"> > </a>
+                                                        </li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?hostProposalPage=${hostProposals.page+1}&${requestScope['javax.servlet.forward.query_string']}"> > </a>
+                                                        </li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </ul>
+                                        </nav>
+                                    </c:when>
                                 </c:choose>
                             </div>
                         </div>

@@ -199,13 +199,13 @@
                                                 <c:when test="${property.availability == 'AVAILABLE'}">
                                                     <c:url value="/host/changeStatus/" var="postPath"/>
                                                     <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                        <button type="submit" class="btn btn-secondary" style="width: -moz-available;margin-bottom: 12px;"><spring:message code="label.properties.pause"/></button>
+                                                        <button type="submit" class="btn btn-secondary" style="width: 100%;margin-bottom: 12px;"><spring:message code="label.properties.pause"/></button>
                                                     </form>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:url value="/host/changeStatus/" var="postPath"/>
                                                     <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                        <button type="submit" class="btn btn-success" style="width: -moz-available;margin-bottom: 12px;"><spring:message code="label.properties.activate"/></button>
+                                                        <button type="submit" class="btn btn-success" style="width: 100%;margin-bottom: 12px;"><spring:message code="label.properties.activate"/></button>
                                                     </form>
                                                 </c:otherwise>
                                             </c:choose>

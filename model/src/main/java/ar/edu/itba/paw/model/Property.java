@@ -49,7 +49,7 @@ public class Property {
                 inverseJoinColumns = @JoinColumn(name = "ruleId"))
     private Collection<Rule> rules;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "interests",
                 joinColumns = @JoinColumn(name = "propertyId"),
                 inverseJoinColumns = @JoinColumn(name = "userId"))
