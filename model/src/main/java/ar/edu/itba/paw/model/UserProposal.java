@@ -46,6 +46,13 @@ public class UserProposal {
         return prop;
     }
 
+    public static UserProposal fromHost(User user){
+        UserProposal prop = new UserProposal();
+        prop.user = user;
+        prop.state = UserProposalState.ACCEPTED;
+        return prop;
+    }
+
     public long getId() {
         return id;
     }

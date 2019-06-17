@@ -10,7 +10,6 @@ import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.enums.Availability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 
 @Service
 public class APProposalService implements ProposalService {
@@ -59,14 +59,14 @@ public class APProposalService implements ProposalService {
     @Override
     public Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds) {
         errors = new LinkedList<>();
-        checkRelatedEntitiesExist(proposal);
+        checkRelatedEntitiesExist(proposal, userIds);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
 
         Proposal result = proposalDao.create(proposal, userIds);
 
         User u = userService.getCurrentlyLoggedUser();
-        if (result.getUsers().size() > 0)
+        if (result.getUsersWithoutCreator(u.getId()).size() > 0)
             notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + result.getId(), result.getUsers(), u.getId());
         else
             notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + result.getId(), result.getProperty().getOwner());
@@ -85,11 +85,16 @@ public class APProposalService implements ProposalService {
         return HttpURLConnection.HTTP_OK;
     }
 
-    private void checkRelatedEntitiesExist(Proposal proposal) {
+    private void checkRelatedEntitiesExist(Proposal proposal, long[] userIds) {
         checkPropertyExists(proposal.getProperty().getId());
         checkCreatorExists(proposal.getCreator().getId());
     }
 
+
+    @Override
+    public long findDuplicateProposal(Proposal proposal, long[] userIds){
+        return proposalDao.findDuplicateProposal(proposal, userIds);
+    }
     private void checkPropertyExists(long propertyId) {
         if(propertyDao.get(propertyId) == null)
             errors.add(PROPERTY_NOT_EXISTS);
@@ -122,24 +127,24 @@ public class APProposalService implements ProposalService {
         if (!userIsInvitedToProposal(u, proposal))
             return HttpURLConnection.HTTP_FORBIDDEN;
         proposalDao.setAcceptInvite(u.getId(), proposalId);
-        sendProposalSentNotifications(u, proposalDao.get(proposalId));
+            sendProposalSentNotifications(u, proposalDao.get(proposalId));
         return HttpURLConnection.HTTP_OK;
     }
 
     private void sendProposalSentNotifications(User u, Proposal proposal) {
-        if (proposal.isCompletelyAccepted()){
+        if (proposal.isCompletelyAccepted(proposal.getCreator().getId())){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
-            proposal.getUsers().add(creator);
             notificationService.sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
 
             Property property = propertyDao.getPropertyWithRelatedEntities(proposal.getProperty().getId());
+
+            propertyDao.changeStatus(property.getId());
             notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), property.getOwner());
         }
     }
 
     private void sendProposalAcceptedNotifications(User u, Proposal proposal) {
         User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
-        proposal.getUsers().add(creator);
         notificationService.sendNotifications(ACCEPTED_SUBJECT_CODE, ACCEPTED_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
     }
 
@@ -154,12 +159,12 @@ public class APProposalService implements ProposalService {
     public int setDeclineInvite(long proposalId) {
         Proposal proposal = proposalDao.getWithRelatedEntities(proposalId);
         User currentUser = userService.getCurrentlyLoggedUser();
+
         if(proposal == null)
             return HttpURLConnection.HTTP_NOT_FOUND;
         if (!userIsInvitedToProposal(currentUser, proposal))
             return HttpURLConnection.HTTP_FORBIDDEN;
         User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
-        proposal.getUsers().add(creator);
         delete(proposalId);
         notificationService.sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), currentUser.getId());
         proposalDao.setDeclineInvite(currentUser.getId(), proposalId);

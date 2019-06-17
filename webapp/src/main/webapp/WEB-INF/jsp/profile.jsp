@@ -92,7 +92,7 @@
                     </div>
                 </c:if>
 
-                <c:if test="${profileUser.role == 'ROLE_HOST'}">
+                <c:if test="${profileUser.email == currentUser.email && profileUser.role == 'ROLE_HOST'}">
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
@@ -120,6 +120,7 @@
                                 </c:choose>
                             </div>
                         </div>
+
                     </div>
 
                     <div class="col-md-6">

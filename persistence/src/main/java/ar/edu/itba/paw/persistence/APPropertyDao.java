@@ -118,12 +118,7 @@ public class APPropertyDao implements PropertyDao {
             conditionBuilder.equalityCondition("p.neighbourhood.id", ":neighbourhood");
         if(searchablePrivacyLevel(property))
             conditionBuilder.equalityCondition("p.privacyLevel", ":privacyLevel");
-        if(searchableMinPrice(property))
-            conditionBuilder.greaterThanCondition("p.price", ":minPrice");
-        if(searchableMaxPrice(property))
-            conditionBuilder.lessThanCondition("p.price", ":maxPrice");
-        if(searchableCapacity(property))
-            conditionBuilder.equalityCondition("p.capacity", ":capacity");
+        getBudgetConditions(property);
         if(property.getServiceIds() != null && property.getServiceIds().length > 0)
             for(int i = 0; i < property.getServiceIds().length; i++)
                 conditionBuilder.simpleInCondition(":service" + i, "p.services");
@@ -131,6 +126,47 @@ public class APPropertyDao implements PropertyDao {
             for(int i = 0; i < property.getRuleIds().length; i++)
                 conditionBuilder.simpleInCondition(":rule" + i, "p.rules");
         conditionBuilder.equalityCondition("p.availability", ":availability");
+    }
+
+    private void getBudgetConditions(SearchableProperty property) {
+        if(searchableCapacity(property)) {
+            if(searchableMinPrice(property)) {
+                if(searchableMaxPrice(property)) {
+                    conditionBuilder.lessOrEqualThanCondition("p.capacity", ":capacity");
+                    conditionBuilder.lessOrEqualThanCondition("p.price/p.capacity",":maxPrice");
+                    conditionBuilder.greaterOrEqualThanCondition("p.price/p.capacity",":minPrice");
+                }
+                else {
+                    conditionBuilder.lessOrEqualThanCondition("p.capacity", ":capacity");
+                    conditionBuilder.greaterOrEqualThanCondition("p.price/p.capacity",":minPrice");
+                }
+            }
+            else {
+                if(searchableMaxPrice(property)) {
+                    conditionBuilder.lessOrEqualThanCondition("p.capacity", ":capacity");
+                    conditionBuilder.lessOrEqualThanCondition("p.price/p.capacity",":maxPrice");
+                }
+                else {
+                    conditionBuilder.lessOrEqualThanCondition("p.capacity", ":capacity");
+                }
+            }
+        }
+        else {
+            if(searchableMinPrice(property)) {
+                if(searchableMaxPrice(property)) {
+                    conditionBuilder.lessOrEqualThanCondition("p.price/p.capacity",":maxPrice");
+                    conditionBuilder.greaterOrEqualThanCondition("p.price/p.capacity",":minPrice");
+                }
+                else {
+                    conditionBuilder.greaterOrEqualThanCondition("p.price/p.capacity",":minPrice");
+                }
+            }
+            else {
+                if(searchableMaxPrice(property)) {
+                    conditionBuilder.lessOrEqualThanCondition("p.price/p.capacity",":maxPrice");
+                }
+            }
+        }
     }
 
     private PropertyType propertyTypeFromSearchablePropertyType(SearchablePropertyType propertyType) {
