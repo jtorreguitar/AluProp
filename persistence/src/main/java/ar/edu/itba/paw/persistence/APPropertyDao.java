@@ -58,7 +58,7 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> getAll(PageRequest pageRequest) {
-        TypedQuery<Property> query = entityManager.createQuery("FROM Property", Property.class);
+        TypedQuery<Property> query = entityManager.createQuery("FROM Property p ORDER BY p.id DESC", Property.class);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
