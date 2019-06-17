@@ -11,6 +11,7 @@ import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Availability;
+import ar.edu.itba.paw.model.enums.PropertyOrder;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
@@ -53,9 +54,10 @@ public class PropertyController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
-                              @RequestParam(required = false, defaultValue = "12") int pageSize) {
+                              @RequestParam(required = false, defaultValue = "12") int pageSize,
+                              @RequestParam(required = false, defaultValue = "NEWEST") String propertyOrder) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
-        PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
+        PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize), PropertyOrder.valueOf(propertyOrder));
         navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }
@@ -118,21 +120,23 @@ public class PropertyController {
                                @RequestParam(required = false, defaultValue = "12") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors,
-                               Locale loc) {
+                               Locale loc,
+                               @RequestParam(required = false, defaultValue = "NEWEST") String propertyOrderString) {
+        final PropertyOrder propertyOrder = PropertyOrder.valueOf(propertyOrderString);
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
         }
         if (errors.hasErrors())
-            return index(pageNumber,searchForm, pageSize);
+            return index(pageNumber,searchForm, pageSize, propertyOrderString);
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         mav.addObject("isSearch", true);
-        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm));
+        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm, propertyOrder));
         navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }
 
-    private SearchableProperty propertyForSearch(FilteredSearchForm searchForm) {
+    private SearchableProperty propertyForSearch(FilteredSearchForm searchForm, PropertyOrder propertyOrder) {
         return new SearchableProperty.Builder()
             .withCapacity(searchForm.getCapacity())
             .withDescription(searchForm.getDescription())
@@ -143,6 +147,7 @@ public class PropertyController {
             .withPropertyType(searchForm.getPropertyTypeAsEnum())
             .withRuleIds(searchForm.getRuleIds())
             .withServiceIds(searchForm.getServiceIds())
+            .withPropertyOrder(propertyOrder)
             .build();
     }
 

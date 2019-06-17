@@ -15,6 +15,7 @@ import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
 import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
+import ar.edu.itba.paw.model.enums.PropertyOrder;
 import ar.edu.itba.paw.model.enums.PropertyType;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 
@@ -30,9 +31,10 @@ public class APPropertyDao implements PropertyDao {
 
     private final static Logger logger = LoggerFactory.logger(PropertyDao.class);
 
-    private final String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
-    private final String GET_PROPERTY_BY_DESCRIPTION_QUERY = "FROM Property p WHERE p.description LIKE CONCAT('%',?1,'%')";
-    private final String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
+    private final static String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
+    private final static String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
+    private final static String GET_ALL_ACTIVE_QUERY = "FROM Property p WHERE p.availability = 'AVAILABLE'";
+    private final static String GET_ALL_ACTIVE_ORDERED_QUERY = GET_ALL_ACTIVE_QUERY + " ORDER BY";
 
     @Autowired
     WhereConditionBuilder conditionBuilder;
@@ -46,17 +48,35 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description) {
-        if(description.equals(""))
-            return getAllActive(pageRequest);
-        TypedQuery<Property> query = entityManager.createQuery(GET_PROPERTY_BY_DESCRIPTION_QUERY, Property.class);
+    public Collection<Property> getAllActive(PageRequest pageRequest) {
+        TypedQuery<Property> query = entityManager.createQuery(GET_ALL_ACTIVE_QUERY, Property.class);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
-    public Collection<Property> getAllActive(PageRequest pageRequest) {
-        TypedQuery<Property> query = entityManager.createQuery("FROM Property p WHERE p.availability = 'AVAILABLE'", Property.class);
-        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+    public Collection<Property> getAllActiveOrdered(PageRequest pageRequest, PropertyOrder propertyOrder) {
+        TypedQuery<Property> query = entityManager.createQuery(parseOrder(propertyOrder), Property.class);
+        return  query.getResultList();
+    }
+
+    private String parseOrder(PropertyOrder propertyOrder) {
+        switch (propertyOrder) {
+            case PRICE:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price";
+            case PRICE_DESC:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price DESC";
+            case CAPACITY:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.capacity";
+            case CAPACITY_DESC:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.capacity DESC";
+            case BUDGET:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price/p.capacity";
+            case BUDGET_DESC:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price/p.capacity DESC";
+            case NEWEST:
+            default:
+                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.id DESC";
+        }
     }
 
     @Override
@@ -245,13 +265,6 @@ public class APPropertyDao implements PropertyDao {
         User user = entityManager.find(User.class, id);
         user.getInterestedProperties().isEmpty();
         return user.getInterestedProperties();
-    }
-
-    @Override
-    public Collection<Property> getByOwnerId(long id) {
-        User user = entityManager.find(User.class, id);
-        user.getOwnedProperties().isEmpty();
-        return user.getOwnedProperties();
     }
 
     @Override

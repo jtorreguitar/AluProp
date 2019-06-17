@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
 import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
+import ar.edu.itba.paw.model.enums.PropertyOrder;
 
 public class SearchableProperty {
 
@@ -16,6 +17,7 @@ public class SearchableProperty {
     private float maxPrice;
     private long[] ruleIds;
     private long[] serviceIds;
+    private PropertyOrder propertyOrder;
 
     private SearchableProperty() { }
 
@@ -53,6 +55,10 @@ public class SearchableProperty {
 
     public long[] getServiceIds() {
         return serviceIds;
+    }
+
+    public PropertyOrder getPropertyOrder() {
+        return propertyOrder;
     }
 
     public static class Builder {
@@ -121,6 +127,11 @@ public class SearchableProperty {
 
         public Builder withServiceIds(long[] serviceIds) {
             searchableProperty.serviceIds = serviceIds;
+            return this;
+        }
+
+        public Builder withPropertyOrder(PropertyOrder propertyOrder) {
+            searchableProperty.propertyOrder = propertyOrder;
             return this;
         }
     }

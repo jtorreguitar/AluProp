@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
+import ar.edu.itba.paw.model.enums.PropertyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.HttpURLConnection;
@@ -16,9 +17,6 @@ import java.util.List;
 @org.springframework.stereotype.Service
 public class APPropertyService implements PropertyService {
 
-    /* package */ final static String PROPERTY_NOT_FOUND = "desired property not found";
-    /* package */ final static String USER_NOT_FOUND = "user not found";
-    /* package */ final static String DATABASE_ERROR = "Database error";
     /* package */ final static String IMAGE_NOT_EXISTS = "One of the images specified does not exist";
     /* package */ final static String SERVICE_NOT_EXISTS = "One of the services specified does not exist";
     /* package */ final static String RULE_NOT_EXISTS ="One of the rules specified does not exist";
@@ -48,22 +46,12 @@ public class APPropertyService implements PropertyService {
     }
 
     @Override
-    public PageResponse<Property> getAll(PageRequest pageRequest) {
+    public PageResponse<Property> getAll(PageRequest pageRequest, PropertyOrder propertyOrder) {
         if(pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() < 1)
             pageRequest = new PageRequest(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
         return new PageResponse<>(pageRequest,
                                 propertyDao.countAvailable(),
-                                propertyDao.getAllActive(pageRequest));
-    }
-
-    @Override
-    public PageResponse<Property> getByDescription(PageRequest pageRequest, String description){
-        if(pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() < 1)
-            pageRequest = new PageRequest(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
-
-        return new PageResponse<>(pageRequest,
-                                  propertyDao.countAvailable(),
-                                  propertyDao.getPropertyByDescription(pageRequest, description));
+                                propertyDao.getAllActiveOrdered(pageRequest, propertyOrder));
     }
 
     @Override
@@ -159,11 +147,6 @@ public class APPropertyService implements PropertyService {
     @Override
     public Collection<Property> getInterestsOfUser(long id) {
         return propertyDao.getInterestsOfUser(id);
-    }
-
-    @Override
-    public Collection<Property> getByOwnerId(long id) {
-        return propertyDao.getByOwnerId(id);
     }
 
     @Override
