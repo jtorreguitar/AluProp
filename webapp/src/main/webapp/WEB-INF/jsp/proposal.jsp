@@ -42,14 +42,14 @@
     </div>
     <ul class="list-group list-group-flush">
         <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
-            <div style="display: flex;justify-content: space-between">${creator.name}
+            <div style="display: flex;justify-content: space-between;align-items: center">${creator.name}
                 <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
             </div>
         </a>
         <c:if test="${not empty proposalUsers}">
             <c:forEach var="user" items="${proposalUsers}" varStatus="i">
                 <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
-                    <div style="display: flex;justify-content: space-between">${user.name}
+                    <div style="display: flex;justify-content: space-between;align-items: center">${user.name}
                         <span>
                             <c:choose>
                                 <c:when test="${userStates[i.index] == 0 }">
@@ -119,19 +119,19 @@
                     <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
-                    <div style="margin-bottom:6px"><spring:message code="label.proposal.your_prpoperty"/></div>
-                    <div class="col-4" style="display:flex;justify-content:center;">
-                        <c:url value="/host/accept/${proposal.id}" var="postPath"/>
-                        <form action="${postPath}" method="post" style="margin-block-end:0;">
-                            <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
-                        </form>
-                    </div>
-                    <div class="col-4" style="display:flex;justify-content:center;">
-                        <c:url value="/host/decline/${proposal.id}" var="postPath"/>
-                        <form action="${postPath}" method="post" style="margin-block-end:0;">
-                            <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
-                        </form>
-                    </div>
+                   <div style="display: flex;flex-direction: column">
+                       <div style="margin-bottom:20px"><spring:message code="label.proposal.your_prpoperty"/></div>
+                       <div style="display: flex;flex-direction: row;justify-content: space-around">
+                               <c:url value="/host/decline/${proposal.id}" var="postPath"/>
+                               <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                   <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
+                               </form>
+                               <c:url value="/host/accept/${proposal.id}" var="postPath"/>
+                               <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                   <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
+                               </form>
+                       </div>
+                   </div>
                 </c:otherwise>
             </c:choose>
 

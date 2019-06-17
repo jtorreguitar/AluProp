@@ -149,6 +149,9 @@
                                                             <c:when test="${proposal.state == 'DECLINED' }">
                                                                 <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
                                                             </c:when>
+                                                            <c:when test="${proposal.state == 'DROPPED' }">
+                                                                <img src="<c:url value="/resources/images/disabled.png"/>" class="my-span" alt="${language_en}">
+                                                            </c:when>
                                                         </c:choose>
                                                     </span>
                                                 </div>
