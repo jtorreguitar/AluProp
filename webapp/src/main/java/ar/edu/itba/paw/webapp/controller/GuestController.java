@@ -38,7 +38,7 @@ public class GuestController {
             mav.setViewName("404");
             return mav;
         }
-        mav.setViewName("redirect:/"); // TODO : redirect to confirmation screen, maybe with call to action.
+        mav.setViewName("redirect:/proposal/" + proposalId);
         return mav;
     }
 

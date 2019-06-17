@@ -47,7 +47,7 @@
                     <c:forEach var="image" items="${property.images}" varStatus="i">
                         <div class="carousel-item ${i.index == 0?"active":""}">
                             <c:url value="/images/" var="imageUrl"/>
-                            <img src="${imageUrl}/${image.id}" class="d-block w-100 carousel-image">
+                            <img src="${imageUrl}/${image.id}" class="d-block w-100 carousel-image ${property.availability == 'RENTED'?'grayscale':''}">
                         </div>
                     </c:forEach>
                 </div>
@@ -74,7 +74,11 @@
                             <div>
                                 <spring:message code="forms.privacy.shared" var="privacy_shared"/>
                                 <spring:message code="forms.privacy.individual" var="privacy_individual"/>
-                                <H2>${property.description}</H2>
+                                <H2>${property.description}
+                                    <c:if test="${property.availability == 'RENTED'}">
+                                        [<spring:message code="property.inactive"/>]
+                                    </c:if>
+                                </H2>
                                 <H6>
                                     <c:choose>
                                         <c:when test="${property.propertyType == 'HOUSE'}">
@@ -144,9 +148,12 @@
                             <spring:message code="user.interested" var="interested"/>
                             <spring:message code="user.not_interested" var="not_interested"/>
                                 <c:choose>
+                                    <c:when test="${property.availability == 'RENTED' && currentUser.id != property.owner.id}">
+                                        <spring:message code="property.inactiveExplanation"/>
+                                    </c:when>
                                     <c:when test="${currentUser.role == 'ROLE_HOST' && currentUser.id == property.owner.id}">
                                         <div class="flex-container" style="display: flex;flex-direction: column;">
-                                            <input value="<spring:message code="user.interested_users"/>" style="cursor:pointer;width: -moz-available;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                            <input type="button" value="<spring:message code="user.interested_users"/>" style="cursor:pointer;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
@@ -219,7 +226,7 @@
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
                                                             <c:if test="${currentUser.role != 'ROLE_HOST'}">
-                                                                <input value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                                                <input type="button" value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                                         <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
@@ -310,28 +317,36 @@
         </div>
     </div>
     <script>
-        //var n = $(":checkbox:checked");//$("input:checkbox:checked").length;
         $(document).on("click", ".confirm-proposal", function () {
             var count = 4;
             $(".modal-body #lel").val( count );
         });
         var totalPrice =<c:out value="${property.price}"/>;
-        var checkedBoxes = 0;
+        var maxUsers = <c:out value="${property.capacity - 1}"/>;
+        var checkedBoxes = $("input:checked").length;
+        $('#selected-users').html(checkedBoxes);
+        $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
+        if (checkedBoxes === 0){
+            $('#selected-no-guests').show();
+            $('#selected-guests').css('display', 'none');
+        } else {
+            $('#selected-no-guests').css('display', 'none');
+            $('#selected-guests').show();
+        }
         $('.proposal-checkbox').change(function() {
-            if ($(this).is(':checked')){
-                checkedBoxes = checkedBoxes + 1;
-            } else{
-                checkedBoxes = checkedBoxes - 1;
-            }
-            $('#selected-users').html(checkedBoxes);
-            $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
+            checkedBoxes = $("input:checked").length;
             if (checkedBoxes === 0){
                 $('#selected-no-guests').show();
                 $('#selected-guests').css('display', 'none');
+            } else if (checkedBoxes > maxUsers) {
+                $(this).prop('checked', false)
+                checkedBoxes -= 1;
             } else {
                 $('#selected-no-guests').css('display', 'none');
                 $('#selected-guests').show();
             }
+            $('#selected-users').html(checkedBoxes);
+            $('#price-per-person').html((totalPrice/(1+checkedBoxes)).toFixed(2));
 
         });
     </script>

@@ -10,6 +10,7 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
@@ -33,9 +34,6 @@ public class PropertyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
     private static final Integer MAX_SIZE = 12;
-
-    private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
-    private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
 
     @Autowired
     private PropertyService propertyService;
@@ -180,6 +178,10 @@ public class PropertyController {
         Property prop = propertyService.get(propertyId);
         if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
+        if (prop.getAvailability() == Availability.RENTED){
+            mav.setViewName("redirect:/" + propertyId);
+            return mav;
+        }
 
         long userId = userService.getCurrentlyLoggedUser().getId();
 
@@ -193,7 +195,6 @@ public class PropertyController {
         Proposal proposal = builder.build();
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
         if(proposalOrErrors.hasValue()){
-            notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + proposalOrErrors.value().getId(), proposalOrErrors.value().getUsers(), userId);
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;
         } else {
