@@ -106,9 +106,13 @@
                                 <spring:message code="proposal.proposal_accepted_host"/>
                             </c:when>
                             <c:otherwise>
-                                <spring:message code="proposal.proposal_accepted_guest"/>
-                                <%--//TODO:enter --%>
-                                <spring:message code="proposal.proposal_accepted_host_info"/>${proposal.property.owner.name} | ${proposal.property.owner.email} | ${proposal.property.owner.contactNumber}
+                                <div>
+                                    <spring:message code="proposal.proposal_accepted_guest"/>
+                                </div>
+                                <br/>
+                                <div>
+                                    <spring:message code="proposal.proposal_accepted_host_info"/>${proposal.property.owner.name} | ${proposal.property.owner.email} | ${proposal.property.owner.contactNumber}
+                                </div>
                             </c:otherwise>
                         </c:choose>
                     </div>
