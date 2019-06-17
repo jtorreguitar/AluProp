@@ -32,7 +32,7 @@
                 <h5 class="text-muted"><img src="<c:url value="/resources/images/studies.svg"/>" class="studies" alt="English">${profileUser.university.name}</h5>
             </div>
         </c:if>
-        <h6 class="text-muted"><img src="<c:url value="/resources/images/birthday-date.svg"/>" class="birthday-date" alt="English">${profileUser.birthDate.day} / ${profileUser.birthDate.month} / ${profileUser.birthDate.year}</h6>
+        <h6 class="text-muted"><img src="<c:url value="/resources/images/birthday-date.svg"/>" class="birthday-date" alt="English"> ${profileUser.birthDate.year} - ${profileUser.birthDate.month+1} - ${profileUser.birthDate.date}</h6>
         <div>
         <br>
         </div>
@@ -148,6 +148,9 @@
                                                             </c:when>
                                                             <c:when test="${proposal.state == 'DECLINED' }">
                                                                 <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
+                                                            </c:when>
+                                                            <c:when test="${proposal.state == 'DROPPED' }">
+                                                                <img src="<c:url value="/resources/images/disabled.png"/>" class="my-span" alt="${language_en}">
                                                             </c:when>
                                                         </c:choose>
                                                     </span>

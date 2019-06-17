@@ -27,6 +27,7 @@ public class APProposalDao implements ProposalDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Override
     @Transactional
     public Proposal create(Proposal proposal, long[] ids){
         Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));
@@ -110,14 +111,13 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     @Transactional
-    public long setDeclineInvite(long userId, long proposalId) {
+    public void setDeclineInvite(long userId, long proposalId) {
         UserProposal userProposal = getUserProposalByUserAndProposalIds(userId, proposalId);
         Proposal proposal = entityManager.find(Proposal.class, proposalId);
         if(userProposal == null || proposal == null)
-            return 0;
+            return;
         userProposal.setState(UserProposalState.REJECTED);
         proposal.setState(ProposalState.CANCELED);
-        return 1;
     }
 
     @Override

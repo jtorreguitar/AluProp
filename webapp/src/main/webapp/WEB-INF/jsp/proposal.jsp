@@ -41,46 +41,50 @@
         <spring:message code="user.interested_users"/>
     </div>
     <ul class="list-group list-group-flush">
-        <c:choose>
-            <c:when test="${not empty proposalUsers}">
-                <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
-                    <div style="display: flex;justify-content: space-between">${creator.name}
-                        <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
+        <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
+            <div style="display: flex;justify-content: space-between;align-items: center">${creator.name}
+                <c:if test="${proposal.state == 'ACCEPTED'}"> | ${creator.email} | ${creator.contactNumber}</c:if>
+                <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
+            </div>
+        </a>
+        <c:if test="${not empty proposalUsers}">
+            <c:forEach var="user" items="${proposalUsers}" varStatus="i">
+                <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
+                    <div style="display: flex;justify-content: space-between;align-items: center">${user.name}
+                        <c:if test="${proposal.state == 'ACCEPTED'}"> | ${user.email} | ${user.contactNumber}</c:if>
+                        <span>
+                            <c:choose>
+                                <c:when test="${userStates[i.index] == 0 }">
+                                    <img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">
+                                </c:when>
+                                <c:when test="${userStates[i.index] == 1}">
+                                    <img src="<c:url value="/resources/images/check.png"/>" class="my-span" alt="${language_en}">
+                                </c:when>
+                                <c:otherwise>
+                                    <p> ${userStates[i.index]}</p>
+                                    <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
                     </div>
                 </a>
-                <c:forEach var="user" items="${proposalUsers}" varStatus="i">
-                    <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
-                        <div style="display: flex;justify-content: space-between">${user.name}
-                            <span>
-                                <c:choose>
-                                    <c:when test="${userStates[i.index] == 0 }">
-                                        <img src="<c:url value="/resources/images/clock.png"/>" class="my-span" alt="${language_en}">
-                                    </c:when>
-                                    <c:when test="${userStates[i.index] == 1}">
-                                        <img src="<c:url value="/resources/images/check.png"/>" class="my-span" alt="${language_en}">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p> ${userStates[i.index]}</p>
-                                        <img src="<c:url value="/resources/images/cross.png"/>" class="my-span" alt="${language_en}">
-                                    </c:otherwise>
-                                </c:choose>
-                            </span>
-                        </div>
-                    </a>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <li class="list-group-item"><spring:message code="proposal.no_users_in_proposal"/></li>
-            </c:otherwise>
-        </c:choose>
+            </c:forEach>
+        </c:if>
     </ul>
     <div class="card-body" id="answer">
         <div class="row" style="display:flex;justify-content:center;">
             <c:choose>
                 <c:when test="${proposal.state == 'DROPPED'}">
                     <div class="card-body">
-                        <spring:message code="proposal.proposal_dropped"/>
-                        <a href="<c:url value="/"/>"><spring:message code="proposal.findAnotherProperty"/></a>
+                        <c:choose>
+                            <c:when test="${currentUser.role == 'ROLE_HOST'}">
+                                <spring:message code="proposal.proposal_declined_host"/>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:message code="proposal.proposal_dropped"/>
+                                <a href="<c:url value="/"/>"><spring:message code="proposal.findAnotherProperty"/></a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </c:when>
                 <c:when test="${proposal.state == 'CANCELED'}">
@@ -97,7 +101,14 @@
                 </c:when>
                 <c:when test="${proposal.state == 'ACCEPTED'}">
                     <div class="card-body">
-                        <spring:message code="proposal.proposal_accepted"/>
+                        <c:choose>
+                            <c:when test="${currentUser.role == 'ROLE_HOST'}">
+                                <spring:message code="proposal.proposal_accepted_host"/>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:message code="proposal.proposal_accepted_guest"/>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </c:when>
                 <c:when test="${creator.id == currentUser.id}">
@@ -114,7 +125,7 @@
                         </form>
                     </div>
                     <div class="col-6">
-                        <c:url value="/geust/decline/${proposal.id}" var="postPath"/>
+                        <c:url value="/guest/decline/${proposal.id}" var="postPath"/>
                         <form action="${postPath}" method="post">
                             <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
                         </form>
@@ -124,19 +135,19 @@
                     <spring:message code="label.proposal.already_replied"/>
                 </c:when>
                 <c:otherwise>
-                    <div style="margin-bottom:6px"><spring:message code="label.proposal.your_prpoperty"/></div>
-                    <div class="col-4" style="display:flex;justify-content:center;">
-                        <c:url value="/host/accept/${proposal.id}" var="postPath"/>
-                        <form action="${postPath}" method="post" style="margin-block-end:0;">
-                            <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
-                        </form>
-                    </div>
-                    <div class="col-4" style="display:flex;justify-content:center;">
-                        <c:url value="/host/decline/${proposal.id}" var="postPath"/>
-                        <form action="${postPath}" method="post" style="margin-block-end:0;">
-                            <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
-                        </form>
-                    </div>
+                   <div style="display: flex;flex-direction: column">
+                       <div style="margin-bottom:20px"><spring:message code="label.proposal.your_prpoperty"/></div>
+                       <div style="display: flex;flex-direction: row;justify-content: space-around">
+                               <c:url value="/host/decline/${proposal.id}" var="postPath"/>
+                               <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                   <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
+                               </form>
+                               <c:url value="/host/accept/${proposal.id}" var="postPath"/>
+                               <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                   <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
+                               </form>
+                       </div>
+                   </div>
                 </c:otherwise>
             </c:choose>
 
