@@ -115,7 +115,7 @@ public class PropertyController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
-                               @RequestParam(required = false, defaultValue = "9") int pageSize,
+                               @RequestParam(required = false, defaultValue = "12") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors,
                                Locale loc) {
