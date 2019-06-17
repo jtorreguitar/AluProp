@@ -146,7 +146,7 @@
                                 <c:choose>
                                     <c:when test="${currentUser.role == 'ROLE_HOST' && currentUser.id == property.owner.id}">
                                         <div class="flex-container" style="display: flex;flex-direction: column;">
-                                            <input value="<spring:message code="user.interested_users"/>" style="cursor:pointer;width: -moz-available;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                            <input value="<spring:message code="user.interested_users"/>" style="cursor:pointer;margin-bottom: 12px;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
@@ -191,20 +191,20 @@
                                             <c:choose>
                                                 <c:when test="${property.availability == 'AVAILABLE'}">
                                                     <c:url value="/host/changeStatus/" var="postPath"/>
-                                                    <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                        <button type="submit" class="btn btn-secondary" style="width: -moz-available;margin-bottom: 12px;"><spring:message code="label.properties.pause"/></button>
+                                                    <form class="my-form" action="${postPath}${property.id}" style="display: flex;justify-content: center" method="post">
+                                                        <button type="submit" class="btn btn-secondary" style="margin-bottom: 12px;width: 100%;"><spring:message code="label.properties.pause"/></button>
                                                     </form>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:url value="/host/changeStatus/" var="postPath"/>
-                                                    <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                        <button type="submit" class="btn btn-success" style="width: -moz-available;margin-bottom: 12px;"><spring:message code="label.properties.activate"/></button>
+                                                    <form class="my-form" action="${postPath}${property.id}" style="display: flex;justify-content: center" method="post">
+                                                        <button type="submit" class="btn btn-success" style="margin-bottom: 12px;width: 100%;"><spring:message code="label.properties.activate"/></button>
                                                     </form>
                                                 </c:otherwise>
                                             </c:choose>
                                             <c:url value="/host/delete/" var="postPath"/>
-                                            <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                <button type="submit" class="btn btn-danger" style="width: -moz-available;"><spring:message code="label.properties.delete"/></button>
+                                            <form class="my-form" action="${postPath}${property.id}" style="display: flex;justify-content: center" method="post">
+                                                <button type="submit" class="btn btn-danger" style="width: 100%;"><spring:message code="label.properties.delete"/></button>
                                             </form>
                                         </div>
                                     </c:when>
@@ -215,11 +215,11 @@
                                             <c:choose>
                                                 <c:when test="${userInterested == true || currentUser.role == 'ROLE_HOST'}">
                                                     <c:url value="/proposal/create/${property.id}" var="postPath"/>
-                                                    <form:form modelAttribute="proposalForm" action="${postPath}" style="width: -moz-available;" method="post">
+                                                    <form:form modelAttribute="proposalForm" action="${postPath}" style="" method="post">
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
                                                             <c:if test="${currentUser.role != 'ROLE_HOST'}">
-                                                                <input type="button" value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                                                <input type="button" value="${createProposal}" style="cursor:pointer;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                                         <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
