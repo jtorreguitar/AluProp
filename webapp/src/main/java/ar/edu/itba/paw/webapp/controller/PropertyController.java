@@ -33,7 +33,6 @@ import javax.validation.Valid;
 public class PropertyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
-    private static final Integer MAX_SIZE = 12;
 
     @Autowired
     private PropertyService propertyService;
@@ -41,8 +40,6 @@ public class PropertyController {
     private UserService userService;
     @Autowired
     private ProposalService proposalService;
-    @Autowired
-    private NotificationService notificationService;
 
     @Autowired
     private MessageSource messageSource;

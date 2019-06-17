@@ -9,7 +9,6 @@ import ar.edu.itba.paw.model.enums.Availability;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.HttpURLConnection;
-import java.text.CollationElementIterator;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class APPropertyService implements PropertyService {
         if(pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() < 1)
             pageRequest = new PageRequest(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
         return new PageResponse<>(pageRequest,
-                                propertyDao.count(),
+                                propertyDao.countAvailable(),
                                 propertyDao.getAllActive(pageRequest));
     }
 
@@ -63,7 +62,7 @@ public class APPropertyService implements PropertyService {
             pageRequest = new PageRequest(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
 
         return new PageResponse<>(pageRequest,
-                                  propertyDao.count(),
+                                  propertyDao.countAvailable(),
                                   propertyDao.getPropertyByDescription(pageRequest, description));
     }
 

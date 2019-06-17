@@ -21,7 +21,7 @@ public interface PropertyDao {
     Collection<Property> getInterestsOfUser(long id);
     Collection<Property> getByOwnerId(long id);
     Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);
-    Long count();
+    Long countAvailable();
     Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property);
     long totalItemsOfSearch(SearchableProperty property);
     void changeStatus(long propertyId);

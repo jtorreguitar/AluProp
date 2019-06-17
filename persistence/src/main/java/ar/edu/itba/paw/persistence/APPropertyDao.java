@@ -72,6 +72,18 @@ public class APPropertyDao implements PropertyDao {
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
+    @Override
+    public long totalItemsOfSearch(SearchableProperty property) {
+        StringBuilder searchString = new StringBuilder("SELECT COUNT(p.id) FROM Property p WHERE ");
+        buildCondition(property);
+        searchString.append(conditionBuilder.buildAsStringBuilder());
+        if(searchString.toString().equals("SELECT COUNT(p.id) FROM Property p WHERE "))
+            return countAvailable();
+        TypedQuery<Long> query = entityManager.createQuery(searchString.toString(), Long.class);
+        addSearchParameters(property, query);
+        return query.getSingleResult();
+    }
+
     private <T> void addSearchParameters(SearchableProperty property, TypedQuery<T> query) {
         if(searchableDescription(property)) {
             String description = "%" + property.getDescription().toLowerCase() + "%";
@@ -94,18 +106,6 @@ public class APPropertyDao implements PropertyDao {
         for(int i = 0; i < property.getServiceIds().length; i++)
             query.setParameter("service" + i, entityManager.find(Service.class, property.getServiceIds()[i]));
         query.setParameter("availability", Availability.AVAILABLE);
-    }
-
-    @Override
-    public long totalItemsOfSearch(SearchableProperty property) {
-        StringBuilder searchString = new StringBuilder("SELECT COUNT(p.id) FROM Property p WHERE ");
-        buildCondition(property);
-        searchString.append(conditionBuilder.buildAsStringBuilder());
-        if(searchString.toString().equals("SELECT COUNT(p.id) FROM Property p WHERE "))
-            return count();
-        TypedQuery<Long> query = entityManager.createQuery(searchString.toString(), Long.class);
-        addSearchParameters(property, query);
-        return query.getSingleResult();
     }
 
     private void buildCondition(SearchableProperty property) {
@@ -261,8 +261,8 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public Long count() {
-        return entityManager.createQuery("SELECT COUNT(p.id) FROM Property p", Long.class).getSingleResult();
+    public Long countAvailable() {
+        return entityManager.createQuery("SELECT COUNT(p.id) FROM Property p WHERE p.availability = 'AVAILABLE'", Long.class).getSingleResult();
     }
 
 
