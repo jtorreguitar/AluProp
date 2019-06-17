@@ -107,6 +107,8 @@
                             </c:when>
                             <c:otherwise>
                                 <spring:message code="proposal.proposal_accepted_guest"/>
+                                <%--//TODO:enter --%>
+                                <spring:message code="proposal.proposal_accepted_host_info"/>${proposal.property.owner.name} | ${proposal.property.owner.email} | ${proposal.property.owner.contactNumber}
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -136,16 +138,32 @@
                 </c:when>
                 <c:otherwise>
                    <div style="display: flex;flex-direction: column">
-                       <div style="margin-bottom:20px"><spring:message code="label.proposal.your_prpoperty"/></div>
+                       <div style="margin-bottom:20px;align-self: center;"><spring:message code="label.proposal.your_prpoperty"/></div>
+                       <c:if test="${proposal.property.availability == 'RENTED'}"><div class="formError" style="margin-bottom:20px"><spring:message code="proposal.rented_host"/></div></c:if>
                        <div style="display: flex;flex-direction: row;justify-content: space-around">
-                               <c:url value="/host/decline/${proposal.id}" var="postPath"/>
-                               <form action="${postPath}" method="post" style="margin-block-end:0;">
-                                   <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
-                               </form>
-                               <c:url value="/host/accept/${proposal.id}" var="postPath"/>
-                               <form action="${postPath}" method="post" style="margin-block-end:0;">
-                                   <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
-                               </form>
+                           <c:choose>
+                               <c:when test="${proposal.property.availability == 'RENTED'}">
+                                   <c:url value="/host/decline/${proposal.id}" var="postPath"/>
+                                   <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                       <button type="submit" class="btn btn-danger" disabled><spring:message code="label.proposal.decline"/></button>
+                                   </form>
+                                   <c:url value="/host/accept/${proposal.id}" var="postPath"/>
+                                   <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                       <button type="submit" class="btn btn-success" disabled><spring:message code="label.proposal.accept"/></button>
+                                   </form>
+                               </c:when>
+                               <c:otherwise>
+                                   <c:url value="/host/decline/${proposal.id}" var="postPath"/>
+                                   <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                       <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
+                                   </form>
+                                   <c:url value="/host/accept/${proposal.id}" var="postPath"/>
+                                   <form action="${postPath}" method="post" style="margin-block-end:0;">
+                                       <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
+                                   </form>
+                               </c:otherwise>
+                           </c:choose>
+
                        </div>
                    </div>
                 </c:otherwise>
