@@ -52,11 +52,11 @@ public class PropertyController {
     private NavigationUtility navigationUtility;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
+    public ModelAndView index(HttpServletRequest request, @RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
-                              @RequestParam(required = false, defaultValue = "12") int pageSize,
-                              @RequestParam(required = false, defaultValue = "NEWEST") String propertyOrder) {
+                              @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
+        String propertyOrder = request.getParameter("orderBy")==null?"NEWEST":request.getParameter("orderBy");
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize), PropertyOrder.valueOf(propertyOrder));
         navigationUtility.addPaginationAttributes(mav, response);
         return mav;
@@ -116,22 +116,21 @@ public class PropertyController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ModelAndView search(@RequestParam(required = false, defaultValue = "0") int pageNumber,
+    public ModelAndView search(HttpServletRequest request,@RequestParam(required = false, defaultValue = "0") int pageNumber,
                                @RequestParam(required = false, defaultValue = "12") int pageSize,
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors,
-                               Locale loc,
-                               @RequestParam(required = false, defaultValue = "NEWEST") String propertyOrderString) {
-        final PropertyOrder propertyOrder = PropertyOrder.valueOf(propertyOrderString);
+                               Locale loc) {
+        String propertyOrder = request.getParameter("orderBy")==null?"NEWEST":request.getParameter("orderBy");
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
         }
         if (errors.hasErrors())
-            return index(pageNumber,searchForm, pageSize, propertyOrderString);
+            return index(request,pageNumber,searchForm, pageSize);
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         mav.addObject("isSearch", true);
-        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm, propertyOrder));
+        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm, PropertyOrder.valueOf(propertyOrder)));
         navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }
