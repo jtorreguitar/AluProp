@@ -189,6 +189,10 @@ public class PropertyController {
         Property prop = propertyService.get(propertyId);
         if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
+        if (prop.getAvailability() == Availability.RENTED){
+            mav.setViewName("redirect:/" + propertyId);
+            return mav;
+        }
 
         long userId = userService.getCurrentlyLoggedUser().getId();
 
