@@ -43,6 +43,7 @@
     <ul class="list-group list-group-flush">
         <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
             <div style="display: flex;justify-content: space-between;align-items: center">${creator.name}
+                <c:if test="${proposal.state == 'ACCEPTED'}"> | ${creator.email} | ${creator.contactNumber}</c:if>
                 <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
             </div>
         </a>
@@ -50,6 +51,7 @@
             <c:forEach var="user" items="${proposalUsers}" varStatus="i">
                 <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
                     <div style="display: flex;justify-content: space-between;align-items: center">${user.name}
+                        <c:if test="${proposal.state == 'ACCEPTED'}"> | ${user.email} | ${user.contactNumber}</c:if>
                         <span>
                             <c:choose>
                                 <c:when test="${userStates[i.index] == 0 }">
@@ -74,8 +76,15 @@
             <c:choose>
                 <c:when test="${proposal.state == 'DROPPED'}">
                     <div class="card-body">
-                        <spring:message code="proposal.proposal_dropped"/>
-                        <a href="<c:url value="/"/>"><spring:message code="proposal.findAnotherProperty"/></a>
+                        <c:choose>
+                            <c:when test="${currentUser.role == 'ROLE_HOST'}">
+                                <spring:message code="proposal.proposal_declined_host"/>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:message code="proposal.proposal_dropped"/>
+                                <a href="<c:url value="/"/>"><spring:message code="proposal.findAnotherProperty"/></a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </c:when>
                 <c:when test="${proposal.state == 'CANCELED'}">
@@ -92,7 +101,14 @@
                 </c:when>
                 <c:when test="${proposal.state == 'ACCEPTED'}">
                     <div class="card-body">
-                        <spring:message code="proposal.proposal_accepted"/>
+                        <c:choose>
+                            <c:when test="${currentUser.role == 'ROLE_HOST'}">
+                                <spring:message code="proposal.proposal_accepted_host"/>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:message code="proposal.proposal_accepted_guest"/>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </c:when>
                 <c:when test="${creator.id == currentUser.id}">
