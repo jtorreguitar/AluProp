@@ -76,7 +76,7 @@
                             </li>
                         </c:when>
                         <c:otherwise>
-                            <li class="page-item"><a class="page-link" href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current - 2}"/> </c:url>">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="?pageNumber=${current - 2}&${requestScope['javax.servlet.forward.query_string']}">Previous</a></li>
                         </c:otherwise>
                     </c:choose>
                     <c:set var="just_one"
@@ -100,7 +100,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <li class="page-item">
-                                    <a class="page-link" href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${pageIt-1}"/> </c:url>">
+                                    <a class="page-link" href="?pageNumber=${pageIt-1}&${requestScope['javax.servlet.forward.query_string']}">
                                             ${pageIt}
                                     </a>
                                     </li>
@@ -115,7 +115,7 @@
                         </c:when>
                         <c:otherwise>
                             <li class="page-item">
-                                <a class="page-link" href="<c:url value="${changePageUrl}"> <c:param name="pageNumber" value="${current}"/> </c:url>">
+                                <a class="page-link" href="?pageNumber=${current}&${requestScope['javax.servlet.forward.query_string']}">
                                     Next
                                 </a>
                             </li>
