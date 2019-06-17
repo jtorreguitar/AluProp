@@ -10,6 +10,8 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,10 +19,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +30,8 @@ import java.util.stream.Collectors;
 @Repository
 @Transactional
 public class APUserDao implements UserDao {
+
+    private static final Logger logger = LoggerFactory.logger(APUserDao.class);
 
     private static final String INTEREST_COUNT_BY_USER_AND_PROPERTY = "SELECT COUNT(i.id) FROM Interest i WHERE i.user.id = :userId AND i.property.id = :propertyId";
 
@@ -51,15 +52,12 @@ public class APUserDao implements UserDao {
 
     @Override
     public User getByEmail(String email) {
-        /*
-        TypedQuery<User> query = entityManager.createQuery("FROM User u WHERE u.email = :email", User.class);
-        query.setParameter("email", email);
-        return query.getSingleResult();*/
         try {
             return entityManager.createQuery("FROM User u WHERE u.email = :email", User.class)
                     .setParameter("email", email)
                     .getSingleResult();
-        }catch(NoResultException e){
+        }
+        catch(NoResultException e){
             return null; //No user with this email exists
         }
     }
