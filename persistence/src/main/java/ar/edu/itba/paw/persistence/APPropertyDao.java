@@ -234,6 +234,7 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Property property = entityManager.find(Property.class, id);
         entityManager.remove(property);

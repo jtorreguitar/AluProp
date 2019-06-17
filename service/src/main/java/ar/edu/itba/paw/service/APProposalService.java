@@ -173,6 +173,7 @@ public class APProposalService implements ProposalService {
         Proposal proposal = proposalDao.get(proposalId);
         propertyDao.changeStatus(proposal.getProperty().getId());
         proposalDao.setAccept(proposalId);
+        sendProposalAcceptedNotifications(userService.getCurrentlyLoggedUser(), proposal);
         return HttpURLConnection.HTTP_OK;
     }
 

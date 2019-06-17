@@ -108,7 +108,8 @@ public class APPropertyService implements PropertyService {
 
     @Override
     public int delete(long id, User currentUser) {
-        if(currentUser.getId() != id)
+        Property property = propertyDao.get(id);
+        if(currentUser.getId() != property.getOwner().getId())
             return HttpURLConnection.HTTP_FORBIDDEN;
         propertyDao.delete(id);
         return HttpURLConnection.HTTP_OK;
