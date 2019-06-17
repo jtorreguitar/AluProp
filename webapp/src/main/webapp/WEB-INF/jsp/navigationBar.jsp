@@ -57,11 +57,11 @@
                                             <form:errors path="privacyLevel" cssClass="formError" element="p"/>
                                         </div>
                                         <div class="form-group">
-                                            <form:label path="capacity"><spring:message code="forms.capacity"/></form:label>
+                                            <form:label path="capacity"><spring:message code="forms.max_capacity"/></form:label>
                                             <form:input path="capacity" type="text" class="form-control" placeholder=""></form:input>
                                             <form:errors path="capacity" cssClass="formError" element="p"/>
                                         </div>
-                                        <spring:message code="forms.rent_per_month"/>
+                                        <spring:message code="forms.budget"/>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                     <%--<label>Min</label>--%>
