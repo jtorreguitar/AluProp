@@ -67,7 +67,7 @@ public class APProposalService implements ProposalService {
         Proposal result = proposalDao.create(proposal, userIds);
 
         User u = userService.getCurrentlyLoggedUser();
-        if (result.getUsers().size() > 0)
+        if (result.getUsersWithoutCreator(u.getId()).size() > 0)
             notificationService.sendNotifications(INVITATION_SUBJECT_CODE, INVITATION_BODY_CODE, "/proposal/" + result.getId(), result.getUsers(), u.getId());
         else
             notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + result.getId(), result.getProperty().getOwner());
@@ -128,7 +128,7 @@ public class APProposalService implements ProposalService {
         if (!userIsInvitedToProposal(u, proposal))
             return HttpURLConnection.HTTP_FORBIDDEN;
         proposalDao.setAcceptInvite(u.getId(), proposalId);
-        sendProposalSentNotifications(u, proposalDao.get(proposalId));
+            sendProposalSentNotifications(u, proposalDao.get(proposalId));
         return HttpURLConnection.HTTP_OK;
     }
 
