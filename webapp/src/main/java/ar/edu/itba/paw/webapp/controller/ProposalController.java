@@ -1,13 +1,13 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.interfaces.service.PropertyService;
-import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.Proposal;
+import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UserProposal;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,12 +58,14 @@ public class ProposalController {
             mav.addObject("isInvited", true);
             mav.addObject("hasReplied", userHasRepliedToProposal(u, proposal));
         }
+
+
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);
-        mav.addObject("proposalUsers", proposal.getUsers());
+        mav.addObject("proposalUsers", proposal.getUsersWithoutCreator(creator.getId()));
         mav.addObject("creator", creator);
         mav.addObject("currentUser", u);
-        mav.addObject("userStates", proposal.getUserStates());
+        mav.addObject("userStates", proposal.getUserStates(creator.getId()));
         addSearchObjectsToMav(mav);
         mav.setViewName("proposal");
         return mav;
