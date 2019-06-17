@@ -100,7 +100,7 @@
                     </div>
                 </c:when>
                 <c:when test="${proposal.state == 'ACCEPTED'}">
-                    <div class="card-body">
+                    <div class="card-body" style="display: flex;flex-direction: column;align-items: center">
                         <c:choose>
                             <c:when test="${currentUser.role == 'ROLE_HOST'}">
                                 <spring:message code="proposal.proposal_accepted_host"/>
