@@ -24,7 +24,7 @@ public class APProposalService implements ProposalService {
 
     static final String PROPERTY_NOT_EXISTS = "The property for this proposal does not exist.";
     static final String CREATOR_NOT_EXISTS = "The creator of this proposal does not exist.";
-    static final String DUPLICATE_PROPOSAL = "Proposal duplicada amego";
+    static final String DUPLICATE_PROPOSAL = "You are trying to create a duplicated proposal";
 
     private final static String DELETE_SUBJECT_CODE= "notifications.proposals.deleted.subject";
     private final static String DELETE_BODY_CODE = "notifications.proposals.deleted";
@@ -89,14 +89,12 @@ public class APProposalService implements ProposalService {
     private void checkRelatedEntitiesExist(Proposal proposal, long[] userIds) {
         checkPropertyExists(proposal.getProperty().getId());
         checkCreatorExists(proposal.getCreator().getId());
-        checkProposalIsUnique(proposal, userIds);
     }
 
 
-    private void checkProposalIsUnique(Proposal proposal, long[] userIds){
-        if(!proposalDao.isProposalUnique(proposal, userIds)){
-            errors.add(DUPLICATE_PROPOSAL);
-        }
+    @Override
+    public long findDuplicateProposal(Proposal proposal, long[] userIds){
+        return proposalDao.findDuplicateProposal(proposal, userIds);
     }
     private void checkPropertyExists(long propertyId) {
         if(propertyDao.get(propertyId) == null)
@@ -135,9 +133,8 @@ public class APProposalService implements ProposalService {
     }
 
     private void sendProposalSentNotifications(User u, Proposal proposal) {
-        if (proposal.isCompletelyAccepted()){
+        if (proposal.isCompletelyAccepted(proposal.getCreator().getId())){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
-            proposal.getUsers().add(creator);
             notificationService.sendNotifications(SENT_SUBJECT_CODE, SENT_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
 
             Property property = propertyDao.getPropertyWithRelatedEntities(proposal.getProperty().getId());
@@ -147,7 +144,6 @@ public class APProposalService implements ProposalService {
 
     private void sendProposalAcceptedNotifications(User u, Proposal proposal) {
         User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
-        proposal.getUsers().add(creator);
         notificationService.sendNotifications(ACCEPTED_SUBJECT_CODE, ACCEPTED_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
     }
 
@@ -162,12 +158,12 @@ public class APProposalService implements ProposalService {
     public int setDeclineInvite(long proposalId) {
         Proposal proposal = proposalDao.getWithRelatedEntities(proposalId);
         User currentUser = userService.getCurrentlyLoggedUser();
+
         if(proposal == null)
             return HttpURLConnection.HTTP_NOT_FOUND;
         if (!userIsInvitedToProposal(currentUser, proposal))
             return HttpURLConnection.HTTP_FORBIDDEN;
         User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
-        proposal.getUsers().add(creator);
         delete(proposalId);
         notificationService.sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), currentUser.getId());
         proposalDao.setDeclineInvite(currentUser.getId(), proposalId);

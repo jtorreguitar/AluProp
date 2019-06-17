@@ -17,6 +17,6 @@ public interface ProposalDao {
     void setAccept(long proposalId);
     void setDecline(long proposalId);
 
-    boolean isProposalUnique(Proposal p, long[] userIds);
+    long findDuplicateProposal(Proposal p, long[] userIds);
     Collection<Proposal> getProposalsForOwnedProperties(long id);
 }

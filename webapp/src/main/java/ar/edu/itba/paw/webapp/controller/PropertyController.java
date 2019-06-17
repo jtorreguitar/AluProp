@@ -209,6 +209,12 @@ public class PropertyController {
             builder.withState(ProposalState.PENDING);
 
         Proposal proposal = builder.build();
+
+        long duplicateId= proposalService.findDuplicateProposal(proposal, form.getInvitedUsersIds());
+        if(duplicateId != -1){
+            mav.setViewName("redirect:/proposal/" + duplicateId);
+        }
+
         Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
 
         if(proposalOrErrors.hasValue()){

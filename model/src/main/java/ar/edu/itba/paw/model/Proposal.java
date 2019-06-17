@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.enums.UserProposalState;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -45,8 +46,20 @@ public class Proposal {
         return userProposals.stream().map(up -> up.getUser()).collect(Collectors.toList());
     }
 
-    public List<Integer> getUserStates() {
-        return userProposals.stream().map(up -> up.getState().getValue()).collect(Collectors.toList());
+    public Collection<User> getUsersWithoutCreator(long creatorId){
+        return userProposals.stream().map(up -> {
+            if(up.getUser().getId() != creatorId)
+                return up.getUser();
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public List<Integer> getUserStates(long ownerId) {
+        return userProposals.stream().map(up -> {
+            if(up.getUser().getId() != ownerId)
+                return up.getState().getValue();
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public Property getProperty() {
@@ -60,12 +73,13 @@ public class Proposal {
         return creator;
     }
 
-    public boolean isCompletelyAccepted() {
+    public boolean isCompletelyAccepted(long ownerId) {
         for(UserProposal up : getUserProposals())
-            if(up.getState() != UserProposalState.ACCEPTED)
+            if(up.getId() != ownerId && up.getState() != UserProposalState.ACCEPTED)
                 return false;
         return true;
     }
+
 
     public static class Builder {
         private Proposal proposal;

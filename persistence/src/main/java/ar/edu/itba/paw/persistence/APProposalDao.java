@@ -24,6 +24,7 @@ public class APProposalDao implements ProposalDao {
                                                                                         "LEFT OUTER JOIN u.ownedProperties op " +
                                                                                         "WHERE u.id = :id)";
 
+    private static final String PROPOSAL_BY_USER_AND_PROPERTY = "FROM Proposal p WHERE p.creator.id = :userId AND p.property.id = :propertyId";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -32,7 +33,7 @@ public class APProposalDao implements ProposalDao {
     public Proposal create(Proposal proposal, long[] ids){
         Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));
         long creatorID = proposal.getCreator().getId();
-        proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, creatorID)));
+        proposal.getUserProposals().add(UserProposal.fromHost(entityManager.find(User.class, creatorID)));
         entityManager.persist(proposal);
         return proposal;
     }
@@ -57,7 +58,7 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     @Transactional
-    public boolean isProposalUnique(Proposal proposal, long[] userIds){
+    public long findDuplicateProposal(Proposal proposal, long[] userIds){
         Set<Long> invitedUserIds = new HashSet<>();
 
         for(Long uid : userIds){
@@ -65,24 +66,36 @@ public class APProposalDao implements ProposalDao {
         }
 
         boolean foundIdentical;
-        //TODO Get only the proposal for specific property
-        for(Proposal p : getAllProposalForUserId(proposal.getCreator().getId())){
+        for(Proposal p : getAllProposalForUserIdAndPropertyId(proposal.getCreator().getId(), proposal.getProperty().getId())){
             foundIdentical=true;
-            if(invitedUserIds.size() == p.getUserProposals().size() &&  p.getProperty().getId() == proposal.getProperty().getId()) {
-                for (UserProposal up : p.getUserProposals()) {
-                    if (!invitedUserIds.contains(up.getUser().getId())) {
-                        foundIdentical = false;
-                        break;
+            if(!(p.getState().equals(ProposalState.DECLINED) || p.getState().equals(ProposalState.CANCELED) || p.getState().equals(ProposalState.DROPPED))){
+                if(invitedUserIds.size() == p.getUserProposals().size() - 1) {
+                    for (UserProposal up : p.getUserProposals()) {
+                        if (!invitedUserIds.contains(up.getUser().getId()) && up.getUser().getId() != proposal.getCreator().getId()) {
+                            foundIdentical = false;
+                            break;
+                        }
+                    }
+                    if (foundIdentical) { //Found duplicate proposal
+                        return p.getId();
                     }
                 }
-                if (foundIdentical) { //Found duplicate proposal
-                    return true;
-                }
             }
+
         }
 
-        return false;
+        return -1;
     }
+
+    //@Override
+    private Collection<Proposal> getAllProposalForUserIdAndPropertyId(long userId, long propertyId){
+        return entityManager.createQuery(PROPOSAL_BY_USER_AND_PROPERTY, Proposal.class)
+                .setParameter("userId", userId)
+                .setParameter("propertyId", propertyId)
+                .getResultList();
+    }
+
+
     @Override
     @Transactional
     public Collection<Proposal> getAllProposalForUserId(long id){
