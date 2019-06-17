@@ -35,7 +35,7 @@ public class NavigationUtility {
     @Autowired
     private ServiceService serviceService;
 
-    public void addPaginationAttributes(ModelAndView mav, PageResponse<Property> response, int maxItems) {
+    public void addPaginationAttributes(ModelAndView mav, PageResponse<Property> response) {
         mav.addObject("properties", response.getResponseData());
         mav.addObject("currentPage", response.getPageNumber());
         mav.addObject("totalPages", response.getTotalPages());

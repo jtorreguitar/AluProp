@@ -66,13 +66,13 @@ public class APPropertyDao implements PropertyDao {
         searchString.append(conditionBuilder.buildAsStringBuilder());
         if(searchString.toString().equals("FROM Property p WHERE "))
             return getAllActive(pageRequest);
-
+        searchString.append("ORDER BY p.id DESC");
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
-    private void addSearchParameters(SearchableProperty property, TypedQuery<Property> query) {
+    private <T> void addSearchParameters(SearchableProperty property, TypedQuery<T> query) {
         if(searchableDescription(property)) {
             String description = "%" + property.getDescription().toLowerCase() + "%";
             query.setParameter("description", description);
@@ -93,6 +93,19 @@ public class APPropertyDao implements PropertyDao {
             query.setParameter("rule" + i, entityManager.find(Rule.class, property.getRuleIds()[i]));
         for(int i = 0; i < property.getServiceIds().length; i++)
             query.setParameter("service" + i, entityManager.find(Service.class, property.getServiceIds()[i]));
+        query.setParameter("availability", Availability.AVAILABLE);
+    }
+
+    @Override
+    public long totalItemsOfSearch(SearchableProperty property) {
+        StringBuilder searchString = new StringBuilder("SELECT COUNT(p.id) FROM Property p WHERE ");
+        buildCondition(property);
+        searchString.append(conditionBuilder.buildAsStringBuilder());
+        if(searchString.toString().equals("SELECT COUNT(p.id) FROM Property p WHERE "))
+            return count();
+        TypedQuery<Long> query = entityManager.createQuery(searchString.toString(), Long.class);
+        addSearchParameters(property, query);
+        return query.getSingleResult();
     }
 
     private void buildCondition(SearchableProperty property) {
@@ -117,6 +130,7 @@ public class APPropertyDao implements PropertyDao {
         if(property.getRuleIds() != null && property.getRuleIds().length > 0)
             for(int i = 0; i < property.getRuleIds().length; i++)
                 conditionBuilder.simpleInCondition(":rule" + i, "p.rules");
+        conditionBuilder.equalityCondition("p.availability", ":availability");
     }
 
     private PropertyType propertyTypeFromSearchablePropertyType(SearchablePropertyType propertyType) {

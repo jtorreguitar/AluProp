@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -46,23 +47,19 @@ public class HostController {
     @RequestMapping(value = "/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView hostDecline(@PathVariable(value = "proposalId") int proposalId,
                                     @Valid @ModelAttribute("proposalForm") ProposalForm form) {
-        if (!userOwnsProposalProperty(proposalId))
-            return navigationUtility.mavWithNavigationAttributes("404");
-
-        proposalService.setDecline(proposalId);
-
-        return new ModelAndView("redirect:/proposal/" + proposalId);
+        final ModelAndView mav = new ModelAndView("redirect:/proposal/" + proposalId);
+        int statusCode = proposalService.setDecline(proposalId);
+        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        return mav;
     }
 
     @RequestMapping(value = "/accept/{proposalId}", method = RequestMethod.POST )
     public ModelAndView hostAccept(@PathVariable(value = "proposalId") int proposalId,
                                    @Valid @ModelAttribute("proposalForm") ProposalForm form) {
-        if (!userOwnsProposalProperty(proposalId))
-            return navigationUtility.mavWithNavigationAttributes("404");
-
-        proposalService.setAccept(proposalId);
-
-        return new ModelAndView("redirect:/proposal/" + proposalId);
+        final ModelAndView mav = new ModelAndView("redirect:/proposal/" + proposalId);
+        final int statusCode = proposalService.setAccept(proposalId);
+        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        return mav;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
@@ -96,12 +93,6 @@ public class HostController {
         catch(IllegalPropertyStateException e) {
             return navigationUtility.mavWithNavigationAttributes("404");
         }
-    }
-
-    private boolean userOwnsProposalProperty(long proposalId){
-        User u = userService.getCurrentlyLoggedUser();
-        Proposal proposal = proposalService.getWithRelatedEntities(proposalId);
-        return (proposal != null && proposal.getProperty().getOwner().getId() == u.getId());
     }
 
     private long[] loadImagesToDatabase(MultipartFile[] files){

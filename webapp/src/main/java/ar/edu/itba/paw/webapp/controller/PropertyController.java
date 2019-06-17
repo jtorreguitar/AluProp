@@ -58,7 +58,7 @@ public class PropertyController {
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
-        navigationUtility.addPaginationAttributes(mav, response, MAX_SIZE);
+        navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }
 
@@ -130,7 +130,7 @@ public class PropertyController {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         mav.addObject("isSearch", true);
         PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm));
-        navigationUtility.addPaginationAttributes(mav, response, MAX_SIZE);
+        navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }
 

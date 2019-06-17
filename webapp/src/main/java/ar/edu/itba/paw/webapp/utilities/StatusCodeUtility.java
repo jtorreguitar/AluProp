@@ -16,11 +16,11 @@ public class StatusCodeUtility {
                 mavWithSuccessView.setViewName("redirect:/403");
                 break;
             case HttpURLConnection.HTTP_NOT_FOUND:
-                mavWithSuccessView.setViewName("404");
+                mavWithSuccessView.setViewName("redirect:/404");
                 break;
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
             default:
-                mavWithSuccessView.setViewName("500");
+                mavWithSuccessView.setViewName("redirect:/500");
         }
     }
 }

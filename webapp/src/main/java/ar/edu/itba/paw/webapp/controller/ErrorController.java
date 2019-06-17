@@ -30,28 +30,28 @@ public class ErrorController {
     public ModelAndView renderErrorPage(@ModelAttribute FilteredSearchForm searchForm,
                                         HttpServletRequest httpRequest){
 
-        ModelAndView errorPage = navigationUtility.mavWithNavigationAttributes();
+        ModelAndView errorPage = new ModelAndView();
         int httpErrorCode = getErrorCode(httpRequest);
 
         switch (httpErrorCode){
             case HttpURLConnection.HTTP_BAD_REQUEST:
             case HttpURLConnection.HTTP_NOT_FOUND:
-                errorPage.setViewName("404");
+                errorPage.setViewName("redirect:/404");
                 break;
             case HttpURLConnection.HTTP_FORBIDDEN:
-                errorPage.setViewName("403");
+                errorPage.setViewName("redirect:/403");
                 break;
             case HttpURLConnection.HTTP_BAD_METHOD:
-                errorPage.setViewName("500");
-                break;
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
-                errorPage.setViewName("500");
+                errorPage.setViewName("redirect:/500");
                 break;
             default:
-                errorPage.setViewName("errorPage");
+                errorPage = navigationUtility.mavWithNavigationAttributes("errorPage");
+                // TODO: hardcoded english message
                 errorPage.addObject("errorMsg", "Unhandled Error. Something went wrong!");
                 break;
         }
+
         return errorPage;
     }
 
@@ -66,5 +66,15 @@ public class ErrorController {
         if(u != null)
             logger.warn("User tried to access forbidden endpoint: " + u.toString());
         return navigationUtility.mavWithNavigationAttributes("403");
+    }
+
+    @RequestMapping(value = "404", method = RequestMethod.GET)
+    public ModelAndView notFound(@ModelAttribute FilteredSearchForm searchForm) {
+        return navigationUtility.mavWithNavigationAttributes("404");
+    }
+
+    @RequestMapping(value = "500", method = RequestMethod.GET)
+    public ModelAndView internalServerError(@ModelAttribute FilteredSearchForm searchForm) {
+        return navigationUtility.mavWithNavigationAttributes("500");
     }
 }

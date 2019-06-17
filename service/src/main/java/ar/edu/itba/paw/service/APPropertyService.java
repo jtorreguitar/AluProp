@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.service;
 
-import ar.edu.itba.paw.interfaces.Either;
-import ar.edu.itba.paw.interfaces.PageRequest;
-import ar.edu.itba.paw.interfaces.PageResponse;
-import ar.edu.itba.paw.interfaces.SearchableProperty;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.interfaces.service.UserService;
@@ -12,6 +9,7 @@ import ar.edu.itba.paw.model.enums.Availability;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.HttpURLConnection;
+import java.text.CollationElementIterator;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,9 +69,8 @@ public class APPropertyService implements PropertyService {
 
     @Override
     public PageResponse<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property){
-
         return new PageResponse<>(pageRequest,
-                                  propertyDao.count(),
+                                  propertyDao.totalItemsOfSearch(property),
                                   propertyDao.advancedSearch(pageRequest, property));
     }
 
