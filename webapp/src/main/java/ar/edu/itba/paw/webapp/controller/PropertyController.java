@@ -51,6 +51,7 @@ public class PropertyController {
     public ModelAndView index(@RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
+        logger.error("shit is whack yo");
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize));
         navigationUtility.addPaginationAttributes(mav, response);
@@ -87,8 +88,8 @@ public class PropertyController {
     @RequestMapping(value = "/{id}/guest/interest/", method = RequestMethod.POST)
     public ModelAndView interest(@PathVariable(value = "id") int propertyId,
                                  @ModelAttribute FilteredSearchForm searchForm) {
-        User user = userService.getCurrentlyLoggedUser();
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        final User user = userService.getCurrentlyLoggedUser();
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
         StatusCodeUtility.parseStatusCode(code, mav);
         return mav;
@@ -97,8 +98,8 @@ public class PropertyController {
     @RequestMapping(value = "/{id}/deInterest", method = RequestMethod.POST)
     public ModelAndView deInterest(@PathVariable(value = "id") int propertyId,
                                    @ModelAttribute FilteredSearchForm searchForm) {
-        User user = userService.getCurrentlyLoggedUser();
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        final User user = userService.getCurrentlyLoggedUser();
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         final int code = propertyService.undoInterestOrReturnErrors(propertyId, user);
         StatusCodeUtility.parseStatusCode(code, mav);
         return mav;
@@ -147,8 +148,8 @@ public class PropertyController {
     public ModelAndView delete(HttpServletRequest request,
                                @PathVariable(value = "propertyId") int propertyId,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("successfulPropertyDelete");
-        User u = userService.getCurrentlyLoggedUser();
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("successfulPropertyDelete");
+        final User u = userService.getCurrentlyLoggedUser();
         StatusCodeUtility.parseStatusCode(propertyService.delete(propertyId, u), mav);
         return mav;
     }
@@ -157,8 +158,8 @@ public class PropertyController {
     public ModelAndView changeStatus(HttpServletRequest request,
                                         @PathVariable(value = "propertyId") int propertyId,
                                         @ModelAttribute FilteredSearchForm searchForm) {
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
-        int statusCode = propertyService.changeStatus(propertyId);
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        final int statusCode = propertyService.changeStatus(propertyId);
         StatusCodeUtility.parseStatusCode(statusCode, mav);
         if(statusCode == HttpURLConnection.HTTP_OK)
             mav.addObject("interestedUsers", propertyService.get(propertyId).getInterestedUsers());
@@ -171,8 +172,8 @@ public class PropertyController {
                                @Valid @ModelAttribute("proposalForm") ProposalForm form,
                                final BindingResult errors,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
-        Property prop = propertyService.get(propertyId);
+        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
+        final Property prop = propertyService.get(propertyId);
         if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
         if (prop.getAvailability() == Availability.RENTED){
@@ -189,8 +190,8 @@ public class PropertyController {
             builder.withState(ProposalState.SENT);
         else
             builder.withState(ProposalState.PENDING);
-        Proposal proposal = builder.build();
-        Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
+        final Proposal proposal = builder.build();
+        final Either<Proposal, List<String>> proposalOrErrors = proposalService.createProposal(proposal, form.getInvitedUsersIds());
         if(proposalOrErrors.hasValue()){
             mav.setViewName("redirect:/proposal/" + proposalOrErrors.value().getId());
             return mav;

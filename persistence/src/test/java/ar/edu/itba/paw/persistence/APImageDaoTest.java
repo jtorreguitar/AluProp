@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.dao.ImageDao;
 import ar.edu.itba.paw.model.Image;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,19 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
-import org.springframework.util.StreamUtils;
 
 import javax.sql.DataSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 import java.util.Collection;
 
 @Sql("classpath:schema.sql")
@@ -33,7 +26,7 @@ public class APImageDaoTest {
 
 
     @Autowired
-    private APImageDao imageDao;
+    private ImageDao imageDao;
 
     private JdbcTemplate jdbcTemplate;
 
