@@ -10,6 +10,7 @@ import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.enums.Availability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -171,13 +172,28 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public void setAccept(long proposalId) {
+    public int setAccept(long proposalId) {
+        if (!userOwnsProposalProperty(proposalId))
+            return HttpURLConnection.HTTP_FORBIDDEN;
+        Proposal proposal = proposalDao.get(proposalId);
+        propertyDao.changeStatus(proposal.getProperty().getId());
         proposalDao.setAccept(proposalId);
+        sendProposalAcceptedNotifications(userService.getCurrentlyLoggedUser(), proposal);
+        return HttpURLConnection.HTTP_OK;
     }
 
     @Override
-    public void setDecline(long proposalId) {
+    public int setDecline(long proposalId) {
+        if (!userOwnsProposalProperty(proposalId))
+            return HttpURLConnection.HTTP_FORBIDDEN;
         proposalDao.setDecline(proposalId);
+        return HttpURLConnection.HTTP_OK;
+    }
+
+    private boolean userOwnsProposalProperty(long proposalId){
+        User u = userService.getCurrentlyLoggedUser();
+        Proposal proposal = getWithRelatedEntities(proposalId);
+        return (proposal != null && proposal.getProperty().getOwner().getId() == u.getId());
     }
 
     @Override

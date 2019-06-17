@@ -30,12 +30,9 @@ public class APPropertyDao implements PropertyDao {
 
     private final static Logger logger = LoggerFactory.logger(PropertyDao.class);
 
-    private static final String ALWAYS_TRUE_STRING = "1 = 1 ";
     private final String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
-    private final String GET_PROPERTIES_OF_USER_QUERY = "FROM properties p WHERE p.owner.id = :ownerId";
     private final String GET_PROPERTY_BY_DESCRIPTION_QUERY = "FROM Property p WHERE p.description LIKE CONCAT('%',?1,'%')";
     private final String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
-    private final String ALWAYS_TRUE_STRING_AND = "1 = 1 AND ";
 
     @Autowired
     WhereConditionBuilder conditionBuilder;
@@ -51,14 +48,14 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description) {
         if(description.equals(""))
-            return getAll(pageRequest);
+            return getAllActive(pageRequest);
         TypedQuery<Property> query = entityManager.createQuery(GET_PROPERTY_BY_DESCRIPTION_QUERY, Property.class);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
-    public Collection<Property> getAll(PageRequest pageRequest) {
-        TypedQuery<Property> query = entityManager.createQuery("FROM Property p ORDER BY p.id DESC", Property.class);
+    public Collection<Property> getAllActive(PageRequest pageRequest) {
+        TypedQuery<Property> query = entityManager.createQuery("FROM Property p WHERE p.availability = 'AVAILABLE'", Property.class);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
@@ -68,14 +65,26 @@ public class APPropertyDao implements PropertyDao {
         buildCondition(property);
         searchString.append(conditionBuilder.buildAsStringBuilder());
         if(searchString.toString().equals("FROM Property p WHERE "))
-            return getAll(pageRequest);
-
+            return getAllActive(pageRequest);
+        searchString.append("ORDER BY p.id DESC");
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
-    private void addSearchParameters(SearchableProperty property, TypedQuery<Property> query) {
+    @Override
+    public long totalItemsOfSearch(SearchableProperty property) {
+        StringBuilder searchString = new StringBuilder("SELECT COUNT(p.id) FROM Property p WHERE ");
+        buildCondition(property);
+        searchString.append(conditionBuilder.buildAsStringBuilder());
+        if(searchString.toString().equals("SELECT COUNT(p.id) FROM Property p WHERE "))
+            return countAvailable();
+        TypedQuery<Long> query = entityManager.createQuery(searchString.toString(), Long.class);
+        addSearchParameters(property, query);
+        return query.getSingleResult();
+    }
+
+    private <T> void addSearchParameters(SearchableProperty property, TypedQuery<T> query) {
         if(searchableDescription(property)) {
             String description = "%" + property.getDescription().toLowerCase() + "%";
             query.setParameter("description", description);
@@ -96,6 +105,7 @@ public class APPropertyDao implements PropertyDao {
             query.setParameter("rule" + i, entityManager.find(Rule.class, property.getRuleIds()[i]));
         for(int i = 0; i < property.getServiceIds().length; i++)
             query.setParameter("service" + i, entityManager.find(Service.class, property.getServiceIds()[i]));
+        query.setParameter("availability", Availability.AVAILABLE);
     }
 
     private void buildCondition(SearchableProperty property) {
@@ -120,6 +130,7 @@ public class APPropertyDao implements PropertyDao {
         if(property.getRuleIds() != null && property.getRuleIds().length > 0)
             for(int i = 0; i < property.getRuleIds().length; i++)
                 conditionBuilder.simpleInCondition(":rule" + i, "p.rules");
+        conditionBuilder.equalityCondition("p.availability", ":availability");
     }
 
     private PropertyType propertyTypeFromSearchablePropertyType(SearchablePropertyType propertyType) {
@@ -172,12 +183,12 @@ public class APPropertyDao implements PropertyDao {
     }
     
     @Override
-    public boolean showInterest(long propertyId, User user) {
+    public void showInterest(long propertyId, User user) {
         Interest interest = getInterestByPropAndUser(propertyId, user);
-        if(interest != null) return false;
+        if(interest != null) return;
         interest = new Interest(entityManager.find(Property.class, propertyId), user);
         entityManager.persist(interest);
-        return interest.getId() > 0;
+        return;
     }
 
     @Override
@@ -216,7 +227,6 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    @Transactional
     public Property create(Property property) {
         if(property != null)
             entityManager.persist(property);
@@ -224,6 +234,7 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Property property = entityManager.find(Property.class, id);
         entityManager.remove(property);
@@ -251,8 +262,8 @@ public class APPropertyDao implements PropertyDao {
     }
 
     @Override
-    public Long count() {
-        return entityManager.createQuery("SELECT COUNT(p.id) FROM Property p", Long.class).getSingleResult();
+    public Long countAvailable() {
+        return entityManager.createQuery("SELECT COUNT(p.id) FROM Property p WHERE p.availability = 'AVAILABLE'", Long.class).getSingleResult();
     }
 
 

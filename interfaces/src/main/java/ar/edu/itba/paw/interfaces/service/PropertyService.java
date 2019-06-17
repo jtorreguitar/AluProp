@@ -25,4 +25,6 @@ public interface PropertyService {
     Collection<Property> getInterestsOfUser(long id);
     Collection<Property> getByOwnerId(long id);
     int changeStatus(long propertyId);
+
+    int propertyCanBeShown(Property property);
 }

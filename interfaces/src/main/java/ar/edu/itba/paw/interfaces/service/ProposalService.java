@@ -15,8 +15,8 @@ public interface ProposalService {
     Collection<Proposal> getAllProposalForUserId(long id);
     int setAcceptInvite(long proposalId);
     int setDeclineInvite(long proposalId);
-    void setAccept(long proposalId);
-    void setDecline(long proposalId);
+    int setAccept(long proposalId);
+    int setDecline(long proposalId);
 
     Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
     long findDuplicateProposal(Proposal proposal, long[] userIds);

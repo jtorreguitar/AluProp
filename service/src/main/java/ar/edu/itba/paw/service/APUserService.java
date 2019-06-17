@@ -9,6 +9,8 @@ import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -95,7 +97,11 @@ public class APUserService implements UserService {
 
     @Override
     public User getCurrentlyLoggedUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication auth = context.getAuthentication();
+        if (auth == null)
+            return null;
+        Object principal = auth.getPrincipal();
         if(principal instanceof UserDetails)
             return userDao.getUserWithRelatedEntitiesByEmail(((UserDetails) principal).getUsername());
         else return userDao.getUserWithRelatedEntitiesByEmail(principal.toString());

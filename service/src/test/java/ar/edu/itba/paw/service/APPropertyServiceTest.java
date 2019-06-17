@@ -107,7 +107,7 @@ public class APPropertyServiceTest {
         Assert.assertEquals(property, maybeProperty);
     }
 
-    @Test
+    /*@Test
     public void showInterestOrReturnErrorsWithoutErrorsTest() {
         user = createDummyUser();
 
@@ -134,7 +134,7 @@ public class APPropertyServiceTest {
 
         int code = propertyService.showInterestOrReturnErrors(PROPERTY_ID, user);
         Assert.assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, code);
-    }
+    }*/
 
     @Test
     public void showInterestOrReturnErrorsWithInvalidPropertyDoesntTryToShowInterestTest(){

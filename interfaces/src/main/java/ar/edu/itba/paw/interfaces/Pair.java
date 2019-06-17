@@ -3,11 +3,11 @@ package ar.edu.itba.paw.interfaces;
 public class Pair<K,V>{
     private K key;
 
-    public K getKey() { return key; }
+    public K item1() { return key; }
 
     private V value;
 
-    public V getValue() { return value; }
+    public V item2() { return value; }
 
     public Pair(K key, V value) {
         this.key = key;
@@ -16,7 +16,7 @@ public class Pair<K,V>{
 
     @Override
     public String toString() {
-        return key + "=" + value;
+        return key + " = " + value;
     }
 
     @Override
