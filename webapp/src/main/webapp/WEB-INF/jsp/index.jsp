@@ -72,7 +72,7 @@
                     <c:choose>
                         <c:when test="${current == 1}">
                             <li class="page-item disabled">
-                                <a class="page-link" aria-disabled="true">Previous</a>
+                                <a class="page-link" aria-disabled="true"> < </a>
                             </li>
                         </c:when>
                         <c:otherwise>
@@ -110,7 +110,7 @@
                     <c:choose>
                         <c:when test="${current == total}">
                             <li class="page-item disabled">
-                            <a class="page-link"  aria-disabled="true">Next</a>
+                            <a class="page-link"  aria-disabled="true"> > </a>
                             </li>
                         </c:when>
                         <c:otherwise>
