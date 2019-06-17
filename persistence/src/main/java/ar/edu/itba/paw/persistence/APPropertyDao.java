@@ -30,12 +30,9 @@ public class APPropertyDao implements PropertyDao {
 
     private final static Logger logger = LoggerFactory.logger(PropertyDao.class);
 
-    private static final String ALWAYS_TRUE_STRING = "1 = 1 ";
     private final String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
-    private final String GET_PROPERTIES_OF_USER_QUERY = "FROM properties p WHERE p.owner.id = :ownerId";
     private final String GET_PROPERTY_BY_DESCRIPTION_QUERY = "FROM Property p WHERE p.description LIKE CONCAT('%',?1,'%')";
     private final String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
-    private final String ALWAYS_TRUE_STRING_AND = "1 = 1 AND ";
 
     @Autowired
     WhereConditionBuilder conditionBuilder;
@@ -51,14 +48,14 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Collection<Property> getPropertyByDescription(PageRequest pageRequest, String description) {
         if(description.equals(""))
-            return getAll(pageRequest);
+            return getAllActive(pageRequest);
         TypedQuery<Property> query = entityManager.createQuery(GET_PROPERTY_BY_DESCRIPTION_QUERY, Property.class);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
-    public Collection<Property> getAll(PageRequest pageRequest) {
-        TypedQuery<Property> query = entityManager.createQuery("FROM Property", Property.class);
+    public Collection<Property> getAllActive(PageRequest pageRequest) {
+        TypedQuery<Property> query = entityManager.createQuery("FROM Property p WHERE p.availability = 'AVAILABLE'", Property.class);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
@@ -68,7 +65,7 @@ public class APPropertyDao implements PropertyDao {
         buildCondition(property);
         searchString.append(conditionBuilder.buildAsStringBuilder());
         if(searchString.toString().equals("FROM Property p WHERE "))
-            return getAll(pageRequest);
+            return getAllActive(pageRequest);
 
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);

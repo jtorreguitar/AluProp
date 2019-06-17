@@ -11,8 +11,6 @@ import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.ProposalState;
-import ar.edu.itba.paw.model.enums.Role;
-import ar.edu.itba.paw.webapp.utilities.NotificationUtility;
 import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
 import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
@@ -69,21 +67,19 @@ public class PropertyController {
                             @ModelAttribute FilteredSearchForm searchForm,
                             @PathVariable("id") long id) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("detailedProperty");
-        addObjectsToMavForDetailedProperty(id, mav);
+        final Property property = propertyService.getPropertyWithRelatedEntities(id);
+        final int statusCode = propertyService.propertyCanBeShown(property);
+        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        addObjectsToMavForDetailedProperty(statusCode, mav, property);
+        mav.addObject("property", property);
         return mav;
     }
 
-    private void addObjectsToMavForDetailedProperty(long propertyId, ModelAndView mav) {
-        Property prop = propertyService.getPropertyWithRelatedEntities(propertyId);
-        if(prop == null) {
-            mav.setViewName("404");
-            return;
-        }
-        User user = userService.getCurrentlyLoggedUser();
-        mav.addObject("property", prop);
-        if (user != null) {
-            mav.addObject("userInterested", prop.getInterestedUsers().stream().anyMatch(u -> u.getId() == user.getId()));
-            mav.addObject("interestedUsers", prop.getInterestedUsers());
+    private void addObjectsToMavForDetailedProperty(int statusCode, ModelAndView mav, Property property) {
+        final User user = userService.getCurrentlyLoggedUser();
+        if (statusCode == HttpURLConnection.HTTP_OK && user != null && property != null) {
+            mav.addObject("userInterested", property.getInterestedUsers().stream().anyMatch(u -> u.getId() == user.getId()));
+            mav.addObject("interestedUsers", property.getInterestedUsers());
         }
     }
 
@@ -102,7 +98,6 @@ public class PropertyController {
         StatusCodeUtility.parseStatusCode(code, mav);
         return mav;
     }
-
 
     @RequestMapping(value = "/{id}/deInterest", method = RequestMethod.POST)
     public ModelAndView deInterest(@PathVariable(value = "id") int propertyId,
@@ -171,7 +166,7 @@ public class PropertyController {
         int statusCode = propertyService.changeStatus(propertyId);
         StatusCodeUtility.parseStatusCode(statusCode, mav);
         if(statusCode == HttpURLConnection.HTTP_OK)
-            addObjectsToMavForDetailedProperty(propertyId, mav);
+            mav.addObject("interestedUsers", propertyService.get(propertyId).getInterestedUsers());
         return mav;
     }
 

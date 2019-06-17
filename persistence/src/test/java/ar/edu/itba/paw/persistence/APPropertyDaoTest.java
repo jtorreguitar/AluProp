@@ -15,9 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 @Sql("classpath:schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,7 +55,7 @@ public class APPropertyDaoTest {
     @Test
     public void getAllPropertiesTest(){
         int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "properties");
-        int realRowCount = propertyDao.getAll(new PageRequest(0,0)).size();
+        int realRowCount = propertyDao.getAllActive(new PageRequest(0,0)).size();
 
         Assert.assertNotEquals(0, realRowCount);
         Assert.assertEquals(expectedRowCount, realRowCount);

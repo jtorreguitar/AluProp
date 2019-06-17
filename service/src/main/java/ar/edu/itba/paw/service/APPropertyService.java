@@ -8,14 +8,13 @@ import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.enums.Availability;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 
 import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @org.springframework.stereotype.Service
 public class APPropertyService implements PropertyService {
@@ -57,7 +56,7 @@ public class APPropertyService implements PropertyService {
             pageRequest = new PageRequest(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
         return new PageResponse<>(pageRequest,
                                 propertyDao.count(),
-                                propertyDao.getAll(pageRequest));
+                                propertyDao.getAllActive(pageRequest));
     }
 
     @Override
@@ -179,6 +178,18 @@ public class APPropertyService implements PropertyService {
         if(prop.getOwner().getId() != currentUser.getId())
             return HttpURLConnection.HTTP_FORBIDDEN;
         propertyDao.changeStatus(propertyId);
+        return HttpURLConnection.HTTP_OK;
+    }
+
+    @Override
+    public int propertyCanBeShown(Property property) {
+        final User user = userService.getCurrentlyLoggedUser();
+        if (property == null)
+            return HttpURLConnection.HTTP_NOT_FOUND;
+        else if (property.getAvailability() == Availability.RENTED &&
+                user != null &&
+                property.getOwner().getId() != user.getId())
+            return HttpURLConnection.HTTP_FORBIDDEN;
         return HttpURLConnection.HTTP_OK;
     }
 }

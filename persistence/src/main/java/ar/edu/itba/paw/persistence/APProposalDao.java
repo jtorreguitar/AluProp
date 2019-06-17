@@ -17,12 +17,6 @@ import java.util.stream.Collectors;
 public class APProposalDao implements ProposalDao {
 
     private static final String USER_PROPOSAL_BY_USER_AND_PROPOSAL = "FROM UserProposal up WHERE up.user.id = :userId AND up.proposal.id = :proposalId";
-    private static final String PROPOSALS_ON_OWNED_PROPERTYIES = "FROM Proposal p " +
-                                                                    "WHERE (p.state != 'PENDING') " +
-                                                                    "AND p.property IN ( SELECT op " +
-                                                                                        "FROM User u " +
-                                                                                        "LEFT OUTER JOIN u.ownedProperties op " +
-                                                                                        "WHERE u.id = :id)";
 
     @PersistenceContext
     private EntityManager entityManager;
