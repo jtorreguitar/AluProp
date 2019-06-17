@@ -4,11 +4,9 @@ import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.dao.PropertyDao;
 import ar.edu.itba.paw.interfaces.dao.ProposalDao;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
-import ar.edu.itba.paw.interfaces.dao.UserProposalDao;
 import ar.edu.itba.paw.interfaces.service.NotificationService;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.interfaces.service.UserService;
-import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +38,9 @@ public class APProposalService implements ProposalService {
 
     private final static String INVITATION_SUBJECT_CODE= "notifications.proposals.invitation.subject";
     private final static String INVITATION_BODY_CODE = "notifications.proposals.invitation";
+
+    private final static String ACCEPTED_SUBJECT_CODE= "notifications.proposals.accepted.subject";
+    private final static String ACCEPTED_BODY_CODE = "notifications.proposals.accepted";
 
     @Autowired
     private ProposalDao proposalDao;
@@ -121,11 +121,11 @@ public class APProposalService implements ProposalService {
         if (!userIsInvitedToProposal(u, proposal))
             return HttpURLConnection.HTTP_FORBIDDEN;
         proposalDao.setAcceptInvite(u.getId(), proposalId);
-        sendProposalAcceptanceNotifications(u, proposalDao.get(proposalId));
+        sendProposalSentNotifications(u, proposalDao.get(proposalId));
         return HttpURLConnection.HTTP_OK;
     }
 
-    private void sendProposalAcceptanceNotifications(User u, Proposal proposal) {
+    private void sendProposalSentNotifications(User u, Proposal proposal) {
         if (proposal.isCompletelyAccepted()){
             User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
             proposal.getUsers().add(creator);
@@ -134,6 +134,12 @@ public class APProposalService implements ProposalService {
             Property property = propertyDao.getPropertyWithRelatedEntities(proposal.getProperty().getId());
             notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), property.getOwner());
         }
+    }
+
+    private void sendProposalAcceptedNotifications(User u, Proposal proposal) {
+        User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
+        proposal.getUsers().add(creator);
+        notificationService.sendNotifications(ACCEPTED_SUBJECT_CODE, ACCEPTED_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
     }
 
     private boolean userIsInvitedToProposal(User user, Proposal proposal){
