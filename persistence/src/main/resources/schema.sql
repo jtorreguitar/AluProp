@@ -171,31 +171,23 @@ VALUES (1, 'Palermo', 1)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO services(id, name)
-VALUES(1, 'Internet')
+VALUES(1, 'services.internet')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO services(id, name)
-VALUES(2, 'Lavarropas')
+VALUES(2, 'services.laundryMachine')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO services(id, name)
-VALUES(3, 'Cocina')
+VALUES(3, 'services.kitchen')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO rules (id, name)
-VALUES(1, 'No fumar')
+VALUES(1, 'rules.noSmoking')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO rules (id, name)
-VALUES(2, 'No mascotas')
-ON CONFLICT DO NOTHING;
-
-INSERT INTO rules (id, name)
-VALUES(3, 'Sólo hombres')
-ON CONFLICT DO NOTHING;
-
-INSERT INTO rules (id, name)
-VALUES(4, 'Sólo mujeres')
+VALUES(2, 'rules.noPets')
 ON CONFLICT DO NOTHING;
 
 ALTER TABLE properties
