@@ -67,19 +67,21 @@ public class PropertyController {
                             @ModelAttribute FilteredSearchForm searchForm,
                             @PathVariable("id") long id) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("detailedProperty");
-        final Property property = propertyService.getPropertyWithRelatedEntities(id);
-        final int statusCode = propertyService.propertyCanBeShown(property);
-        StatusCodeUtility.parseStatusCode(statusCode, mav);
-        addObjectsToMavForDetailedProperty(statusCode, mav, property);
-        mav.addObject("property", property);
+        addObjectsToMavForDetailedProperty(id, mav);
         return mav;
     }
 
-    private void addObjectsToMavForDetailedProperty(int statusCode, ModelAndView mav, Property property) {
-        final User user = userService.getCurrentlyLoggedUser();
-        if (statusCode == HttpURLConnection.HTTP_OK && user != null && property != null) {
-            mav.addObject("userInterested", property.getInterestedUsers().stream().anyMatch(u -> u.getId() == user.getId()));
-            mav.addObject("interestedUsers", property.getInterestedUsers());
+    private void addObjectsToMavForDetailedProperty(long propertyId, ModelAndView mav) {
+        Property prop = propertyService.getPropertyWithRelatedEntities(propertyId);
+        User user = userService.getCurrentlyLoggedUser();
+        if(prop == null) {
+            mav.setViewName("404");
+            return;
+        }
+        mav.addObject("property", prop);
+        if (user != null) {
+            mav.addObject("userInterested", prop.getInterestedUsers().stream().anyMatch(u -> u.getId() == user.getId()));
+            mav.addObject("interestedUsers", prop.getInterestedUsers());
         }
     }
 
