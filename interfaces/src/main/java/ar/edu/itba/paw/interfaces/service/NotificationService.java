@@ -12,4 +12,5 @@ public interface NotificationService {
     Notification createNotification(long userId, String subjectCode, String textCode, String link);
     void sendNotifications(String subjectCode, String textCode, String link, Collection<User> users, long currentUserId);
     void sendNotification(String subjectCode, String textCode, String link, User user);
+    void markRead(long notificationId);
 }

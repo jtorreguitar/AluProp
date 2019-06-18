@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.dao.NotificationDao;
 import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.enums.NotificationState;
 import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,7 @@ import java.util.Random;
 @Repository
 public class APNotificationDao implements NotificationDao {
 
-    private static final String USER_NOTIFICATIONS_QUERY = "FROM Notification n WHERE n.user.id = :id ORDER BY n.id";
+    private static final String USER_NOTIFICATIONS_QUERY = "FROM Notification n WHERE n.user.id = :id ORDER BY n.id DESC";
     private static final String UNREAD_USER_NOTIFICATIONS_QUERY = "FROM Notification n " +
                                                                     "WHERE n.state = 'UNREAD' AND n.user.id = :id " +
                                                                     "ORDER BY n.id DESC";
@@ -60,5 +61,13 @@ public class APNotificationDao implements NotificationDao {
         if (notification != null)
             entityManager.persist(notification);
         return notification;
+    }
+
+    @Override
+    @Transactional
+    public void markRead(long notificationId) {
+        Notification notification = get(notificationId);
+        notification.setState(NotificationState.READ);
+        entityManager.merge(notification);
     }
 }

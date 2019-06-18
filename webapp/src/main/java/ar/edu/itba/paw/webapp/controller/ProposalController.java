@@ -39,10 +39,15 @@ public class ProposalController {
     @Autowired
     private NeighbourhoodService neighbourhoodService;
     @Autowired
+    private NotificationService notificationService;
+    @Autowired
     private NavigationUtility navigationUtility;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView get(@PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
+    public ModelAndView get(HttpServletRequest request, @PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {
+        String notificationId = request.getParameter("notificationId");
+        if (notificationId != null)
+            notificationService.markRead(Long.parseLong(notificationId));
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
         final User u = userService.getCurrentlyLoggedUser();
         final Proposal proposal = proposalService.getWithRelatedEntities(id);
@@ -58,7 +63,6 @@ public class ProposalController {
             mav.addObject("isInvited", true);
             mav.addObject("hasReplied", userHasRepliedToProposal(u, proposal));
         }
-
 
         mav.addObject("property", property);
         mav.addObject("proposal", proposal);

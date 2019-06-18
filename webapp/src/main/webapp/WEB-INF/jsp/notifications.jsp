@@ -30,28 +30,26 @@
 <%@include file="navigationBar.jsp"%>
 
 <div class="card" style="width: 80%;">
-    <div class="card-body">
+    <div class="card-header">
         <h5 class="card-title"><spring:message code="notifications.notifications"/>:</h5>
     </div>
-    <ul class="list-group list-group-flush">
+    <div class="list-group">
         <c:choose>
             <c:when test="${not empty notifications}">
                 <c:forEach var="notification" items="${notifications}" varStatus="i">
-                    <li class="list-group-item">
-                        <a href="<c:url value="${notification.link}"/>" class="list-group-item list-group-item-action">
+                        <a href="<c:url value="${notification.link}?notificationId=${notification.id}"/>" class="list-group-item list-group-item-action ${notification.state == 'UNREAD'?'unread':''}">
                             <div class="notification">
                                 <div class="notification-subject"><spring:message code="${notification.subjectCode}"/></div>
                                 <div class="notification-text"><spring:message code="${notification.textCode}"/></div>
                             </div>
                         </a>
-                    </li>
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <li class="list-group-item"><spring:message code="notifications.noNotifications"/></li>
+                <div class="list-group-item"><spring:message code="notifications.noNotifications"/></div>
             </c:otherwise>
         </c:choose>
-    </ul>
+    </div>
 </div>
 </body>
 </html>

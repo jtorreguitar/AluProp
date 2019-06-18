@@ -34,7 +34,7 @@
 
     <img class="card-img-top ${proposal.state == 'ACCEPTED'?'':proposal.state == 'PENDING'?'':proposal.state == 'SENT'?'':'grayscale'}" src="<c:url value="/images/${property.mainImage.id}"/>" alt="Card image cap">
     <div class="card-body">
-        <h5 class="card-title"><spring:message code="label.proposal.proposal"/>: ${property.description}</h5>
+        <h5 class="card-title"><spring:message code="label.proposal.proposal"/>: <a href="<c:url value="/${property.id}"/>">${property.description}</a></h5>
         <p class="card-text">${property.caption}</p>
     </div>
     <div class="card-header">
@@ -61,7 +61,6 @@
                                     <img src="<c:url value="/resources/images/check.png"/>" class="flag" alt="${language_en}">
                                 </c:when>
                                 <c:otherwise>
-                                    <p> ${userStates[i.index]}</p>
                                     <img src="<c:url value="/resources/images/cross.png"/>" class="flag" alt="${language_en}">
                                 </c:otherwise>
                             </c:choose>

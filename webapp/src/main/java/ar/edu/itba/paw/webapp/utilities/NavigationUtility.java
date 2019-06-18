@@ -45,10 +45,14 @@ public class NavigationUtility {
     public void addNavigationAttributes(ModelAndView mav) {
         User user = userService.getCurrentlyLoggedUser();
         if(user != null) {
-            Collection<Notification> notifications =
+            Collection<Notification> unreadNotifications =
                     notificationService.getAllUnreadNotificationsForUser(user.getId(), NOTIFICATION_PAGE_REQUEST);
+            Collection<Notification> notifications =
+                    notificationService.getAllNotificationsForUser(user.getId(), NOTIFICATION_PAGE_REQUEST);
             mav.addObject("currentUser", user);
+            mav.addObject("unreadNotifications", unreadNotifications);
             mav.addObject("notifications", notifications);
+
         }
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
         mav.addObject("rules", ruleService.getAll());
