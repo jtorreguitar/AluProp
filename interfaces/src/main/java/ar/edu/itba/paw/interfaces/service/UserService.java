@@ -13,7 +13,7 @@ public interface UserService {
     User getWithRelatedEntities(long id);
     User getByEmail(String username);
     User getCurrentlyLoggedUser();
-    Either<User, List<String>> CreateUser(User user, Locale loc, String host);
+    Either<User, List<String>> CreateUser(User user, Locale loc, String url);
     User getUserWithRelatedEntitiesByEmail(String email);
     PageResponse<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);
 }

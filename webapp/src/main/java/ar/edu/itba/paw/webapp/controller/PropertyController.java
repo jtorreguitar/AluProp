@@ -124,7 +124,9 @@ public class PropertyController {
                                @Valid @ModelAttribute FilteredSearchForm searchForm,
                                final BindingResult errors,
                                Locale loc) {
-        String propertyOrder = request.getParameter("orderBy")==null?"NEWEST":request.getParameter("orderBy");
+        PropertyOrder propertyOrder = request.getParameter("orderBy") == null?
+                                    PropertyOrder.NEWEST :
+                                    PropertyOrder.valueOf(request.getParameter("orderBy"));
         if(searchForm.getMinPrice() > searchForm.getMaxPrice()){
             String errorMsg = messageSource.getMessage("system.rangeError", null, loc);
             errors.addError(new FieldError("rangeError", "minPrice",errorMsg));
@@ -133,7 +135,7 @@ public class PropertyController {
             return index(request,pageNumber,searchForm, pageSize);
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
         mav.addObject("isSearch", true);
-        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm, PropertyOrder.valueOf(propertyOrder)));
+        PageResponse<Property> response = propertyService.advancedSearch(new PageRequest(pageNumber, pageSize), propertyForSearch(searchForm, propertyOrder));
         navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }

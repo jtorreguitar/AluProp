@@ -55,27 +55,27 @@ public class APPropertyDao implements PropertyDao {
 
     @Override
     public Collection<Property> getAllActiveOrdered(PageRequest pageRequest, PropertyOrder propertyOrder) {
-        TypedQuery<Property> query = entityManager.createQuery(parseOrder(propertyOrder), Property.class);
+        TypedQuery<Property> query = entityManager.createQuery(GET_ALL_ACTIVE_ORDERED_QUERY + parseOrder(propertyOrder), Property.class);
         return  QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     private String parseOrder(PropertyOrder propertyOrder) {
         switch (propertyOrder) {
             case PRICE:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price";
+                return " p.price";
             case PRICE_DESC:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price DESC";
+                return " p.price DESC";
             case CAPACITY:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.capacity";
+                return " p.capacity";
             case CAPACITY_DESC:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.capacity DESC";
+                return " p.capacity DESC";
             case BUDGET:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price/p.capacity";
+                return " p.price/p.capacity";
             case BUDGET_DESC:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.price/p.capacity DESC";
+                return " p.price/p.capacity DESC";
             case NEWEST:
             default:
-                return GET_ALL_ACTIVE_ORDERED_QUERY + " p.id DESC";
+                return " p.id DESC";
         }
     }
 
@@ -86,7 +86,8 @@ public class APPropertyDao implements PropertyDao {
         searchString.append(conditionBuilder.buildAsStringBuilder());
         if(searchString.toString().equals("FROM Property p WHERE "))
             return getAllActive(pageRequest);
-        searchString.append("ORDER BY p.id DESC");
+        searchString.append("ORDER BY");
+        searchString.append(parseOrder(property.getPropertyOrder()));
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
         return QueryUtility.makePagedQuery(query, pageRequest).getResultList();

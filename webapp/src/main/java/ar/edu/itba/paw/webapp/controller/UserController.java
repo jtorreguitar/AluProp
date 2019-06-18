@@ -100,7 +100,7 @@ public class UserController {
             viewName = "redirect:"+ savedRequest.getRedirectUrl();
 
         try {
-            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc, host + request.getContextPath());
+            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc, getBaseUrl(request.getRequestURL().toString(), "/user/signUp"));
             if(!maybeUser.hasValue()){
                 form.setEmail("");
                 logger.debug("NOT A UNIQUE EMAIL");
@@ -112,6 +112,10 @@ public class UserController {
         catch(IllegalUserStateException e) {
             return new ModelAndView("redirect:/404");
         }
+    }
+
+    private String getBaseUrl(String url, String currentEndpoint) {
+        return url.substring(0, url.indexOf(currentEndpoint));
     }
 
     private void authenticateUserAndSetSession(SignUpForm form, HttpServletRequest request) {
