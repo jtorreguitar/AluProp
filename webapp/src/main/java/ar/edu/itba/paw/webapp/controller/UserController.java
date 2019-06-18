@@ -100,7 +100,7 @@ public class UserController {
             viewName = "redirect:"+ savedRequest.getRedirectUrl();
 
         try {
-            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc, host);
+            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc, host + request.getContextPath());
             if(!maybeUser.hasValue()){
                 form.setEmail("");
                 logger.debug("NOT A UNIQUE EMAIL");
