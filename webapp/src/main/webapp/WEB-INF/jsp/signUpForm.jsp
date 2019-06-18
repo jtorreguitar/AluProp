@@ -154,7 +154,12 @@
 </div>
 <!--container end.//-->
 <script>
-    $('#select-role').change(function() {
+    var roleSelect = $('#select-role');
+    if (roleSelect.val() === '0'){
+        $('#form-group-university').css('display', 'block');
+        $('#form-group-career').css('display', 'block');
+    }
+    roleSelect.change(function() {
         if ($(this).val() === '0'){
             $('#form-group-university').css('display', 'block');
             $('#form-group-career').css('display', 'block');
