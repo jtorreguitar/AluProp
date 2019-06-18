@@ -203,8 +203,6 @@ public class User {
             if(!birthDateIsValid()) throw new IllegalUserStateException("birth date must be provided.");
             if(!genderIsValid()) throw new IllegalUserStateException("gender must be provided");
             if(!passwordHashIsValid()) throw new IllegalUserStateException("password must be provided");
-            if(!universityIsValid()) throw new IllegalUserStateException("university must be provided");
-            if(!careerIsValid()) throw new IllegalUserStateException("career must be provided");
             if(!bioIsValid()) throw new IllegalUserStateException("bio must be provided");
             if(!contactNumberIsValid()) throw new IllegalUserStateException("contact number must be provided");
             if(!roleIsValid()) throw new IllegalUserStateException("role must be provided");
@@ -317,11 +315,15 @@ public class User {
 
         public Builder withUniversityId(long universityId) {
             user.university = new University(universityId);
+            if (universityId == -1)
+                user.university = null;
             return this;
         }
 
         public Builder withCareerId(long careerId) {
             user.career = new Career(careerId);
+            if (careerId == -1)
+                user.career = null;
             return this;
         }
 

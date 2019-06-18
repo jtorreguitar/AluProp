@@ -77,7 +77,7 @@ public class APUserDao implements UserDao {
 
     @Override
     public User create(User user) {
-        entityManager.merge(user);
+        entityManager.persist(user);
         return user;
     }
 

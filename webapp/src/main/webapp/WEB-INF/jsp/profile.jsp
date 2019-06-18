@@ -170,7 +170,7 @@
                                                 <c:choose>
                                                     <c:when test="${proposals.lastPage}">
                                                         <li class="page-item disabled">
-                                                            <a class="page-link"  aria-disabled="true">Next</a>
+                                                            <a class="page-link"  aria-disabled="true"> > </a>
                                                         </li>
                                                     </c:when>
                                                     <c:otherwise>

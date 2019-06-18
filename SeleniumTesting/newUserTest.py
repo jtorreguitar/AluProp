@@ -10,7 +10,6 @@ import sys
 
 registeredUsersFile = open("numOfRegisteredUsers.txt", "r+");
 numOfRegisteredUsers = registeredUsersFile.read();
-print numOfRegisteredUsers;
 registeredUsersFile.close();
 
 INFO_NAME = 'Peter' + numOfRegisteredUsers;
@@ -25,15 +24,6 @@ INFO_BIO = 'I like turtles ' + numOfRegisteredUsers;
 INFO_GENDER_CODE = '1';
 INFO_ROLE_CODE = '1' if sys.argv[3]=='host' else '0';
 
-INFO_PROPERTY_IMG_2 = '/Users/Bensas/ITBA/PAW/newPull/AluProp/SeleniumTestingds'
-INFO_PROPERTY_NAME = 'Departamento en Pilar';
-INFO_PROPERTY_DESCRIPTION = 'Hermoso monoambiente ideal para programadores. Rincon de lectura y buena conexion a internet.';
-INFO_PROPERTY_TYPE = '0';
-INFO_PROPERTY_NEIGHBORHOOD = '2';
-INFO_PROPERTY_PRIVACY_LEVEL = '0';
-INFO_PROPERTY_CAPACITY = '3';
-INFO_PROPERTY_PRICE = '3000';
-
 SITE_URL = 'http://localhost:8080';
 
 options = webdriver.ChromeOptions();
@@ -43,19 +33,18 @@ options.add_argument('headless');
 
 webDriver = webdriver.Chrome(chrome_options=options);
 
+print "Getting website...";
 webDriver.get(SITE_URL);
 
-#Wait for elements to load and then fetch them
+#Wait for elements to load and then fetch the sign up button
 time.sleep(3);
 webDriver.save_screenshot('homePage.png');
 buttonSignUp = webDriver.find_element_by_xpath('//a[contains(@href, \'signUp\')]');
-#WebDriverWait(webDriver, 100).until(EC.visibility_of(buttonLogin));
-
-#Log accordingly and take action on the elements
-print("Sign Up button appeared. Clicking it...");
+print("On homepage. Clicking sign up button...");
 buttonSignUp.click();
 
-#Take a screenshot of login page and go to register page
+
+#Wait for elements to load, take screenshot and fetch form input elements
 time.sleep(3);
 webDriver.save_screenshot('signUpPage.png');
 
@@ -66,15 +55,24 @@ textFieldName = webDriver.find_element_by_xpath('//input[@id=\'name\']');
 textFieldLastName = webDriver.find_element_by_xpath('//input[@id=\'lastName\']');
 textFieldPhoneNumber = webDriver.find_element_by_xpath('//input[@id=\'phoneNumber\']');
 textFieldBirthDate = webDriver.find_element_by_xpath('//input[@id=\'birthDate\']');
-selectUniversity = Select(webDriver.find_element_by_xpath('//select[@id=\'select-university\']'));
-selectCareer = Select(webDriver.find_element_by_xpath('//select[@id=\'select-career\']'));
 textAreaBio = webDriver.find_element_by_xpath('//textarea[@id=\'bio\']');
 selectGender = Select(webDriver.find_element_by_xpath('//select[@id=\'gender\']'));
-selectUserRole = Select(webDriver.find_element_by_xpath('//select[@id=\'role\']'));
-
+selectUserRole = Select(webDriver.find_element_by_xpath('//select[@id=\'select-role\']'));
 buttonRegisterSubmit = webDriver.find_element_by_xpath('//button[@id=\'btn-register\']');
 
-print("Register(submit) button appeared. Filling in user information and clicking it...");
+print("On sign Up page. Filling in user information and clicking the register button...");
+
+#We only want to fill in university/career information if the user will be a student,
+#and both career and university selects will show up after selecting a role.
+#Thus, we select the role and only then fetch both input elements and fill their information in.
+selectUserRole.select_by_value(INFO_ROLE_CODE);
+if (INFO_ROLE_CODE == '0'):
+	selectUniversity = Select(webDriver.find_element_by_xpath('//select[@id=\'select-university\']'));
+	selectCareer = Select(webDriver.find_element_by_xpath('//select[@id=\'select-career\']'));
+	selectUniversity.select_by_visible_text(INFO_UNIVERSITY);
+	selectCareer.select_by_visible_text(INFO_CAREER);
+
+
 textFieldMail.send_keys(INFO_MAIL);
 textFieldPassword.send_keys(INFO_PASSWORD);
 textFieldRepeatPassword.send_keys(INFO_PASSWORD);
@@ -82,14 +80,10 @@ textFieldName.send_keys(INFO_NAME);
 textFieldLastName.send_keys(INFO_SURNAME);
 textFieldPhoneNumber.send_keys(INFO_PHONE_NUMBER);
 textFieldBirthDate.send_keys(INFO_BIRTH_DATE);
-selectUniversity.select_by_visible_text(INFO_UNIVERSITY);
-selectCareer.select_by_visible_text(INFO_CAREER);
 textAreaBio.send_keys(INFO_BIO);
 selectGender.select_by_value(INFO_GENDER_CODE);
-selectUserRole.select_by_value(INFO_ROLE_CODE);
 
 buttonRegisterSubmit.click();
-print("Clicked register button...");
 time.sleep(8);
 webDriver.save_screenshot('homePageAfterRegistration.png');
 

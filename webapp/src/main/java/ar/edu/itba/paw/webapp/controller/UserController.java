@@ -28,6 +28,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -112,7 +114,10 @@ public class UserController {
                                  @ModelAttribute FilteredSearchForm searchForm,
                                  Locale loc) {
         if(errors.hasErrors()){
-            return signUp(request, form, searchForm);
+            if (Role.valueOf(form.getRole()) != Role.ROLE_HOST)
+                return signUp(request, form, searchForm);
+            else if (!formHasValidHostInfo(errors.getFieldErrors()))
+                return signUp(request, form, searchForm);
         }
         else if (!form.getRepeatPassword().equals(form.getPassword())){
             form.setRepeatPassword("");
@@ -217,11 +222,7 @@ public class UserController {
         request.getSession().setAttribute("properties", hostPropertyList);
 
         mav.addObject("profileUser", profileUser);
-        //mav.addObject("interests", profileUser.getInterestedProperties());
-        //mav.addObject("proposals", proposals);
 
-        //mav.addObject("properties", profileUser.getOwnedProperties());
-        //mav.addObject("hostProposals", proposalService.getProposalsForOwnedProperties(profileUser));
         if (proposals != null && proposals.size() != 0)
             mav.addObject("proposalPropertyNames", generatePropertyNames(proposals));
         return mav;
@@ -241,8 +242,12 @@ public class UserController {
         mav.addObject("services", serviceService.getAll());
     }
 
-    private void addNotificationsToMav(ModelAndView mav, User u){
-        Collection<Notification> notifications = notificationService.getAllNotificationsForUser(u.getId(), new PageRequest(0, 5));
-        mav.addObject("notifications", notifications);
+    private boolean formHasValidHostInfo(List<FieldError> errors){
+        if (errors.size() > 2)
+            return false;
+        for (FieldError error: errors)
+            if (!error.getField().equals("careerId") && !error.getField().equals("universityId"))
+                return false;
+        return true;
     }
 }

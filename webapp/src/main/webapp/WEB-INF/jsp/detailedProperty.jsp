@@ -211,7 +211,7 @@
                                             </c:choose>
                                             <c:url value="/host/delete/" var="postPath"/>
                                             <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                <button type="submit" class="btn btn-danger" style="width: -moz-available;"><spring:message code="label.properties.delete"/></button>
+                                                <button type="submit" class="btn btn-danger" style="width: 100%;"><spring:message code="label.properties.delete"/></button>
                                             </form>
                                         </div>
                                     </c:when>

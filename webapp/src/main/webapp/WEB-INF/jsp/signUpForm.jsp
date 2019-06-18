@@ -83,7 +83,18 @@
                                   <form:errors path="birthDate" cssClass="formError" element="p"/>
                               </div>
                           </div>
+
                           <div class="form-group">
+                              <form:label path="role" class="form-check form-check-inline"><spring:message code="signup.i-am"/> </form:label>
+                              <form:select path="role" id="select-role">
+                                  <form:option value="-1" selected="selected"><spring:message code="forms.choose"/></form:option>
+                                  <form:option value="0"><spring:message code="label.guest"/></form:option>
+                                  <form:option value="1"><spring:message code="label.host" /></form:option>
+                              </form:select>
+                              <form:errors path="role" cssClass="formError" element="p"/>
+                          </div>
+
+                          <div class="form-group" id="form-group-university" style="display:none">
                               <form:label path="universityId"><spring:message code="signup.university"/> </form:label>
                               <form:select path="universityId" id="select-university" name="universities">
                                   <form:option value="-1"> <spring:message code="forms.choose"/> </form:option>
@@ -94,7 +105,7 @@
                               <form:errors path="universityId" cssClass="formError" element="p"/>
                           </div>
 
-                          <div class="form-group">
+                          <div class="form-group" id="form-group-career" style="display:none">
                               <form:label path="careerId"><spring:message code="signup.career"/></form:label>
                               <form:select path="careerId" id="select-career" name="careers">
                                   <form:option value="-1"> <spring:message code="forms.choose"/> </form:option>
@@ -123,16 +134,6 @@
                           </div>
 
                           <div class="form-group">
-                              <form:label path="role" class="form-check form-check-inline"><spring:message code="signup.i-am"/> </form:label>
-                              <form:select path="role">
-                                  <form:option value="-1" selected="selected"><spring:message code="forms.choose"/></form:option>
-                                  <form:option value="0"><spring:message code="label.guest"/></form:option>
-                                  <form:option value="1"><spring:message code="label.host" /></form:option>
-                              </form:select>
-                              <form:errors path="role" cssClass="formError" element="p"/>
-                          </div>
-
-                          <div class="form-group">
                               <button type="submit" id="btn-register" class="btn btn-primary btn-block"><spring:message code="label.signup"/></button>
                           </div> <!-- form-group// -->
                           <spring:message code="label.signup" var="signUpButton"/>
@@ -152,6 +153,18 @@
 
 </div>
 <!--container end.//-->
+<script>
+    $('#select-role').change(function() {
+        if ($(this).val() === '0'){
+            $('#form-group-university').css('display', 'block');
+            $('#form-group-career').css('display', 'block');
+        }
+        else{
+            $('#form-group-university').css('display', 'none');
+            $('#form-group-career').css('display', 'none');
+        }
+    });
+</script>
 
 </body>
 </html>

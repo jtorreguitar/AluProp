@@ -8,6 +8,7 @@ import ar.edu.itba.paw.interfaces.dao.UniversityDao;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -53,13 +54,13 @@ public class APUserService implements UserService {
     @Override
     public Either<User, List<String>> CreateUser(User user) {
         errors = new LinkedList<>();
-        checkRelatedEntitiesExist(user);
+        if (user.getRole() == Role.ROLE_GUEST)
+            checkRelatedEntitiesExist(user);
         if(userDao.userExistsByEmail(user.getEmail()))
             errors.add(USER_EXISTS_BY_EMAIL);
 
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
-        
         return Either.valueFrom(userDao.create(user));
     }
     
