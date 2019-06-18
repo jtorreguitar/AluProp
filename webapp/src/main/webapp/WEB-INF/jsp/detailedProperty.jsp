@@ -111,7 +111,7 @@
                                     <c:choose>
                                         <c:when test="${not empty property.rules}">
                                             <c:forEach var="rule" items="${property.rules}">
-                                                <li class="list-group-item">${rule.name}</li>
+                                                <li class="list-group-item"><spring:message code="${rule.name}"/></li>
                                             </c:forEach>
                                         </c:when>
                                         <c:otherwise>
@@ -129,7 +129,7 @@
                                     <c:choose>
                                         <c:when test="${not empty property.services}">
                                             <c:forEach var="service" items="${property.services}">
-                                                <li class="list-group-item">${service.name}</li>
+                                                <li class="list-group-item"><spring:message code="${service.name}"/></li>
                                             </c:forEach>
                                         </c:when>
                                         <c:otherwise>
