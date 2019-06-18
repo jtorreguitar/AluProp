@@ -70,7 +70,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
-    public ModelAndView signUp(HttpServletRequest request, @ModelAttribute("signUpForm") final SignUpForm form,
+    public ModelAndView signUp(HttpServletRequest request,
+                               @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
 
         return navigationUtility.mavWithNavigationAttributes("signUpForm");
@@ -79,7 +80,6 @@ public class UserController {
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
     public ModelAndView register(HttpServletRequest request,
                                  Locale loc,
-                                 @RequestHeader String host,
                                  @Valid @ModelAttribute("signUpForm") SignUpForm form,
                                  final BindingResult errors,
                                  @ModelAttribute FilteredSearchForm searchForm) {
