@@ -68,6 +68,7 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
+    @OrderBy("id DESC")
     private Collection<UserProposal> userProposals;
 
     @OneToMany(fetch = FetchType.LAZY)
