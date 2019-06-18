@@ -180,7 +180,7 @@ public class PropertyController {
                                @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
         final Property prop = propertyService.get(propertyId);
-        if (form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length > prop.getCapacity() - 1)
+        if (form.getInvitedUsersIds() != null && form.getInvitedUsersIds().length > prop.getCapacity() - 1)
             return get(form, searchForm, propertyId).addObject("maxPeople", prop.getCapacity()-1);
         if (prop.getAvailability() == Availability.RENTED){
             mav.setViewName("redirect:/" + propertyId);
@@ -193,14 +193,14 @@ public class PropertyController {
                 .withCreator(userService.get(userId))
                 .withProperty(propertyService.get(propertyId));
 
-        if(form.getInvitedUsersIds().length == 0)
+        if(form.getInvitedUsersIds() == null || form.getInvitedUsersIds().length == 0)
             builder.withState(ProposalState.SENT);
         else
             builder.withState(ProposalState.PENDING);
         final Proposal proposal = builder.build();
 
-        final long duplicateId= proposalService.findDuplicateProposal(proposal, form.getInvitedUsersIds());
-        if(duplicateId != -1){
+        final long duplicateId = proposalService.findDuplicateProposal(proposal, form.getInvitedUsersIds());
+        if(duplicateId != -1) {
             mav.setViewName("redirect:/proposal/" + duplicateId);
             return mav;
         }

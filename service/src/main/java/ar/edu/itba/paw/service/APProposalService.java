@@ -59,7 +59,7 @@ public class APProposalService implements ProposalService {
     @Override
     public Either<Proposal, List<String>> createProposal(Proposal proposal, long[] userIds) {
         errors = new LinkedList<>();
-        checkRelatedEntitiesExist(proposal, userIds);
+        checkRelatedEntitiesExist(proposal);
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
 
@@ -85,7 +85,7 @@ public class APProposalService implements ProposalService {
         return HttpURLConnection.HTTP_OK;
     }
 
-    private void checkRelatedEntitiesExist(Proposal proposal, long[] userIds) {
+    private void checkRelatedEntitiesExist(Proposal proposal) {
         checkPropertyExists(proposal.getProperty().getId());
         checkCreatorExists(proposal.getCreator().getId());
     }

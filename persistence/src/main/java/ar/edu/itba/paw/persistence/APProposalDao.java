@@ -26,7 +26,8 @@ public class APProposalDao implements ProposalDao {
     @Override
     @Transactional
     public Proposal create(Proposal proposal, long[] ids){
-        Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));
+        if(ids != null)
+            Arrays.stream(ids).forEach(id -> proposal.getUserProposals().add(UserProposal.fromUser(entityManager.find(User.class, id))));
         long creatorID = proposal.getCreator().getId();
         proposal.getUserProposals().add(UserProposal.fromHost(entityManager.find(User.class, creatorID)));
         entityManager.persist(proposal);
@@ -55,9 +56,10 @@ public class APProposalDao implements ProposalDao {
     @Transactional
     public long findDuplicateProposal(Proposal proposal, long[] userIds){
         Set<Long> invitedUserIds = new HashSet<>();
-
-        for(Long uid : userIds){
-            invitedUserIds.add(uid);
+        if(userIds != null) {
+            for(Long uid : userIds){
+                invitedUserIds.add(uid);
+            }
         }
 
         boolean foundIdentical;
