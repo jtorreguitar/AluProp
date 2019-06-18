@@ -62,4 +62,9 @@ public class APNotificationService implements NotificationService {
         if (result == null)
             logger.error("Failed to deliver notification to user with id: " + user.getId());
     }
+
+    @Override
+    public void markRead(long notificationId) {
+        notificationDao.markRead(notificationId);
+    }
 }

@@ -107,22 +107,22 @@
                 <li>
                     <div class="dropdown dropdown-lg" style="display:flex;">
                         <button type="button" id="selection-btn 1" style="background: transparent;border: none;" data-toggle="dropdown" aria-expanded="false">
-                            <c:if test="${not empty notifications}">
+                            <c:if test="${not empty unreadNotifications}">
                                 <img src="<c:url value="/resources/images/bell_active.png"/>" class="flag"/>
                             </c:if>
-                            <c:if test="${empty notifications}">
+                            <c:if test="${empty unreadNotifications}">
                                 <img src="<c:url value="/resources/images/bell.png"/>" class="flag"/>
                             </c:if>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" role="menu" style="width: 100px; padding:0;">
                             <div class="notifications-header">
-                                <spring:message code="notifications.notifications"/>
+                                <spring:message code="notifications.newNotifications"/>
                             </div>
                             <c:choose>
-                                <c:when test="${not empty notifications}">
-                                    <c:forEach var="notification" items="${notifications}">
+                                <c:when test="${not empty unreadNotifications}">
+                                    <c:forEach var="notification" items="${unreadNotifications}">
                                         <div class="list-group">
-                                            <a href="<c:url value="${notification.link}"/>" class="list-group-item list-group-item-action">
+                                            <a href="<c:url value="${notification.link}?notificationId=${notification.id}"/>" class="list-group-item list-group-item-action ${notification.state == 'UNREAD'?'unread':''}">
                                                 <div class="notification">
                                                     <div class="notification-subject"><spring:message code="${notification.subjectCode}"/></div>
                                                     <div class="notification-text"><spring:message code="${notification.textCode}"/></div>

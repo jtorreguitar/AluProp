@@ -305,7 +305,7 @@ border-color: #ccc;
 }
 
 .notification{
-    height: 80px;
+    height: 90px;
 }
 
 .notification-subject{
@@ -324,4 +324,8 @@ border-color: #ccc;
     display: flex;
     justify-content: center;
     margin:auto;
+}
+
+.unread{
+    background-color: #fffecc !important;
 }

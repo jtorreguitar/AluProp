@@ -64,7 +64,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
-                            <c:if test="${not empty interests}">
+                            <c:if test="${not empty interests.pageList}">
                                 <div class="card-footer" style="display:flex;justify-content: center" style="display: flex;justify-content: center">
                                     <c:choose>
                                         <c:when test="${not empty interests.pageList}">
@@ -138,7 +138,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
-                            <c:if test="${not empty proposals}">
+                            <c:if test="${not empty proposals.pageList}">
                                 <div class="card-footer" style="display:flex;justify-content: center">
                                     <c:choose>
                                         <c:when test="${not empty proposals.pageList}">
@@ -219,7 +219,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
-                            <c:if test="${not empty properties}">
+                            <c:if test="${not empty properties.pageList}">
                                 <div class="card-footer" style="display:flex;justify-content: center">
                                     <c:choose>
                                         <c:when test="${not empty properties.pageList}">
@@ -314,7 +314,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
-                            <c:if test="${not empty hostProposals}">
+                            <c:if test="${not empty hostProposals.pageList}">
                                 <div class="card-footer" style="display:flex;justify-content: center">
                                     <c:choose>
                                         <c:when test="${not empty hostProposals.pageList}">
