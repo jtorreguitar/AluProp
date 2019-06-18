@@ -30,11 +30,12 @@
 <%@include file="navigationBar.jsp"%>
 
 <!-- ####################### CARDS CONTAINING PROPERTIES  #######################-->
-<div class="elem-container">
+    <div class="row" style="width: 85%">
+        <div class="alert alert-primary" role="alert" style="margin-top: 25px;width: 100%;">
+            <spring:message code="system.property.successful_delete"/>
+        </div>
+    </div>
 
-    <H1><spring:message code="system.property.successful_delete"/></H1>
-
-</div>
 
 </body>
 </html>
