@@ -56,8 +56,8 @@ public class PropertyController {
                               @ModelAttribute FilteredSearchForm searchForm,
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");
-        String propertyOrder = request.getParameter("orderBy")==null?"NEWEST":request.getParameter("orderBy");
-        PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize), PropertyOrder.valueOf(propertyOrder));
+        String propertyOrderString = request.getParameter("orderBy")==null?"NEWEST":request.getParameter("orderBy");
+        PageResponse<Property> response = propertyService.getAll(new PageRequest(pageNumber, pageSize), PropertyOrder.valueOf(propertyOrderString));
         navigationUtility.addPaginationAttributes(mav, response);
         return mav;
     }

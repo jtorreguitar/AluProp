@@ -56,7 +56,7 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Collection<Property> getAllActiveOrdered(PageRequest pageRequest, PropertyOrder propertyOrder) {
         TypedQuery<Property> query = entityManager.createQuery(parseOrder(propertyOrder), Property.class);
-        return  query.getResultList();
+        return  QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     private String parseOrder(PropertyOrder propertyOrder) {
