@@ -74,14 +74,14 @@
                                         <div class="form-group">
                                             <form:label path="ruleIds"><spring:message code="forms.rules"/></form:label><br/>
                                             <c:forEach var="rule" items="${rules}">
-                                                <label class="checkbox"><form:checkbox path="ruleIds" value="${rule.id}"/>${" "}${rule.name}</label><br/>
+                                                <label class="checkbox"><form:checkbox path="ruleIds" value="${rule.id}"/>${" "}<spring:message code="${rule.name}"/></label><br/>
                                             </c:forEach>
                                             <form:errors path="ruleIds" cssClass="formError" element="p"/>
                                         </div>
                                         <div class="form-group">
                                             <form:label path="serviceIds"><spring:message code="forms.services"/></form:label><br/>
                                             <c:forEach var="service" items="${services}">
-                                                <label class="checkbox"><form:checkbox path="serviceIds" value="${service.id}"/>${" "}${service.name}</label><br/>
+                                                <label class="checkbox"><form:checkbox path="serviceIds" value="${service.id}"/>${" "}<spring:message code="${service.name}"/></label><br/>
                                             </c:forEach>
                                             <form:errors path="serviceIds" cssClass="formError" element="p"/>
                                         </div>
