@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
-import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.service.*;
-import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
@@ -18,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
-import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +25,6 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,29 +51,13 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private UniversityService universityService;
-    @Autowired
-    private CareerService careerService;
-    @Autowired
     private ProposalService proposalService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private APJavaMailSender emailSender;
-    @Autowired
-    private NeighbourhoodService neighbourhoodService;
-    @Autowired
-    private RuleService ruleService;
-    @Autowired
-    private ServiceService serviceService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private NotificationService notificationService;
-    @Autowired
     private NavigationUtility navigationUtility;
     @Autowired
-    private MessageSource messageSource;
+    private AuthenticationManager authenticationManager;
 
 
 
@@ -96,16 +75,8 @@ public class UserController {
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
     public ModelAndView signUp(HttpServletRequest request, @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
-        User user = userService.getCurrentlyLoggedUser();
-        ModelAndView mav = new ModelAndView("signUpForm");
 
-        mav.addObject("currentUser", user);
-        mav.addObject("universities", universityService.getAll());
-        mav.addObject("careers", careerService.getAll());
-
-        addSearchObjectsToMav(mav);
-
-        return mav;
+        return navigationUtility.mavWithNavigationAttributes("signUpForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
@@ -123,50 +94,34 @@ public class UserController {
             form.setRepeatPassword("");
             return signUp(request, form, searchForm).addObject("passwordMatch", false);
         }
-        ModelAndView mav = new ModelAndView("redirect:/");
+        String viewName = "redirect:/";
         HttpSession session = request.getSession(false);
         SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
         if (savedRequest != null)
-            mav = new ModelAndView("redirect:"+ savedRequest.getRedirectUrl());
+            viewName = "redirect:"+ savedRequest.getRedirectUrl();
 
         try {
-            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form));
+            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc);
             if(!maybeUser.hasValue()){
                 form.setEmail("");
                 logger.debug("NOT A UNIQUE EMAIL");
                 return signUp(request, form, searchForm).addObject("uniqueEmail", false);
             }
-            User user = maybeUser.value();
-            String title = redactConfirmationTitle(user, loc);
-            String body = redactConfirmationBody(loc);
-            emailSender.sendEmailToSingleUser(title, body, user);
-            logger.debug("Confirmation email sent to: " + user.getEmail());
             authenticateUserAndSetSession(form, request);
-            return mav;
+            return navigationUtility.mavWithNavigationAttributes(viewName);
         }
         catch(IllegalUserStateException e) {
-            return new ModelAndView("404");
+            return new ModelAndView("redirect:/404");
         }
     }
 
     private void authenticateUserAndSetSession(SignUpForm form, HttpServletRequest request) {
-        String username = form.getEmail();
-        String password = form.getPassword();
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(form.getEmail(), form.getPassword());
         request.getSession();
         token.setDetails(new WebAuthenticationDetails(request));
         Authentication authenticatedUser = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
-    }
-
-    private String redactConfirmationTitle(User user,
-                                           Locale loc) {
-        return messageSource.getMessage("email.confirmation.title", new String[]{user.getName()}, loc);
-    }
-
-    private String redactConfirmationBody(Locale loc) {
-        return messageSource.getMessage("email.confirmation.body", null, loc);
     }
 
     private User buildUserFromForm(@ModelAttribute("signUpForm") @Valid SignUpForm form) {
@@ -234,12 +189,6 @@ public class UserController {
             if (prop != null)
                 result.add(prop.getProperty().getDescription());
         return result;
-    }
-
-    private void addSearchObjectsToMav(ModelAndView mav){
-        mav.addObject("neighbourhoods", neighbourhoodService.getAll());
-        mav.addObject("rules", ruleService.getAll());
-        mav.addObject("services", serviceService.getAll());
     }
 
     private boolean formHasValidHostInfo(List<FieldError> errors){

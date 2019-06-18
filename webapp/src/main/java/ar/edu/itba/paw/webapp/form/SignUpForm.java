@@ -13,7 +13,7 @@ public class SignUpForm {
     @NotBlank
     private String lastName;
 
-    @Pattern(regexp = "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$")
+    @Pattern(regexp = "^\\S+@\\S+$")
     private String email;
 
     @Size(min = 6, max = 100)

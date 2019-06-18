@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
@@ -9,7 +10,10 @@ import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +23,12 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class APUserService implements UserService {
+
+    private final static Logger logger = LoggerFactory.getLogger(APUserService.class);
 
     private final String USER_EXISTS_BY_EMAIL = "A user with this email already exists";
     /* package */ static final String UNIVERSITY_NOT_EXISTS = "The specified university does not exist";
@@ -33,6 +40,12 @@ public class APUserService implements UserService {
     private UniversityDao universityDao;
     @Autowired
     private CareerDao careerDao;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private APJavaMailSender emailSender;
 
     private List<String> errors;
 
@@ -52,7 +65,7 @@ public class APUserService implements UserService {
     }
 
     @Override
-    public Either<User, List<String>> CreateUser(User user) {
+    public Either<User, List<String>> CreateUser(User user, Locale loc) {
         errors = new LinkedList<>();
         if (user.getRole() == Role.ROLE_GUEST)
             checkRelatedEntitiesExist(user);
@@ -61,7 +74,21 @@ public class APUserService implements UserService {
 
         if(!errors.isEmpty())
             return Either.alternativeFrom(errors);
+
+        String title = redactConfirmationTitle(user, loc);
+        String body = redactConfirmationBody(loc);
+        emailSender.sendEmailToSingleUser(title, body, user);
+        logger.debug("Confirmation email sent to: " + user.getEmail());
         return Either.valueFrom(userDao.create(user));
+    }
+
+    private String redactConfirmationTitle(User user,
+                                           Locale loc) {
+        return messageSource.getMessage("email.confirmation.title", new String[]{user.getName()}, loc);
+    }
+
+    private String redactConfirmationBody(Locale loc) {
+        return messageSource.getMessage("email.confirmation.body", null, loc);
     }
     
     private void checkRelatedEntitiesExist(User user) {
@@ -89,11 +116,6 @@ public class APUserService implements UserService {
         Collection<User> data = userDao.getUsersInterestedInProperty(id, pageRequest);
         long count = userDao.count();
         return new PageResponse<>(pageRequest, count, data);
-    }
-
-    @Override
-    public boolean getUserIsInterestedInProperty(long userId, long propertyId) {
-        return userDao.isUserInterestedInProperty(userId, propertyId);
     }
 
     @Override

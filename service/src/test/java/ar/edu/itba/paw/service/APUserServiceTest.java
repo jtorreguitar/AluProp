@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.PageResponse;
@@ -19,9 +20,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,7 +55,15 @@ public class APUserServiceTest {
     private CareerDao mockCareerDao;
 
     @Mock
-    PageRequest pageRequest;
+    private PageRequest pageRequest;
+
+    @Mock
+    private MessageSource messageSource;
+
+    @Mock
+    APJavaMailSender mailSender;
+
+    private final static Locale loc = Locale.getDefault();
 
     @InjectMocks
     private User user;
@@ -90,7 +101,7 @@ public class APUserServiceTest {
         Mockito.when(mockUserDao.create(user))
                 .thenReturn(user);
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
 
         Assert.assertNotNull(maybeUser);
         Assert.assertTrue(maybeUser.hasValue());
@@ -108,7 +119,7 @@ public class APUserServiceTest {
         Mockito.when(mockCareerDao.get(CAREER_ID))
                 .thenReturn(null);
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
 
         Assert.assertNotNull(maybeUser);
         Assert.assertFalse(maybeUser.hasValue());
@@ -126,7 +137,7 @@ public class APUserServiceTest {
                 .thenReturn(null);
 
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
 
         Assert.assertNotNull(maybeUser);
         Assert.assertFalse(maybeUser.hasValue());
@@ -141,7 +152,7 @@ public class APUserServiceTest {
         Mockito.when(mockCareerDao.get(CAREER_ID))
                 .thenReturn(null);
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
 
         Assert.assertNotNull(maybeUser);
         Assert.assertFalse(maybeUser.hasValue());

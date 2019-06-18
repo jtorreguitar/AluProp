@@ -182,7 +182,7 @@ public class User {
 
     public static class Builder {
 
-        private final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        private final String EMAIL_REGEX = "^\\S+@\\S+$";
 
         private User user;
 

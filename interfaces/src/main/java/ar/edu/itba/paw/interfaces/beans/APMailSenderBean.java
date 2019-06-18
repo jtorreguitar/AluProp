@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.beans;
+package ar.edu.itba.paw.interfaces.beans;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.model.User;

@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.config;
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
 import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.builders.HqlWhereConditionBuilder;
-import ar.edu.itba.paw.webapp.beans.APMailSenderBean;
+import ar.edu.itba.paw.interfaces.beans.APMailSenderBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
