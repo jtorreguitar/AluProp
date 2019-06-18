@@ -52,7 +52,8 @@ public class PropertyController {
     private NavigationUtility navigationUtility;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView index(HttpServletRequest request, @RequestParam(required = false, defaultValue = "0") int pageNumber,
+    public ModelAndView index(HttpServletRequest request,
+                              @RequestParam(required = false, defaultValue = "0") int pageNumber,
                               @ModelAttribute FilteredSearchForm searchForm,
                               @RequestParam(required = false, defaultValue = "12") int pageSize) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("index");

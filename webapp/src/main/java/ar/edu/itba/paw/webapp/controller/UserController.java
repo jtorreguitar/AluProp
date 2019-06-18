@@ -25,10 +25,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,10 +77,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
-    public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("signUpForm") SignUpForm form,
+    public ModelAndView register(HttpServletRequest request,
+                                 Locale loc,
+                                 @RequestHeader String host,
+                                 @Valid @ModelAttribute("signUpForm") SignUpForm form,
                                  final BindingResult errors,
-                                 @ModelAttribute FilteredSearchForm searchForm,
-                                 Locale loc) {
+                                 @ModelAttribute FilteredSearchForm searchForm) {
         if(errors.hasErrors()){
             if (Role.valueOf(form.getRole()) != Role.ROLE_HOST)
                 return signUp(request, form, searchForm);
@@ -101,7 +100,7 @@ public class UserController {
             viewName = "redirect:"+ savedRequest.getRedirectUrl();
 
         try {
-            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc);
+            Either<User, List<String>> maybeUser = userService.CreateUser(buildUserFromForm(form), loc, host);
             if(!maybeUser.hasValue()){
                 form.setEmail("");
                 logger.debug("NOT A UNIQUE EMAIL");

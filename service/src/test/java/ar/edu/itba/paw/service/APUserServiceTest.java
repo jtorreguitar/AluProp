@@ -101,7 +101,7 @@ public class APUserServiceTest {
         Mockito.when(mockUserDao.create(user))
                 .thenReturn(user);
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc, "");
 
         Assert.assertNotNull(maybeUser);
         Assert.assertTrue(maybeUser.hasValue());
@@ -119,7 +119,7 @@ public class APUserServiceTest {
         Mockito.when(mockCareerDao.get(CAREER_ID))
                 .thenReturn(null);
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc, "");
 
         Assert.assertNotNull(maybeUser);
         Assert.assertFalse(maybeUser.hasValue());
@@ -137,7 +137,7 @@ public class APUserServiceTest {
                 .thenReturn(null);
 
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc, "");
 
         Assert.assertNotNull(maybeUser);
         Assert.assertFalse(maybeUser.hasValue());
@@ -152,7 +152,7 @@ public class APUserServiceTest {
         Mockito.when(mockCareerDao.get(CAREER_ID))
                 .thenReturn(null);
 
-        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc);
+        Either<User, List<String>> maybeUser = userService.CreateUser(user, loc, "");
 
         Assert.assertNotNull(maybeUser);
         Assert.assertFalse(maybeUser.hasValue());

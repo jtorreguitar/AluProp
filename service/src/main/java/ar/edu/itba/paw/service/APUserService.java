@@ -65,7 +65,7 @@ public class APUserService implements UserService {
     }
 
     @Override
-    public Either<User, List<String>> CreateUser(User user, Locale loc) {
+    public Either<User, List<String>> CreateUser(User user, Locale loc, String host) {
         errors = new LinkedList<>();
         if (user.getRole() == Role.ROLE_GUEST)
             checkRelatedEntitiesExist(user);
@@ -76,19 +76,18 @@ public class APUserService implements UserService {
             return Either.alternativeFrom(errors);
 
         String title = redactConfirmationTitle(user, loc);
-        String body = redactConfirmationBody(loc);
+        String body = redactConfirmationBody(loc, host);
         emailSender.sendEmailToSingleUser(title, body, user);
         logger.debug("Confirmation email sent to: " + user.getEmail());
         return Either.valueFrom(userDao.create(user));
     }
 
-    private String redactConfirmationTitle(User user,
-                                           Locale loc) {
+    private String redactConfirmationTitle(User user, Locale loc) {
         return messageSource.getMessage("email.confirmation.title", new String[]{user.getName()}, loc);
     }
 
-    private String redactConfirmationBody(Locale loc) {
-        return messageSource.getMessage("email.confirmation.body", null, loc);
+    private String redactConfirmationBody(Locale loc, String host) {
+        return messageSource.getMessage("email.confirmation.body", new String[] {host}, loc);
     }
     
     private void checkRelatedEntitiesExist(User user) {
