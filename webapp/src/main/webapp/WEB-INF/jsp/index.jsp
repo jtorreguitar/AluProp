@@ -28,9 +28,13 @@
 
     <!-- ####################### CARDS CONTAINING PROPERTIES  #######################-->
     <c:if test="${isSearch == true}">
-        <H1><spring:message code="label.search_results"/></H1>
+    <div class="row" style="margin-top: 30px;width: 85%;margin-left: 16px;align-items: center;justify-content: left">
+        <div>
+            <h3 style="margin-bottom: 0px"><spring:message code="label.search_results"/></h3>
+        </div>
+    </div>
     </c:if>
-    <div class="row" style="margin-top: 30px;margin-bottom: 20px;width: 85%;margin-left: 16px">
+    <div class="row" style="margin-top: 30px;margin-bottom: 20px;width: 85%;margin-left: 16px;align-items: center">
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <spring:message code="order_by"/>
