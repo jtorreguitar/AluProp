@@ -156,10 +156,10 @@
             <spring:message code="label.english" var="language_en"/>
             <spring:message code="label.spanish" var="language_es"/>
             <li>
-                <a href="?lang=en&${requestScope['javax.servlet.forward.query_string']}"> <img src="<c:url value="/resources/images/uk.svg"/>" class="flag" alt="${language_en}"> </a>
+                <a href="javascript:setRequestParam('lang', 'en');"> <img src="<c:url value="/resources/images/uk.svg"/>" class="flag" alt="${language_en}"> </a>
             </li>
             <li>
-                <a href="?lang=es&${requestScope['javax.servlet.forward.query_string']}"> <img src="<c:url value="/resources/images/spain.svg"/>" class="flag" alt="${language_es}"> </a>
+                <a href="javascript:setRequestParam('lang', 'es');"> <img src="<c:url value="/resources/images/spain.svg"/>" class="flag" alt="${language_es}"> </a>
             </li>
         </ul>
 
