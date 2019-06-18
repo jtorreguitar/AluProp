@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Repository
 public class APProposalDao implements ProposalDao {
 
-    private static final String USER_PROPOSAL_BY_USER_AND_PROPOSAL = "FROM UserProposal up WHERE up.user.id = :userId AND up.proposal.id = :proposalId";
+    private static final String USER_PROPOSAL_BY_USER_AND_PROPOSAL = "FROM UserProposal up WHERE up.user.id = :userId AND up.proposal.id = :proposalId ORDER BY up.proposal.id DESC";
 
-    private static final String PROPOSAL_BY_USER_AND_PROPERTY = "FROM Proposal p WHERE p.creator.id = :userId AND p.property.id = :propertyId";
+    private static final String PROPOSAL_BY_USER_AND_PROPERTY = "FROM Proposal p WHERE p.creator.id = :userId AND p.property.id = :propertyId ORDER BY p.id DESC";
     @PersistenceContext
     private EntityManager entityManager;
 
