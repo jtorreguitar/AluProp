@@ -276,7 +276,7 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                <spring:message code="label.profile.proposals"/>
+                                <spring:message code="label.profile.hostProposals"/>
                             </div>
                             <div class="list-group">
                                 <c:choose>
