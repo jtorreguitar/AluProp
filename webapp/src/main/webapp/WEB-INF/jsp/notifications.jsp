@@ -39,7 +39,7 @@
                 <c:forEach var="notification" items="${notifications}" varStatus="i">
                         <a href="<c:url value="${notification.link}?notificationId=${notification.id}"/>" class="list-group-item list-group-item-action ${notification.state == 'UNREAD'?'unread':''}">
                             <div class="notification">
-                                <div class="notification-subject"><spring:message code="${notification.subjectCode}"/></div>
+                                <div class="notification-subject"><spring:message code="${notification.subjectCode}" arguments="${notificationProposals[i.index].property.description}"/></div>
                                 <div class="notification-text"><spring:message code="${notification.textCode}"/></div>
                             </div>
                         </a>
