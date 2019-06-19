@@ -167,7 +167,6 @@ public class APProposalDao implements ProposalDao {
                                                 .collect(Collectors.toList());
         proposals.isEmpty();
         proposals.forEach(p -> p.getUserProposals().isEmpty());
-        Integer.compare()
         return proposals;
     }
 }
