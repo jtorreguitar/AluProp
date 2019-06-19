@@ -13,6 +13,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import java.util.ArrayList;
@@ -30,21 +32,11 @@ public class APRuleDaoTest {
     private final static String RULE_NAME = "No fumar mientras se escriben tests";
     private final static int PROPERTY_ID = 1;
 
-    @Autowired
-    private DataSource ds;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private RuleDao ruleDao;
-
-
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp(){
-        jdbcTemplate = new JdbcTemplate(ds);
-
-
-    }
 
     @Test
     public void getRuleTest() {
@@ -56,11 +48,13 @@ public class APRuleDaoTest {
 
     @Test
     public void getAllRulesTest() {
-        int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "rules");
+        Long expectedRowCount = entityManager
+                            .createQuery("SELECT COUNT(r.id) FROM Rule r", Long.class)
+                            .getSingleResult();
         int realRowCount = ruleDao.getAll().size();
 
         Assert.assertNotEquals(0, realRowCount);
-        Assert.assertEquals(expectedRowCount, realRowCount);
+        Assert.assertEquals(expectedRowCount.intValue(), realRowCount);
     }
 
     @Test

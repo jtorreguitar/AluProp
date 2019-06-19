@@ -12,6 +12,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
@@ -22,21 +24,12 @@ import static org.junit.Assert.*;
 public class APServiceDaoTest {
     private final static String SERVICE_NAME = "Iluminación";
 
-    @Autowired
-    private DataSource ds;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private APServiceDao serviceDao;
 
-
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp(){
-        jdbcTemplate = new JdbcTemplate(ds);
-
-
-    }
     @Test
     public void getServiceTest() {
         Service maybeService = serviceDao.get(1);
@@ -48,10 +41,12 @@ public class APServiceDaoTest {
 
     @Test
     public void getAllServicesTest() {
-        int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "services");
+        Long expectedRowCount = entityManager
+                            .createQuery("SELECT COUNT(s.id) FROM Service s", Long.class)
+                            .getSingleResult();
         int realRowCount = serviceDao.getAll().size();
 
         Assert.assertNotEquals(0, realRowCount);
-        Assert.assertEquals(expectedRowCount, realRowCount);
+        Assert.assertEquals(expectedRowCount.intValue(), realRowCount);
     }
 }

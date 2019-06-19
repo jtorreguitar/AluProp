@@ -14,6 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 @Sql("classpath:schema.sql")
@@ -22,19 +24,12 @@ import javax.sql.DataSource;
 public class APCareerDaoTest {
 
     private final static String CAREER_NAME = "Ingenieria en Testing";
-    @Autowired
-    private DataSource ds;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private APCareerDao careerDao;
-
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
 
     @Test
     public void getCareerTest() {
@@ -45,10 +40,12 @@ public class APCareerDaoTest {
 
     @Test
     public void getAllCareersTest() {
-        int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "careers");
+        Long expectedRowCount = entityManager
+                                .createQuery("SELECT COUNT(c.id) FROM Career c", Long.class)
+                                .getSingleResult();
         int realRowCount = careerDao.getAll().size();
 
         Assert.assertNotEquals(0, realRowCount);
-        Assert.assertEquals(expectedRowCount, realRowCount);
+        Assert.assertEquals(expectedRowCount.intValue(), realRowCount);
     }
 }

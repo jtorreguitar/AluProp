@@ -12,6 +12,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
@@ -22,18 +24,11 @@ import static org.junit.Assert.*;
 public class APNeighbourhoodDaoTest {
     private final static String NAME = "Palermo";
 
-    @Autowired
-    private DataSource ds;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private APNeighbourhoodDao neighbourhoodDao;
-
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
 
     @Test
     public void getNeighbourhoodTest() {
@@ -45,10 +40,12 @@ public class APNeighbourhoodDaoTest {
 
     @Test
     public void getAllNeighbouthoodsTest() {
-        int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "neighbourhoods");
+        Long expectedRowCount = entityManager
+                                .createQuery("SELECT COUNT(n.id) FROM Neighbourhood n", Long.class)
+                                .getSingleResult();
         int realRowCount = neighbourhoodDao.getAll().size();
 
         Assert.assertNotEquals(0, realRowCount);
-        Assert.assertEquals(expectedRowCount, realRowCount);
+        Assert.assertEquals(expectedRowCount.intValue(), realRowCount);
     }
 }
