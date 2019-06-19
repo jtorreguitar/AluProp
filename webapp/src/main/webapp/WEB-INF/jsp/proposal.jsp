@@ -123,18 +123,25 @@
                     </form>
                 </c:when>
                 <c:when test="${isInvited == true && !hasReplied}">
-                    <div class="col-6">
-                        <c:url value="/guest/accept/${proposal.id}" var="postPath"/>
-                        <form action="${postPath}" method="post">
-                            <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
-                        </form>
+                <div class="col-12">
+                <div class="row">
+                        <p><spring:message code="label.proposal.you_would_pay"/> ${proposal.property.price/proposalUsers.size()} <spring:message code="label.proposal.per_month"/></p>
                     </div>
-                    <div class="col-6">
-                        <c:url value="/guest/decline/${proposal.id}" var="postPath"/>
-                        <form action="${postPath}" method="post">
-                            <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
-                        </form>
+                    <div class="row" style="display:flex;justify-content:space-between;">
+                        <div>
+                            <c:url value="/guest/accept/${proposal.id}" var="postPath"/>
+                            <form action="${postPath}" method="post">
+                                <button type="submit" class="btn btn-success"><spring:message code="label.proposal.accept"/></button>
+                            </form>
+                        </div>
+                        <div >
+                            <c:url value="/guest/decline/${proposal.id}" var="postPath"/>
+                            <form action="${postPath}" method="post">
+                                <button type="submit" class="btn btn-danger"><spring:message code="label.proposal.decline"/></button>
+                            </form>
+                        </div>
                     </div>
+                </div>
                 </c:when>
                 <c:when test="${isInvited == true && hasReplied}">
                     <spring:message code="label.proposal.already_replied"/>
