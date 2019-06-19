@@ -81,13 +81,12 @@ public class Proposal {
         return true;
     }
 
-    public float getBudget() {
-        List<Long> shouldCountCreat = getUserProposals()
+    public float budget() {
+        boolean shouldCountCreator = !getUserProposals()
                                         .stream()
                                         .map(up -> up.getUser().getId())
                                         .collect(Collectors.toList())
-
-        boolean shouldCountCreator   = shouldCountCreat.contains(getCreator().getId());
+                                        .contains(getCreator().getId());
         float unroundedBudget;
         if(shouldCountCreator)
             unroundedBudget = property.getPrice()/(userProposals.size() + 1);

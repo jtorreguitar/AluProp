@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <html>
 <head>
     <head>
@@ -138,9 +139,10 @@
                 <c:when test="${isInvited == true && !hasReplied}">
                 <div class="col-12">
                     <div class="row">
-                        <p><spring:message code="label.proposal.you_would_pay"/> $${proposal.property.price/proposal.users.size()} <spring:message code="label.proposal.per_month"/></p>
+                        <p><spring:message code="label.proposal.you_would_pay"/> $${proposal.budget()}  <spring:message code="label.proposal.per_month"/></p>
                     </div>
-                    <div class="row" style="display:flex;justify-content:space-between;">
+                    <div class="row" style="display:flex;justify-content:space-around;">
+
                         <div>
                             <c:url value="/guest/accept/${proposal.id}" var="postPath"/>
                             <form action="${postPath}" method="post">
