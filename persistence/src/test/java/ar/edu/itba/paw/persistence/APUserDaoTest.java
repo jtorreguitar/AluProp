@@ -1,21 +1,17 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.UserDao;
-import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.User;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.persistence.EntityManager;
-import javax.sql.DataSource;
+import javax.persistence.PersistenceContext;
 
 @Sql("classpath:schema.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,7 +24,7 @@ public class APUserDaoTest {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Test
@@ -44,13 +40,13 @@ public class APUserDaoTest {
 
     @Test
     public void getAllUsersTest(){
-        int expectedRowCount = entityManager
-                            .createQuery("SELECT COUNT(u.id) FROM users u", Integer.class)
+        Long expectedRowCount = entityManager
+                            .createQuery("SELECT COUNT(u.id) FROM User u", Long.class)
                             .getSingleResult();
         int realRowCount = userDao.getAll().size();
 
         Assert.assertNotEquals(0, realRowCount);
-        Assert.assertEquals(expectedRowCount, realRowCount);
+        Assert.assertEquals(expectedRowCount.intValue(), realRowCount);
     }
 
     @Test

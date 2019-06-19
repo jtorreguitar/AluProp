@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
+import ar.edu.itba.paw.interfaces.APPaginator;
+import ar.edu.itba.paw.interfaces.Paginator;
 import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.beans.APMailSenderBean;
 import ar.edu.itba.paw.interfaces.builders.HqlWhereConditionBuilder;
@@ -51,7 +53,7 @@ public class TestConfig {
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         final Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
         properties.setProperty("format_sql", "true");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
@@ -87,5 +89,10 @@ public class TestConfig {
         props.put("mail.smtp.starttls.enable", "true");
 
         return new APMailSenderBean(mailSender);
+    }
+
+    @Bean
+    public Paginator paginator() {
+        return new APPaginator();
     }
 }
