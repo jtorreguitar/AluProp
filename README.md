@@ -14,10 +14,14 @@ The page uses spring web-mvc with hibernate as its ORM and spring security to ha
 
 Some configuration constants which may vary from user to user are kept in an application properties file that is listed in our .gitignore file. The file should define these constants:
 db.username = _database_username_
+
 db.password = _database_password_
+
 db.name = _name_of_your_database
+
 rememberme.key = _string_for_spring_security_remember_me_key_
-this last one can be any value you choose. However, in production it should be set to a sufficiently long randomly generated string to ensure safety.
+
+this last one can be any value you choose. However, in production it should be set to a sufficiently long randomly generated string to ensure safety. The file itself should be put in the persistence module under src/main/resources.
 
 ## Credentials for testing
 **Host accounts**
