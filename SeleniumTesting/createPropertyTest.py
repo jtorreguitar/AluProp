@@ -32,7 +32,7 @@ webDriver = webdriver.Chrome(chrome_options=options);
 webDriver.get(SITE_URL);
 
 print ("Fetching homepage...")
-time.sleep(2);
+time.sleep(3);
 webDriver.save_screenshot('CreateProperty - homePage.png');
 buttonLogIn = webDriver.find_element_by_xpath('//a[contains(@href, \'logIn\')]');
 print("On homepage. Clicking log in button...");
@@ -40,7 +40,7 @@ buttonLogIn.click();
 
 
 #Wait for elements to load, take screenshot and fetch form input elements
-time.sleep(2);
+time.sleep(3);
 webDriver.save_screenshot('CreateProperty - logInPage.png');
 textFieldMail = webDriver.find_element_by_xpath('//input[@id=\'email\']');
 textFieldPassword = webDriver.find_element_by_xpath('//input[@id=\'password\']');
@@ -50,7 +50,7 @@ textFieldMail.send_keys(INFO_MAIL);
 textFieldPassword.send_keys(INFO_PASSWORD);
 buttonLoginSubmit.click();
 
-time.sleep(2);
+time.sleep(3);
 webDriver.save_screenshot('CreateProperty - homePageAfterLogin.png');
 
 #We are now logged in
@@ -64,7 +64,7 @@ except NoSuchElementException:
 	exit(1);
 print("Clicked Publish Property button...");
 
-time.sleep(2);
+time.sleep(3);
 
 webDriver.save_screenshot('CreateProperty - publishPropertyPage.png');
 print("Entering Property info...");
@@ -91,7 +91,7 @@ textFieldPropertyPrice.send_keys(INFO_PROPERTY_PRICE);
 buttonPublishSubmit = webDriver.find_element_by_xpath('//button[@id=\'btn-publish\']');
 buttonPublishSubmit.click();
 print("Clicked Publish Property(SUBMIT) button...");
-time.sleep(2);
+time.sleep(3);
 webDriver.save_screenshot('CreateProperty - propertyPageAfterPublish.png');
 try:
 	myProfileButton = webDriver.find_element_by_xpath('//button[contains(@class, \'pause-property\')]');
