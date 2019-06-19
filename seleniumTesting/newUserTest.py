@@ -38,7 +38,7 @@ webDriver.get(SITE_URL);
 
 #Wait for elements to load and then fetch the sign up button
 time.sleep(3);
-webDriver.save_screenshot('homePage.png');
+webDriver.save_screenshot('NewUser - homePage.png');
 buttonSignUp = webDriver.find_element_by_xpath('//a[contains(@href, \'signUp\')]');
 print("On homepage. Clicking sign up button...");
 buttonSignUp.click();
@@ -46,7 +46,7 @@ buttonSignUp.click();
 
 #Wait for elements to load, take screenshot and fetch form input elements
 time.sleep(3);
-webDriver.save_screenshot('signUpPage.png');
+webDriver.save_screenshot('NewUser - signUpPage.png');
 
 textFieldMail = webDriver.find_element_by_xpath('//input[@id=\'email\']');
 textFieldPassword = webDriver.find_element_by_xpath('//input[@id=\'password\']');
@@ -85,7 +85,7 @@ selectGender.select_by_value(INFO_GENDER_CODE);
 
 buttonRegisterSubmit.click();
 time.sleep(8);
-webDriver.save_screenshot('homePageAfterRegistration.png');
+webDriver.save_screenshot('NewUser - homePageAfterRegistration.png');
 
 try:
 	myProfileButton = webDriver.find_element_by_xpath('//img[contains(@src, \'bell.png\')]');
@@ -96,3 +96,4 @@ registeredUsersFile = open("numOfRegisteredUsers.txt", "w");
 registeredUsersFile.write(str(int(numOfRegisteredUsers)+1));
 registeredUsersFile.close();
 webDriver.close();
+webDriver.quit();
