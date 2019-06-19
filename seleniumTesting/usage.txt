@@ -1,0 +1,4 @@
+To create a new user, run command:
+python newUserTest.py [userEmail] [userPass] [host/guest]
+The test will generate screenshots to verify that the website is presenting the correct information to the user at different steps of the registration.
+If necessary, change the SITE_URL variable in the script to the base url for AluProp.
