@@ -73,9 +73,6 @@ public class APProposalServiceTest {
         long[] userIds = {};
         User loggedUser = Factories.userCreator();
 
-        Mockito.when(userService.getCurrentlyLoggedUser()).thenReturn(loggedUser);
-        Mockito.when(proposalDao.create(proposal, userIds)).thenReturn(proposal);
-
         Either<Proposal, List<String>> maybeProposal = proposalService.createProposal(proposal, userIds);
 
         Assert.assertNotNull(maybeProposal);
@@ -100,7 +97,6 @@ public class APProposalServiceTest {
 
         Mockito.when(proposalDao.get(proposal.getId())).thenReturn(proposal);
         Mockito.when(userService.getCurrentlyLoggedUser()).thenReturn(loggedUser);
-        Mockito.when(mockProposal.getCreator()).thenReturn(Factories.userCreatorWithID(1)); //Make it different
 
         int httpCode = proposalService.delete(proposal.getId());
 
@@ -114,7 +110,6 @@ public class APProposalServiceTest {
 
         Mockito.when(proposalDao.get(proposal.getId())).thenReturn(proposal);
         Mockito.when(userService.getCurrentlyLoggedUser()).thenReturn(loggedUser);
-        Mockito.when(mockProposal.getCreator()).thenReturn(loggedUser);
 
         int httpCode = proposalService.delete(proposal.getId());
 
