@@ -25,8 +25,12 @@ rememberme.key = _string_for_spring_security_remember_me_key_
 this last one can be any value you choose. However, in production it should be set to a sufficiently long randomly generated string to ensure safety. The file itself should be put in the persistence module under src/main/resources.
 
 ## Credentials for testing
+
+These three users should be sufficient to test out all of the functionalities of the application.
+
 **Host accounts**
 - email: nachovidau96@gmail.com pass:123456
 
 **User accounts**
-- email ividaurreta@itba.edu.ar pass:123456
+- email: ividaurreta@itba.edu.ar pass:123456
+- email: jtorreguitar@itba.edu.ar pass:12345aA_
