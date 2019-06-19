@@ -14,6 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 @Sql("classpath:schema.sql")
@@ -24,21 +26,11 @@ public class APPropertyDaoTest {
     private final static String CAPTION = "el mejor depto";
     private final static String DESCRIPTION = "posta que el mejor depto";
 
-    @Autowired
-    private DataSource ds;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private PropertyDao propertyDao;
-
-
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp(){
-        jdbcTemplate = new JdbcTemplate(ds);
-
-
-    }
 
     @Test
     public void getPropertyTest(){
@@ -54,11 +46,13 @@ public class APPropertyDaoTest {
 
     @Test
     public void getAllPropertiesTest(){
-        int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "properties");
+        Long expectedRowCount = entityManager
+                                .createQuery("SELECT COUNT(p.id) FROM Property p", Long.class)
+                                .getSingleResult();
         int realRowCount = propertyDao.getAllActive(new PageRequest(0,0)).size();
 
         Assert.assertNotEquals(0, realRowCount);
-        Assert.assertEquals(expectedRowCount, realRowCount);
+        Assert.assertEquals(expectedRowCount.intValue(), realRowCount);
     }
 //
 //    @Test
