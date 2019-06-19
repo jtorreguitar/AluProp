@@ -56,7 +56,7 @@
                             <span class="formError"> <spring:message code="system.invalid_user_or_pass"/></span>
                         </c:if>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block"> <spring:message code="label.login"/> </button>
+                            <button type="submit" id="btn-login" class="btn btn-primary btn-block"> <spring:message code="label.login"/> </button>
                         </div> <!-- form-group// -->
                     </form>
                 </article>

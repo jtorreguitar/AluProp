@@ -200,7 +200,7 @@
                                                 <c:when test="${property.availability == 'AVAILABLE'}">
                                                     <c:url value="/host/changeStatus/" var="postPath"/>
                                                     <form class="my-form" action="${postPath}${property.id}" method="post">
-                                                        <button type="submit" class="btn btn-secondary" style="width: 100%;margin-bottom: 12px;"><spring:message code="label.properties.pause"/></button>
+                                                        <button type="submit" class="btn btn-secondary pause-property" style="width: 100%;margin-bottom: 12px;"><spring:message code="label.properties.pause"/></button>
                                                     </form>
                                                 </c:when>
                                                 <c:otherwise>

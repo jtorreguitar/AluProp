@@ -74,7 +74,7 @@
 
                         <div class="form-group">
                             <form:label path="description"><spring:message code="forms.name"/> </form:label>
-                            <form:input path="description" type="text" class="form-control" placeholder=""></form:input>
+                            <form:input path="description" type="text" class="form-control property-name" placeholder=""></form:input>
                             <form:errors path="description" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
@@ -114,7 +114,7 @@
                         </div>
                         <div class="form-group">
                             <form:label path="capacity"><spring:message code="forms.capacity"/></form:label>
-                            <form:input path="capacity" type="text" class="form-control" placeholder=""></form:input>
+                            <form:input path="capacity" type="text" class="form-control create-capacity" placeholder=""></form:input>
                             <form:errors path="capacity" cssClass="formError" element="p"/>
                         </div>
                         <div class="form-group">
