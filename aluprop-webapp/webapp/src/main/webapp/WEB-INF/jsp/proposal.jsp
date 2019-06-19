@@ -139,7 +139,7 @@
                 <c:when test="${isInvited == true && !hasReplied}">
                 <div class="col-12">
                     <div class="row">
-                        <p><spring:message code="label.proposal.you_would_pay"/> $${proposal.budget()}  <spring:message code="label.proposal.per_month"/></p>
+                        <p><spring:message code="label.proposal.you_would_pay"/> $${budget}  <spring:message code="label.proposal.per_month"/></p>
                     </div>
                     <div class="row" style="display:flex;justify-content:space-around;">
 
