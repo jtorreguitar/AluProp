@@ -81,16 +81,19 @@ public class Proposal {
         return true;
     }
 
-    public float budget() {
-        boolean shouldCountCreator = getUserProposals()
+    public float getBudget() {
+        List<Long> shouldCountCreat = getUserProposals()
                                         .stream()
                                         .map(up -> up.getUser().getId())
                                         .collect(Collectors.toList())
-                                        .contains(getCreator().getId());
+
+        boolean shouldCountCreator   = shouldCountCreat.contains(getCreator().getId());
+        float unroundedBudget;
         if(shouldCountCreator)
-            return property.getPrice()/(userProposals.size() + 1);
+            unroundedBudget = property.getPrice()/(userProposals.size() + 1);
         else
-            return property.getPrice()/userProposals.size();
+            unroundedBudget = property.getPrice()/userProposals.size();
+        return ((float) Math.floor(unroundedBudget*100))/100;
     }
 
     public static class Builder {
