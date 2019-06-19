@@ -1,0 +1,17 @@
+These tests require an installation of Google Chrome Canary on the system and the path to the Chrome binary in the scripts must coincide with its location in the system.
+If necessary, change the SITE_URL variable in the scripts to the base url for AluProp.
+
+New User test:
+	To create a new user, run command:
+
+	python newUserTest.py [userEmail] [userPass] [host/guest]	
+
+Create Property test:
+	To create a new property, run command:
+
+	python createPropertyTest.py [userEmail] [userPass]
+
+	(userEmail and userPass must belong to an existing host user. Otherwise, the test will fail)
+
+
+The test will generate screenshots to verify that the website is presenting the correct information to the user at different steps of the process.
