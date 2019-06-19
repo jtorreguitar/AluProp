@@ -15,8 +15,8 @@ import ar.edu.itba.paw.model.enums.PropertyOrder;
 import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
+import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
+import ar.edu.itba.paw.webapp.helperClasses.StatusCodeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +36,6 @@ import java.util.Locale;
 @Controller
 public class PropertyController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
-
     @Autowired
     private PropertyService propertyService;
     @Autowired
@@ -49,7 +47,10 @@ public class PropertyController {
     private MessageSource messageSource;
 
     @Autowired
-    private NavigationUtility navigationUtility;
+    private ModelAndViewPopulator navigationUtility;
+
+    @Autowired
+    private StatusCodeParser statusCodeParser;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request,
@@ -98,7 +99,7 @@ public class PropertyController {
         final User user = userService.getCurrentlyLoggedUser();
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
-        StatusCodeUtility.parseStatusCode(code, mav);
+        statusCodeParser.parseStatusCode(code, mav);
         return mav;
     }
 
@@ -108,7 +109,7 @@ public class PropertyController {
         final User user = userService.getCurrentlyLoggedUser();
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         final int code = propertyService.undoInterestOrReturnErrors(propertyId, user);
-        StatusCodeUtility.parseStatusCode(code, mav);
+        statusCodeParser.parseStatusCode(code, mav);
         return mav;
     }
 
@@ -161,7 +162,7 @@ public class PropertyController {
                                @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("successfulPropertyDelete");
         final User u = userService.getCurrentlyLoggedUser();
-        StatusCodeUtility.parseStatusCode(propertyService.delete(propertyId, u), mav);
+        statusCodeParser.parseStatusCode(propertyService.delete(propertyId, u), mav);
         return mav;
     }
 
@@ -171,7 +172,7 @@ public class PropertyController {
                                         @ModelAttribute FilteredSearchForm searchForm) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
         final int statusCode = propertyService.changeStatus(propertyId);
-        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        statusCodeParser.parseStatusCode(statusCode, mav);
         if(statusCode == HttpURLConnection.HTTP_OK)
             mav.addObject("interestedUsers", propertyService.get(propertyId).getInterestedUsers());
         return mav;

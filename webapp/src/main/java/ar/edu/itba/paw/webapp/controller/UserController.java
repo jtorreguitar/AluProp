@@ -10,7 +10,7 @@ import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.SignUpForm;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private NavigationUtility navigationUtility;
+    private ModelAndViewPopulator modelAndViewPopulator;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -64,21 +64,14 @@ public class UserController {
 
     @RequestMapping("/logIn")
     public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
-//        HttpSession session = request.getSession(false);
-//        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
-//        if (savedRequest != null){
-//            String targetUrl = savedRequest.getRedirectUrl();
-//            System.out.println(targetUrl);
-//        }
-        return navigationUtility.mavWithNavigationAttributes("logInForm");
+        return modelAndViewPopulator.mavWithNavigationAttributes("logInForm");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET )
     public ModelAndView signUp(HttpServletRequest request,
                                @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
-
-        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("signUpForm");
+        ModelAndView mav = modelAndViewPopulator.mavWithNavigationAttributes("signUpForm");
         mav.addObject("universities", universityService.getAll());
         mav.addObject("careers", careerService.getAll());
         return mav;
@@ -114,7 +107,7 @@ public class UserController {
                 return signUp(request, form, searchForm).addObject("uniqueEmail", false);
             }
             authenticateUserAndSetSession(form, request);
-            return navigationUtility.mavWithNavigationAttributes(viewName);
+            return modelAndViewPopulator.mavWithNavigationAttributes(viewName);
         }
         catch(IllegalUserStateException e) {
             return new ModelAndView("redirect:/404");
@@ -152,7 +145,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ModelAndView profile(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm, @PathVariable(value = "userId") long userId) {
-        final ModelAndView mav = navigationUtility.mavWithNavigationAttributes();
+        final ModelAndView mav = modelAndViewPopulator.mavWithNavigationAttributes();
         final User profileUser = userService.getWithRelatedEntities(userId);
         if (profileUser == null) {
             mav.setViewName("404");

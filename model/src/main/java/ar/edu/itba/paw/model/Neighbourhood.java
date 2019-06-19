@@ -26,12 +26,6 @@ public class Neighbourhood {
 
     /* package */ Neighbourhood() { }
 
-    public Neighbourhood(long id, String name, Collection<Property> properties) {
-        this.id = id;
-        this.name = name;
-        this.properties = properties;
-    }
-
     public Neighbourhood(long id, String name) {
         this.id = id;
         this.name = name;

@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.utilities;
+package ar.edu.itba.paw.webapp.helperClasses;
 
 import ar.edu.itba.paw.interfaces.IdNamePair;
 import ar.edu.itba.paw.interfaces.PageRequest;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Component
-public class NavigationUtility {
+public class ModelAndViewPopulator {
 
     private static final int NOTIFICATIONS_FOR_FIRST_PAGE = 5;
     private static final IdNamePair[] PROPERTY_TYPES = { new IdNamePair(0, "forms.house"),

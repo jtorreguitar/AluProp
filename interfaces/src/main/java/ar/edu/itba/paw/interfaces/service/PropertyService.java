@@ -24,6 +24,4 @@ public interface PropertyService {
     int delete(long id, User currentUser);
     Collection<Property> getInterestsOfUser(long id);
     int changeStatus(long propertyId);
-
-    int propertyCanBeShown(Property property);
 }

@@ -7,9 +7,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import ar.edu.itba.paw.interfaces.PageRequest;
-import ar.edu.itba.paw.interfaces.SearchableProperty;
-import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.enums.SearchablePrivacyLevel;
 import ar.edu.itba.paw.interfaces.enums.SearchablePropertyType;
@@ -17,7 +15,6 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyOrder;
 import ar.edu.itba.paw.model.enums.PropertyType;
-import ar.edu.itba.paw.persistence.utilities.QueryUtility;
 
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.jboss.logging.Logger;
@@ -37,7 +34,9 @@ public class APPropertyDao implements PropertyDao {
     private final static String GET_ALL_ACTIVE_ORDERED_QUERY = GET_ALL_ACTIVE_QUERY + " ORDER BY";
 
     @Autowired
-    WhereConditionBuilder conditionBuilder;
+    private WhereConditionBuilder conditionBuilder;
+    @Autowired
+    private Paginator paginator;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -50,13 +49,13 @@ public class APPropertyDao implements PropertyDao {
     @Override
     public Collection<Property> getAllActive(PageRequest pageRequest) {
         TypedQuery<Property> query = entityManager.createQuery(GET_ALL_ACTIVE_QUERY, Property.class);
-        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+        return paginator.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
     public Collection<Property> getAllActiveOrdered(PageRequest pageRequest, PropertyOrder propertyOrder) {
         TypedQuery<Property> query = entityManager.createQuery(GET_ALL_ACTIVE_ORDERED_QUERY + parseOrder(propertyOrder), Property.class);
-        return  QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+        return  paginator.makePagedQuery(query, pageRequest).getResultList();
     }
 
     private String parseOrder(PropertyOrder propertyOrder) {
@@ -90,7 +89,7 @@ public class APPropertyDao implements PropertyDao {
         searchString.append(parseOrder(property.getPropertyOrder()));
         TypedQuery<Property> query = entityManager.createQuery(searchString.toString(), Property.class);
         addSearchParameters(property, query);
-        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
+        return paginator.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override
@@ -190,6 +189,8 @@ public class APPropertyDao implements PropertyDao {
         }
     }
 
+    // transforms searchable property type into regular property type
+    // receiving a NOT_APPLICABLE will return null
     private PropertyType propertyTypeFromSearchablePropertyType(SearchablePropertyType propertyType) {
         return PropertyType.valueOf(propertyType.getValue());
     }
@@ -302,13 +303,6 @@ public class APPropertyDao implements PropertyDao {
         User user = entityManager.find(User.class, id);
         user.getInterestedProperties().isEmpty();
         return user.getInterestedProperties();
-    }
-
-    @Override
-    public Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest) {
-        TypedQuery<Property> query = entityManager.createQuery(GET_INTERESTS_OF_USER_QUERY, Property.class);
-        query.setParameter("userId", id);
-        return QueryUtility.makePagedQuery(query, pageRequest).getResultList();
     }
 
     @Override

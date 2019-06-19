@@ -37,10 +37,6 @@ public class Notification {
         public Builder(){
             this.notification = new Notification();
         }
-        public Builder withId(long id) {
-            notification.id = id;
-            return this;
-        }
 
         public Builder withTextCode(String textCode) {
             notification.textCode = textCode;
@@ -74,12 +70,6 @@ public class Notification {
 
     public long getId() {return id; }
     public void setId(long id) { this.id = id; }
-
-    public String getSubjectCode() { return subjectCode; }
-    public void setSubjectCode(String subjectCode) { this.subjectCode = subjectCode; }
-
-    public String getTextCode() { return textCode; }
-    public void setTextCode(String textCode) { this.textCode = textCode; }
 
     public String getLink() { return link; }
     public void setLink(String link) { this.link = link; }

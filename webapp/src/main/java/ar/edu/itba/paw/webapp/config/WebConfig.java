@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.interfaces.APJavaMailSender;
+import ar.edu.itba.paw.interfaces.APPaginator;
+import ar.edu.itba.paw.interfaces.Paginator;
 import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.builders.HqlWhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.beans.APMailSenderBean;
@@ -49,7 +51,7 @@ import java.util.Properties;
 
 @EnableWebMvc
 @EnableTransactionManagement
-@ComponentScan({ "ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.service", "ar.edu.itba.paw.webapp.utilities" })
+@ComponentScan({ "ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.service", "ar.edu.itba.paw.webapp.helperClasses"})
 @PropertySource("classpath:application.properties")
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -202,5 +204,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public WhereConditionBuilder whereConditionBuilder() {
         return new HqlWhereConditionBuilder();
+    }
+
+    @Bean
+    public Paginator paginator() {
+        return new APPaginator();
     }
 }
