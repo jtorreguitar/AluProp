@@ -50,6 +50,10 @@ public class UserController {
     @Autowired
     private ProposalService proposalService;
     @Autowired
+    private UniversityService universityService;
+    @Autowired
+    private CareerService careerService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private NavigationUtility navigationUtility;
@@ -74,7 +78,10 @@ public class UserController {
                                @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
 
-        return navigationUtility.mavWithNavigationAttributes("signUpForm");
+        ModelAndView mav = navigationUtility.mavWithNavigationAttributes("signUpForm");
+        mav.addObject("universities", universityService.getAll());
+        mav.addObject("careers", careerService.getAll());
+        return mav;
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
