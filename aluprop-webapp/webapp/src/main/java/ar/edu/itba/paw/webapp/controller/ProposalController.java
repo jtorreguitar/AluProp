@@ -61,6 +61,7 @@ public class ProposalController {
         if (userIsInvitedToProposal(u, proposal)){
             mav.addObject("isInvited", true);
             mav.addObject("hasReplied", userHasRepliedToProposal(u, proposal));
+            mav.addObject("budget", proposal.budget());
         }
 
         mav.addObject("property", property);

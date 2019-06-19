@@ -180,6 +180,19 @@ public class User {
         return stringBuilder.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof User))
+            return false;
+        User u = (User) o;
+        return u.getId() == getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(getId());
+    }
+
     public static class Builder {
 
         private final String EMAIL_REGEX = "^\\S+@\\S+$";

@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Entity
@@ -80,6 +81,21 @@ public class Proposal {
         return true;
     }
 
+    public float budget() {
+        if(getUserProposals() == null || getUserProposals().isEmpty())
+            return property.getPrice();
+        boolean shouldCountCreator = !getUserProposals()
+                                        .stream()
+                                        .map(up -> up.getUser().getId())
+                                        .collect(Collectors.toList())
+                                        .contains(getCreator().getId());
+        float unroundedBudget;
+        if(shouldCountCreator)
+            unroundedBudget = property.getPrice()/(userProposals.size() + 1);
+        else
+            unroundedBudget = property.getPrice()/userProposals.size();
+        return ((float) Math.floor(unroundedBudget*100))/100;
+    }
 
     public static class Builder {
         private Proposal proposal;
