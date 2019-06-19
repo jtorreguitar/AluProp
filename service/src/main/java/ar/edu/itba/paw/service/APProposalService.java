@@ -82,7 +82,7 @@ public class APProposalService implements ProposalService {
         if(proposal.getCreator().getId() != u.getId())
             return HttpURLConnection.HTTP_NOT_FOUND;
         notificationService.sendNotifications(DELETE_SUBJECT_CODE, DELETE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), u.getId());
-        proposalDao.delete(proposal.getId());
+        proposalDao.dropProposal(proposal.getId());
         return HttpURLConnection.HTTP_OK;
     }
 

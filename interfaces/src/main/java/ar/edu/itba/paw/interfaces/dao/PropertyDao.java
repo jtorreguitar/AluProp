@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
 import ar.edu.itba.paw.interfaces.SearchableProperty;
+import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.PropertyOrder;
@@ -22,4 +23,5 @@ public interface PropertyDao {
     Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property);
     long totalItemsOfSearch(SearchableProperty property);
     void changeStatus(long propertyId);
+    Interest getInterestByPropAndUser(long propertyId, User user);
 }

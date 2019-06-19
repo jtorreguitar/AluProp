@@ -35,12 +35,12 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public void dropProposal(long id) {
         Proposal proposal = entityManager.find(Proposal.class, id);
         if(proposal == null)
             return;
         proposal.setState(ProposalState.DROPPED);
-        entityManager.persist(proposal);
+        entityManager.merge(proposal);
     }
 
     @Override
@@ -83,7 +83,6 @@ public class APProposalDao implements ProposalDao {
         return -1;
     }
 
-    //@Override
     private Collection<Proposal> getAllProposalForUserIdAndPropertyId(long userId, long propertyId){
         return entityManager.createQuery(PROPOSAL_BY_USER_AND_PROPERTY, Proposal.class)
                 .setParameter("userId", userId)
@@ -96,6 +95,7 @@ public class APProposalDao implements ProposalDao {
     @Transactional
     public Collection<Proposal> getAllProposalForUserId(long id){
         User user = entityManager.find(User.class, id);
+        if(user == null) return new LinkedList<>();
         includeProposals(user);
         List<Proposal> list = new LinkedList<>();
         for(UserProposal up : user.getUserProposals())

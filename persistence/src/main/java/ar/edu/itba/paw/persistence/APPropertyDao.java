@@ -259,6 +259,7 @@ public class APPropertyDao implements PropertyDao {
         return false;
     }
 
+    @Override
     public Interest getInterestByPropAndUser(long propertyId, User user) {
         TypedQuery<Interest> query = entityManager.createQuery(INTEREST_BY_PROP_AND_USER_QUERY, Interest.class);
         query.setParameter("propertyId", propertyId);
