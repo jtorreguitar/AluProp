@@ -112,6 +112,7 @@ public class UserController {
                 return signUp(request, form, searchForm).addObject("uniqueEmail", false);
             }
             authenticateUserAndSetSession(form, request);
+            session.removeAttribute("url_prior_auth");
             return modelAndViewPopulator.mavWithNavigationAttributes(viewName);
         }
         catch(IllegalUserStateException e) {
