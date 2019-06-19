@@ -23,13 +23,13 @@ import java.util.*;
 @RunWith(MockitoJUnitRunner.class)
 public class APPropertyServiceTest {
 
-    private static int PROPERTY_ID = 1;
-    private static String CAPTION = "This house is very tested!!";
-    private static int NEIGHBOURHOOD_ID = 1;
-    private static int CAPACITY = 8;
-    private static int PRICE = 10000;
-    private static int IMAGE_ID = 1;
-    private static int OWNER_ID = 1;
+    /* package */ static int PROPERTY_ID = 1;
+    /* package */ static String CAPTION = "This house is very tested!!";
+    /* package */ static int NEIGHBOURHOOD_ID = 1;
+    /* package */ static int CAPACITY = 8;
+    /* package */ static int PRICE = 10000;
+    /* package */ static int IMAGE_ID = 1;
+    /* package */ static int OWNER_ID = 1;
 
 
     @InjectMocks
@@ -52,46 +52,9 @@ public class APPropertyServiceTest {
 
     User user;
 
-    private Property createDummyProperty() {
-        return new Property.Builder()
-                        .withId(PROPERTY_ID)
-                        .withCaption(CAPTION)
-                        .withDescription(CAPTION)
-                        .withPropertyType(PropertyType.APARTMENT)
-                        .withNeighbourhood(new Neighbourhood(NEIGHBOURHOOD_ID))
-                        .withPrivacyLevel(true)
-                        .withCapacity(CAPACITY)
-                        .withPrice(PRICE)
-                        .withRules(new HashSet<>())
-                        .withInterestedUsers(new HashSet<>())
-                        .withServices(new HashSet<>())
-                        .withImages(new HashSet<>())
-                        .withMainImage(new Image(IMAGE_ID))
-                        .withOwnerId(OWNER_ID)
-                        .withAvailability(Availability.valueOf("AVAILABLE"))
-                        .build();
-    }
-
-    private User createDummyUser(){
-        User.Builder builder = new User.Builder();
-        return builder.withEmail(APUserServiceTest.EMAIL)
-                .withName(APUserServiceTest.NAME)
-                .withLastName(APUserServiceTest.LAST_NAME)
-                .withBirthDate(Date.valueOf("1996-07-12"))
-                .withGender(Gender.MALE)
-                .withPasswordHash(APUserServiceTest.PASSWORD)
-                .withUniversityId(APUserServiceTest.UNIVERSITY_ID)
-                .withCareerId(APUserServiceTest.CAREER_ID)
-                .withBio(APUserServiceTest.BIO)
-                .withContactNumber("1166765456")
-                .withRole(Role.ROLE_GUEST)
-                .build();
-    }
-
-
     @Before
     public void setUp(){
-        property = createDummyProperty();
+        property = Factories.propertyCreator();
     }
 
 
@@ -107,12 +70,9 @@ public class APPropertyServiceTest {
         Assert.assertEquals(property, maybeProperty);
     }
 
-    /*@Test
+    @Test
     public void showInterestOrReturnErrorsWithoutErrorsTest() {
-        user = createDummyUser();
-
-        Mockito.when(propertyDao.showInterest(PROPERTY_ID, user))
-                .thenReturn(true);
+        user = Factories.userCreator();
 
         Mockito.when(propertyDao.get(PROPERTY_ID))
                 .thenReturn(property);
@@ -123,22 +83,8 @@ public class APPropertyServiceTest {
     }
 
     @Test
-    public void showInterestOrReturnErrorsWithValidPropertyAndUserButShowInterestFailsTest(){
-        user = createDummyUser();
-
-        Mockito.when(propertyDao.showInterest(PROPERTY_ID, user))
-                .thenReturn(false);
-
-        Mockito.when(propertyDao.get(PROPERTY_ID))
-                .thenReturn(property);
-
-        int code = propertyService.showInterestOrReturnErrors(PROPERTY_ID, user);
-        Assert.assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, code);
-    }*/
-
-    @Test
     public void showInterestOrReturnErrorsWithInvalidPropertyDoesntTryToShowInterestTest(){
-        user = createDummyUser();
+        user = Factories.userCreator();
 
         Mockito.when(propertyDao.get(PROPERTY_ID))
                 .thenReturn(null);
@@ -221,7 +167,7 @@ public class APPropertyServiceTest {
     public void getInterestsOfUser() {
         Collection<Property> expectedInterests = new HashSet<>();
         expectedInterests.add(property);
-        user = createDummyUser();
+        user = Factories.userCreator();
 
         Mockito.when(propertyDao.getInterestsOfUser(user.getId()))
                 .thenReturn(expectedInterests);

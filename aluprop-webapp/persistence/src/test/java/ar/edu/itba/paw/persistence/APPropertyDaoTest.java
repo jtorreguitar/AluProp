@@ -130,25 +130,6 @@ public class APPropertyDaoTest {
 
     }
 
-
-    /*@Test
-    @Transactional
-    @Rollback
-    public void showInterestCreatesRelationshipUserPropertyTest(){
-        Long propertyId = Long.valueOf(2);
-        User user = entityManager.find(User.class, Long.valueOf(1));
-        Long interestedUsers = entityManager.createQuery("SELECT Count(i.id) FROM Interest i WHERE i.property=:property and i.user=:user", Long.class)
-                                .setParameter("property", entityManager.find(Property.class, propertyId))
-                                .setParameter("user", user)
-                                .getSingleResult();
-
-        Assert.assertEquals(Long.valueOf(0), interestedUsers);
-        propertyDao.showInterest(propertyId, entityManager.find(User.class, Long.valueOf(1)));
-
-        Assert.assertEquals(Long.valueOf(1), interestedUsers);
-    }*/
-
-
     @Test
     public void getInterestByPropAndUserReturnsInterestIfExistsTest(){
         Interest maybeInterest = propertyDao.getInterestByPropAndUser(1, entityManager.find(User.class, Long.valueOf(1)));

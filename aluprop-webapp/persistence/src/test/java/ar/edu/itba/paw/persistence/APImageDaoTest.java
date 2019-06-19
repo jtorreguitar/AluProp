@@ -27,23 +27,6 @@ public class APImageDaoTest {
     @Autowired
     private ImageDao imageDao;
 
-    /* TODO: FIX THIS, I DON'T KNOW WHY ITS FAILING, MIGHT BE SOMETHING TO DO WITH BASE64 ENCODING
-    @Test
-    public void getImageTest() {
-        Image maybeImage = imageDao.get(1);
-        try {
-            String encoded_image = Base64.getEncoder().encodeToString(StreamUtils.copyToByteArray(maybeImage.getImage()));
-            if(encoded_image == null){
-                Assert.fail("ENCODED IMAGE IS NULL");
-            }
-            //Assert.assertEquals(Base64.getDecoder().decode(IMAGE_BASE64), StreamUtils.copyToByteArray(maybeImage.getImage()));
-            Assert.assertEquals(IMAGE_BASE64, encoded_image);
-        }catch(IOException e){
-            Assert.fail("IOExpection made this test fail");
-        }
-    }
-     */
-
     @Test
     public void getByPropertyTest() {
         Collection<Image> maybeImages = imageDao.getByProperty(IMAGE_QTY_OF_PROPERTY);
