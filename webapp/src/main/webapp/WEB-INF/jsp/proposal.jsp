@@ -42,16 +42,24 @@
     </div>
     <ul class="list-group list-group-flush">
         <a href="<c:url value="/user/${creator.id}"/>" class="list-group-item list-group-item-action">
-            <div style="display: flex;justify-content: space-between;align-items: center">${creator.name}
-                <c:if test="${proposal.state == 'ACCEPTED'}"> | ${creator.email} | ${creator.contactNumber}</c:if>
+            <div style="display: flex;justify-content: space-between;align-items: center">
+                <div>
+                    ${creator.name}
+                    <p style="margin-bottom: 8px;"><em><small>${creator.university.name} - ${creator.age} - ${creator.gender.toString().toLowerCase()}</small></em></p>
+                </div>
+                <c:if test="${proposal.state == 'ACCEPTED'}"> ${creator.email} | ${creator.contactNumber}</c:if>
                 <span><img src="<c:url value="/resources/images/star.png"/>" class="flag" alt="${language_en}"></span>
             </div>
         </a>
         <c:if test="${not empty proposalUsers}">
             <c:forEach var="user" items="${proposalUsers}" varStatus="i">
                 <a href="<c:url value="/user/${user.id}"/>" class="list-group-item list-group-item-action">
-                    <div style="display: flex;justify-content: space-between;align-items: center">${user.name}
-                        <c:if test="${proposal.state == 'ACCEPTED'}"> | ${user.email} | ${user.contactNumber}</c:if>
+                    <div style="display: flex;justify-content: space-between;align-items: center">
+                        <div>
+                            ${user.name}
+                            <p style="margin-bottom: 8px;"><em><small>${creator.university.name} - ${creator.age} - ${creator.gender.toString().toLowerCase()}</small></em></p>
+                        </div>
+                        <c:if test="${proposal.state == 'ACCEPTED'}"> ${user.email} | ${user.contactNumber}</c:if>
                         <span>
                             <c:choose>
                                 <c:when test="${userStates[i.index] == 0 }">
