@@ -70,13 +70,6 @@ public class APPropertyDaoTest {
 //    }
 
 
-    /* TODO[IV]
-    @Test
-    public void getPropertyByDescriptionTest(){
-
-    }
-    */
-
 
     @Test
     public void getPropertyWithRelatedEntitiesHasAllRelatedEntitiesTest(){

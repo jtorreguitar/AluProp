@@ -61,14 +61,13 @@ public class APUserDaoTest {
         Assert.assertEquals(NAME, maybeUser.getName());
     }
 
-
-    /*@Test
+    @Test
     public void createUserTest(){
         User expectedUser = userDao.create(Factories.userCreator());
         Assert.assertNotNull(expectedUser);
         Assert.assertEquals(EMAIL2,expectedUser.getEmail());
         Assert.assertEquals(NAME2, expectedUser.getName());
-    }*/
+    }
 
 
     @Test
