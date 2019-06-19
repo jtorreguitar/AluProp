@@ -183,6 +183,11 @@ INSERT INTO properties(
 SELECT * FROM (VALUES (7, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'AVAILABLE'))
 WHERE NOT EXISTS (SELECT * FROM properties WHERE id=7);
 
+INSERT INTO properties(
+    id, description, caption, propertytype, neighbourhoodid, privacylevel, capacity, price, mainimageid, ownerId , availability)
+    SELECT * FROM (VALUES (8, 'posta que el mejor depto', 'el mejor depto', 'APARTMENT', 1, true, 5, 100, 1, 1, 'RENTED'))
+WHERE NOT EXISTS (SELECT * FROM properties WHERE id=8);
+
 INSERT INTO interests(id, propertyid, userid)
 SELECT * FROM (VALUES(1, 1, 1))
 WHERE NOT EXISTS (SELECT * FROM interests WHERE id = 1);
