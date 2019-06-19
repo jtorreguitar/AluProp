@@ -6,12 +6,14 @@ import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.interfaces.service.*;
 import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.Property;
+import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class ModelAndViewPopulator {
@@ -34,6 +36,8 @@ public class ModelAndViewPopulator {
     private RuleService ruleService;
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private ProposalService proposalService;
 
     public void addPaginationAttributes(ModelAndView mav, PageResponse<Property> response) {
         mav.addObject("properties", response.getResponseData());
@@ -49,9 +53,13 @@ public class ModelAndViewPopulator {
                     notificationService.getAllUnreadNotificationsForUser(user.getId(), NOTIFICATION_PAGE_REQUEST);
             Collection<Notification> notifications =
                     notificationService.getAllNotificationsForUser(user.getId(), NOTIFICATION_PAGE_REQUEST);
+            Proposal[] unreadNotificationProposals = getProposalsForNotifications((List<Notification>)unreadNotifications);
+            Proposal[] notificationProposals = getProposalsForNotifications((List<Notification>)notifications);
             mav.addObject("currentUser", user);
             mav.addObject("unreadNotifications", unreadNotifications);
+            mav.addObject("unreadNotificationProposals", unreadNotificationProposals);
             mav.addObject("notifications", notifications);
+            mav.addObject("notificationProposals", notificationProposals);
 
         }
         mav.addObject("neighbourhoods", neighbourhoodService.getAll());
@@ -71,5 +79,12 @@ public class ModelAndViewPopulator {
         final ModelAndView mav = new ModelAndView();
         addNavigationAttributes(mav);
         return mav;
+    }
+
+    private Proposal[] getProposalsForNotifications(List<Notification> notifications){
+        Proposal[] result = new Proposal[notifications.size()];
+        for (int i = 0; i < notifications.size(); i++)
+            result[i] = proposalService.get(Integer.parseInt(notifications.get(i).getLink().split("proposal/")[1]));
+        return result;
     }
 }
