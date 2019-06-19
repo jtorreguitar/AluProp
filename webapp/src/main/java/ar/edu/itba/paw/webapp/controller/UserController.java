@@ -96,7 +96,7 @@ public class UserController {
             form.setRepeatPassword("");
             return signUp(request, form, searchForm).addObject("passwordMatch", false);
         }
-        String viewName = request.getHeader("Referer");
+        String viewName = "redirect:/";
         HttpSession session = request.getSession(false);
         SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
         if (savedRequest != null)
