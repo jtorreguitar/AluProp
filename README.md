@@ -13,6 +13,7 @@ The page uses spring web-mvc with hibernate as its ORM and spring security to ha
 ## application.properties
 
 Some configuration constants which may vary from user to user are kept in an application properties file that is listed in our .gitignore file. The file should define these constants:
+
 db.username = _database_username_
 
 db.password = _database_password_
