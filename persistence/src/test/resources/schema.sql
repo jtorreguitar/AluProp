@@ -208,3 +208,13 @@ WHERE NOT EXISTS (SELECT * FROM services WHERE id=1);
 INSERT INTO propertyServices (id, propertyId, serviceId)
 SELECT * FROM (VALUES(1, 1, 1))
 WHERE NOT EXISTS (SELECT * FROM propertyservices WHERE id = 1);
+
+INSERT INTO notifications (
+    id, userId, subjectCode, textCode, link, state)
+SELECT * FROM (VALUES(1, 1, 'sth', 'sth', '/proposals/44', 'UNREAD'))
+WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=1);
+
+INSERT INTO notifications (
+    id, userId, subjectCode, textCode, link, state)
+SELECT * FROM (VALUES(2, 1, 'sth', 'sth', '/proposals/44', 'READ'))
+WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=2);
