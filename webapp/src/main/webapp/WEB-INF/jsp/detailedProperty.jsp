@@ -223,11 +223,11 @@
                                             <c:choose>
                                                 <c:when test="${userInterested == true || currentUser.role == 'ROLE_HOST'}">
                                                     <c:url value="/proposal/create/${property.id}" var="postPath"/>
-                                                    <form:form modelAttribute="proposalForm" action="${postPath}" style="width: -moz-available;" method="post">
+                                                    <form:form modelAttribute="proposalForm" action="${postPath}" style="width: 100%;" method="post">
                                                         <div class="flex-container" style="justify-content: space-around">
                                                             <spring:message code="user.create_proposal" var="createProposal"/>
                                                             <c:if test="${currentUser.role != 'ROLE_HOST'}">
-                                                                <input type="button" value="${createProposal}" style="cursor:pointer;width: -moz-available;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
+                                                                <input type="button" value="${createProposal}" style="cursor:pointer;width: 100%;" class="btn btn-primary stretched-link confirm-proposal" data-toggle="modal" data-target="#exampleModalCenter"/>
                                                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                                         <div class="modal-content" style="padding: 0.5rem;margin-left:-5rem;width:200rem">
@@ -303,7 +303,7 @@
                                             </c:choose>
                                             <c:url value="/${property.id}/deInterest/" var="postPath"/>
                                             <form class="my-form" action="${postPath}" method="POST" style="width: 100%;">
-                                                <input type="submit" value="${not_interested}" style="width: 100%;color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
+                                                <input type="submit" value="${not_interested}" style="width: 100%;" class="btn btn-danger stretched-link"/>
                                             </form>
                                         </div>
                                     </c:when>

@@ -50,6 +50,10 @@ public class UserController {
     @Autowired
     private ProposalService proposalService;
     @Autowired
+    private UniversityService universityService;
+    @Autowired
+    private CareerService careerService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ModelAndViewPopulator modelAndViewPopulator;
@@ -60,12 +64,6 @@ public class UserController {
 
     @RequestMapping("/logIn")
     public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
-//        HttpSession session = request.getSession(false);
-//        SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
-//        if (savedRequest != null){
-//            String targetUrl = savedRequest.getRedirectUrl();
-//            System.out.println(targetUrl);
-//        }
         return modelAndViewPopulator.mavWithNavigationAttributes("logInForm");
     }
 
@@ -73,8 +71,10 @@ public class UserController {
     public ModelAndView signUp(HttpServletRequest request,
                                @ModelAttribute("signUpForm") final SignUpForm form,
                                @ModelAttribute FilteredSearchForm searchForm) {
-
-        return modelAndViewPopulator.mavWithNavigationAttributes("signUpForm");
+        ModelAndView mav = modelAndViewPopulator.mavWithNavigationAttributes("signUpForm");
+        mav.addObject("universities", universityService.getAll());
+        mav.addObject("careers", careerService.getAll());
+        return mav;
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST )
