@@ -305,7 +305,7 @@ border-color: #ccc;
 }
 
 .notification{
-    height: 90px;
+    min-height: 90px;
 }
 
 .notification-subject{

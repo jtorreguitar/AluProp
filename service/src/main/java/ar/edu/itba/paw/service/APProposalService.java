@@ -139,7 +139,6 @@ public class APProposalService implements ProposalService {
 
             Property property = propertyDao.getPropertyWithRelatedEntities(proposal.getProperty().getId());
 
-            propertyDao.changeStatus(property.getId());
             notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), property.getOwner());
             proposalDao.setState(proposal.getId(), ProposalState.SENT);
         }
@@ -166,7 +165,6 @@ public class APProposalService implements ProposalService {
             return HttpURLConnection.HTTP_NOT_FOUND;
         if (!userIsInvitedToProposal(currentUser, proposal))
             return HttpURLConnection.HTTP_FORBIDDEN;
-        User creator = userService.getWithRelatedEntities(proposal.getCreator().getId());
         delete(proposalId);
         notificationService.sendNotifications(DECLINE_SUBJECT_CODE, DECLINE_BODY_CODE, "/proposal/" + proposal.getId(), proposal.getUsers(), currentUser.getId());
         proposalDao.setDeclineInvite(currentUser.getId(), proposalId);
@@ -178,6 +176,17 @@ public class APProposalService implements ProposalService {
         if (!userOwnsProposalProperty(proposalId))
             return HttpURLConnection.HTTP_FORBIDDEN;
         proposalDao.setState(proposalId, state);
+        if (state == ProposalState.ACCEPTED || state == ProposalState.DECLINED){
+            Proposal proposal = proposalDao.get(proposalId);
+            User currentUser = userService.getCurrentlyLoggedUser();
+            notificationService.sendNotifications(state == ProposalState.ACCEPTED?"notifications.proposals.accepted.subject":"notifications.proposals.declined.subject",
+                                                state == ProposalState.ACCEPTED?"notifications.proposals.accepted":"notifications.proposals.declined",
+                                                "/proposal/" + proposal.getId(),
+                                                proposal.getUsers(),
+                                                currentUser.getId());
+            if (state == ProposalState.ACCEPTED)
+                propertyDao.changeStatus(proposal.getProperty().getId());
+        }
         return HttpURLConnection.HTTP_OK;
     }
     private boolean userOwnsProposalProperty(long proposalId){
