@@ -73,10 +73,14 @@
             <c:otherwise>
                 <c:choose>
                     <c:when test="${isSearch == true}">
-                        <h1><spring:message code="label.search.no_properties" /></h1>
+                        <div class="alert alert-danger" style="margin-left: 16px;" role="alert">
+                            <spring:message code="label.search.no_properties" />
+                        </div>
                     </c:when>
                     <c:otherwise>
-                        <h1><spring:message code="label.properties.noProperties" /></h1>
+                        <div class="alert alert-danger" style="margin-left: 16px;" role="alert">
+                            <spring:message code="label.properties.noProperties" />
+                        </div>
                     </c:otherwise>
                 </c:choose>
             </c:otherwise>
