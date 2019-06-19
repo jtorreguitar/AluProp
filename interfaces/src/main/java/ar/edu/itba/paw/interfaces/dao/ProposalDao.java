@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public interface ProposalDao {
     Proposal create(Proposal proposal, long[] userIds);
-    void delete(long id);
+    void dropProposal(long id);
     Proposal get(long id);
     Proposal getWithRelatedEntities(long id);
     Collection<Proposal> getAllProposalForUserId(long id);
