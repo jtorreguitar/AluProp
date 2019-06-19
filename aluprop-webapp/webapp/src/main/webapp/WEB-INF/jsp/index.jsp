@@ -16,7 +16,6 @@
     <!-- Bootstrap core css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css" />
-    <script src="<c:url value="/resources/js/urlUtility.js"/>" ></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
 </head>
@@ -40,13 +39,13 @@
                 <spring:message code="order_by"/>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'NEWEST');"><spring:message code="order_by_most_recent"/></a>
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'CAPACITY_DESC');"><spring:message code="order_by_capacity_desc"/></a>
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'CAPACITY');"><spring:message code="order_by_capacity_ascen"/></a>
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'PRICE_DESC');"><spring:message code="order_by_price_desc"/></a>
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'PRICE');"><spring:message code="order_by_price_ascen"/></a>
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'BUDGET_DESC');"><spring:message code="order_by_budget_desc"/></a>
-                <a class="dropdown-item" href="javascript:setRequestParam('orderBy', 'BUDGET');"><spring:message code="order_by_budget_ascen"/></a>
+                <a class="dropdown-item" href="?orderBy=NEWEST&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_most_recent"/></a>
+                <a class="dropdown-item" href="?orderBy=CAPACITY_DESC&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_capacity_desc"/></a>
+                <a class="dropdown-item" href="?orderBy=CAPACITY&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_capacity_ascen"/></a>
+                <a class="dropdown-item" href="?orderBy=PRICE_DESC&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_price_desc"/></a>
+                <a class="dropdown-item" href="?orderBy=PRICE&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_price_ascen"/></a>
+                <a class="dropdown-item" href="?orderBy=BUDGET_DESC&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_budget_desc"/></a>
+                <a class="dropdown-item" href="?orderBy=BUDGET&${requestScope['javax.servlet.forward.query_string']}"><spring:message code="order_by_budget_ascen"/></a>
             </div>
         </div>
     </div>
@@ -101,7 +100,7 @@
                             </li>
                         </c:when>
                         <c:otherwise>
-                            <li class="page-item"><a class="page-link" href="javascript:setRequestParam('pageNumber', '${current-2}');"> < </a></li>
+                            <li class="page-item"><a class="page-link" href="?pageNumber=${current - 2}&${requestScope['javax.servlet.forward.query_string']}"> < </a></li>
                         </c:otherwise>
                     </c:choose>
                     <c:set var="just_one"
@@ -125,7 +124,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <li class="page-item">
-                                    <a class="page-link" href="javascript:setRequestParam('pageNumber', '${pageIt-1}');">
+                                    <a class="page-link" href="?pageNumber=${pageIt - 1}&${requestScope['javax.servlet.forward.query_string']}">
                                             ${pageIt}
                                     </a>
                                     </li>
@@ -140,7 +139,7 @@
                         </c:when>
                         <c:otherwise>
                             <li class="page-item">
-                                <a class="page-link" href="javascript:setRequestParam('pageNumber', '${current}');"> > </a>
+                                <a class="page-link" href="?pageNumber=${current}&${requestScope['javax.servlet.forward.query_string']}"> > </a>
                             </li>
                         </c:otherwise>
                     </c:choose>
