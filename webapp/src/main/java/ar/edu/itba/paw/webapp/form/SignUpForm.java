@@ -32,10 +32,10 @@ public class SignUpForm {
     private String phoneNumber;
 
     @Range(min=0)
-    private int universityId;
+    private int universityId = -1;
 
     @Range(min=0)
-    private int careerId;
+    private int careerId = -1;
 
     @Range(min=0)
     private int gender = -1;
