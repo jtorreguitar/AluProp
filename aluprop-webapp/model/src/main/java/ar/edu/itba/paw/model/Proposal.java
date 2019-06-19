@@ -82,6 +82,8 @@ public class Proposal {
     }
 
     public float budget() {
+        if(getUserProposals() == null || getUserProposals().isEmpty())
+            return property.getPrice();
         boolean shouldCountCreator = !getUserProposals()
                                         .stream()
                                         .map(up -> up.getUser().getId())
