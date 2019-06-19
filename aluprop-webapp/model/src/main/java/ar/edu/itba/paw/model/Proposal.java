@@ -81,7 +81,8 @@ public class Proposal {
         return true;
     }
 
-    public float budget() {
+    public float
+    budget() {
         boolean shouldCountCreator = getUserProposals()
                                         .stream()
                                         .map(up -> up.getUser().getId())
