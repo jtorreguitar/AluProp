@@ -107,6 +107,20 @@ CREATE TABLE IF NOT EXISTS notifications (
     state VARCHAR(75)
 );
 
+
+CREATE TABLE IF NOT EXISTS proposals (
+  id INTEGER IDENTITY PRIMARY KEY,
+  propertyId INTEGER REFERENCES properties(id) ON DELETE CASCADE,
+  creatorId INTEGER REFERENCES users(id) ON DELETE CASCADE
+
+)
+
+CREATE TABLE IF NOT EXISTS  userProposals (
+  id INTEGER IDENTITY PRIMARY KEY,
+  userId INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  proposalId INTEGER REFERENCES proposals(id) ON DELETE CASCADE,
+  state integer
+);
 -- Populating test database to check access
 
 INSERT INTO countries(
@@ -218,3 +232,9 @@ INSERT INTO notifications (
     id, userId, subjectCode, textCode, link, state)
 SELECT * FROM (VALUES(2, 1, 'sth', 'sth', '/proposals/44', 'READ'))
 WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=2);
+
+INSERT INTO proposals(
+  id, propertyId, creatorId)
+SELECT * FROM (VALUES(1, 1, 1))
+WHERE NOT EXISTS (SELECT * FROM proposals WHERE id=1);
+
