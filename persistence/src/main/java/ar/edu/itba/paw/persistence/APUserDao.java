@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.Paginator;
 import ar.edu.itba.paw.interfaces.dao.UserDao;
 import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.interfaces.APPaginator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

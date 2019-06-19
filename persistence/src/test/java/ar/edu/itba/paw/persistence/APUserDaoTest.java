@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.dao.UserDao;
+import ar.edu.itba.paw.model.Interest;
 import ar.edu.itba.paw.model.User;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 @Sql("classpath:schema.sql")
@@ -22,19 +24,12 @@ public class APUserDaoTest {
 
     private final static String NAME = "John";
     private final static String EMAIL = "johnTester@gmail.com";
-    @Autowired
-    private DataSource ds;
-
 
     @Autowired
     private UserDao userDao;
 
-    private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp(){
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
+    @Autowired
+    private EntityManager entityManager;
 
     @Test
     public void getUserTest(){
@@ -49,7 +44,9 @@ public class APUserDaoTest {
 
     @Test
     public void getAllUsersTest(){
-        int expectedRowCount = JdbcTestUtils.countRowsInTable(jdbcTemplate, "users");
+        int expectedRowCount = entityManager
+                            .createQuery("SELECT COUNT(u.id) FROM users u", Integer.class)
+                            .getSingleResult();
         int realRowCount = userDao.getAll().size();
 
         Assert.assertNotEquals(0, realRowCount);
