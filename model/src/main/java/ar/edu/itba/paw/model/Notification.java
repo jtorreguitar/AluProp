@@ -76,4 +76,10 @@ public class Notification {
 
     public NotificationState getState() { return state; }
     public void setState(NotificationState state) { this.state = state; }
+
+    public String getSubjectCode() { return subjectCode; }
+    public void setSubjectCode(String subjectCode) { this.subjectCode = subjectCode; }
+
+    public String getTextCode() { return textCode; }
+    public void setTextCode(String textCode) { this.textCode = textCode; }
 }

@@ -8,6 +8,7 @@ import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyType;
+import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
@@ -50,7 +51,7 @@ public class HostController {
     public ModelAndView hostDecline(@PathVariable(value = "proposalId") int proposalId,
                                     @Valid @ModelAttribute("proposalForm") ProposalForm form) {
         final ModelAndView mav = new ModelAndView("redirect:/proposal/" + proposalId);
-        int statusCode = proposalService.setDecline(proposalId);
+        int statusCode = proposalService.setState(proposalId, ProposalState.DECLINED);
         statusCodeParser.parseStatusCode(statusCode, mav);
         return mav;
     }
@@ -59,7 +60,7 @@ public class HostController {
     public ModelAndView hostAccept(@PathVariable(value = "proposalId") int proposalId,
                                    @Valid @ModelAttribute("proposalForm") ProposalForm form) {
         final ModelAndView mav = new ModelAndView("redirect:/proposal/" + proposalId);
-        final int statusCode = proposalService.setAccept(proposalId);
+        final int statusCode = proposalService.setState(proposalId, ProposalState.ACCEPTED);
         statusCodeParser.parseStatusCode(statusCode, mav);
         return mav;
     }

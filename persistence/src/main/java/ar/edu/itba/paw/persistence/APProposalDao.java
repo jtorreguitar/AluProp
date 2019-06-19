@@ -131,17 +131,9 @@ public class APProposalDao implements ProposalDao {
 
     @Override
     @Transactional
-    public void setAccept(long proposalId) {
+    public void setState(long proposalId, ProposalState state) {
         Proposal prop = entityManager.find(Proposal.class, proposalId);
-        prop.setState(ProposalState.ACCEPTED);
-        entityManager.merge(prop);
-    }
-
-    @Override
-    @Transactional
-    public void setDecline(long proposalId) {
-        Proposal prop = entityManager.find(Proposal.class, proposalId);
-        prop.setState(ProposalState.DECLINED);
+        prop.setState(state);
         entityManager.merge(prop);
     }
 

@@ -10,6 +10,7 @@ import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.enums.ProposalState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -140,6 +141,7 @@ public class APProposalService implements ProposalService {
 
             propertyDao.changeStatus(property.getId());
             notificationService.sendNotification(SENT_HOST_SUBJECT_CODE, SENT_HOST_BODY_CODE, "/proposal/" + proposal.getId(), property.getOwner());
+            proposalDao.setState(proposal.getId(), ProposalState.SENT);
         }
     }
 
@@ -172,24 +174,12 @@ public class APProposalService implements ProposalService {
     }
 
     @Override
-    public int setAccept(long proposalId) {
+    public int setState(long proposalId, ProposalState state) {
         if (!userOwnsProposalProperty(proposalId))
             return HttpURLConnection.HTTP_FORBIDDEN;
-        Proposal proposal = proposalDao.get(proposalId);
-        propertyDao.changeStatus(proposal.getProperty().getId());
-        proposalDao.setAccept(proposalId);
-        sendProposalAcceptedNotifications(userService.getCurrentlyLoggedUser(), proposal);
+        proposalDao.setState(proposalId, state);
         return HttpURLConnection.HTTP_OK;
     }
-
-    @Override
-    public int setDecline(long proposalId) {
-        if (!userOwnsProposalProperty(proposalId))
-            return HttpURLConnection.HTTP_FORBIDDEN;
-        proposalDao.setDecline(proposalId);
-        return HttpURLConnection.HTTP_OK;
-    }
-
     private boolean userOwnsProposalProperty(long proposalId){
         User u = userService.getCurrentlyLoggedUser();
         Proposal proposal = getWithRelatedEntities(proposalId);

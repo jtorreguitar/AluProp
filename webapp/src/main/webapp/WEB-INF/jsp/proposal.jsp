@@ -116,6 +116,11 @@
                         </c:choose>
                     </div>
                 </c:when>
+                <c:when test="${proposal.state == 'SENT'}">
+                    <div class="card-body">
+                        <spring:message code="proposal.proposal_sent"/>
+                    </div>
+                </c:when>
                 <c:when test="${creator.id == currentUser.id}">
                     <c:url value="/guest/delete/${proposal.id}" var="postPath"/>
                     <form action="${postPath}" method="post">

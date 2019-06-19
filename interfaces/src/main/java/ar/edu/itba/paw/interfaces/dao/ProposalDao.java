@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.model.Proposal;
+import ar.edu.itba.paw.model.enums.ProposalState;
 
 import java.util.Collection;
 
@@ -14,8 +15,7 @@ public interface ProposalDao {
     void setAcceptInvite(long userId, long proposalId);
     void setDeclineInvite(long userId, long proposalId);
 
-    void setAccept(long proposalId);
-    void setDecline(long proposalId);
+    void setState(long proposalId, ProposalState state);
 
     long findDuplicateProposal(Proposal p, long[] userIds);
     Collection<Proposal> getProposalsForOwnedProperties(long id);

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces.service;
 import ar.edu.itba.paw.interfaces.Either;
 import ar.edu.itba.paw.model.Proposal;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.enums.ProposalState;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,8 +16,7 @@ public interface ProposalService {
     Collection<Proposal> getAllProposalForUserId(long id);
     int setAcceptInvite(long proposalId);
     int setDeclineInvite(long proposalId);
-    int setAccept(long proposalId);
-    int setDecline(long proposalId);
+    int setState(long proposalId, ProposalState state);
 
     Collection<Proposal> getProposalsForOwnedProperties(User profileUser);
     long findDuplicateProposal(Proposal proposal, long[] userIds);
