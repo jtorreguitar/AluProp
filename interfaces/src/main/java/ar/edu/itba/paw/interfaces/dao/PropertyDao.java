@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
-import ar.edu.itba.paw.interfaces.PageResponse;
-import ar.edu.itba.paw.interfaces.Pair;
 import ar.edu.itba.paw.interfaces.SearchableProperty;
 import ar.edu.itba.paw.model.Property;
 import ar.edu.itba.paw.model.User;
@@ -20,7 +18,6 @@ public interface PropertyDao {
     Property create(Property property);
     void delete(long id);
     Collection<Property> getInterestsOfUser(long id);
-    Collection<Property> getInterestsOfUserPaged(long id, PageRequest pageRequest);
     Long countAvailable();
     Collection<Property> advancedSearch(PageRequest pageRequest, SearchableProperty property);
     long totalItemsOfSearch(SearchableProperty property);

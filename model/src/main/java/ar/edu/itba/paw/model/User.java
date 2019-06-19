@@ -3,7 +3,6 @@ package ar.edu.itba.paw.model;
 import ar.edu.itba.paw.model.enums.Gender;
 import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.model.exceptions.IllegalUserStateException;
-import com.sun.org.apache.bcel.internal.generic.LoadClass;
 
 import javax.persistence.*;
 import java.time.LocalDate;

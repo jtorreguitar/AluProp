@@ -12,12 +12,11 @@ import ar.edu.itba.paw.model.exceptions.IllegalPropertyStateException;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.PropertyCreationForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
+import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
+import ar.edu.itba.paw.webapp.helperClasses.StatusCodeParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 public class HostController {
 
     @Autowired
-    private NavigationUtility navigationUtility;
+    private ModelAndViewPopulator navigationUtility;
     @Autowired
     private ProposalService proposalService;
     @Autowired
@@ -44,13 +43,15 @@ public class HostController {
     private ImageService imageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private StatusCodeParser statusCodeParser;
 
     @RequestMapping(value = "/decline/{proposalId}", method = RequestMethod.POST )
     public ModelAndView hostDecline(@PathVariable(value = "proposalId") int proposalId,
                                     @Valid @ModelAttribute("proposalForm") ProposalForm form) {
         final ModelAndView mav = new ModelAndView("redirect:/proposal/" + proposalId);
         int statusCode = proposalService.setDecline(proposalId);
-        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        statusCodeParser.parseStatusCode(statusCode, mav);
         return mav;
     }
 
@@ -59,7 +60,7 @@ public class HostController {
                                    @Valid @ModelAttribute("proposalForm") ProposalForm form) {
         final ModelAndView mav = new ModelAndView("redirect:/proposal/" + proposalId);
         final int statusCode = proposalService.setAccept(proposalId);
-        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        statusCodeParser.parseStatusCode(statusCode, mav);
         return mav;
     }
 

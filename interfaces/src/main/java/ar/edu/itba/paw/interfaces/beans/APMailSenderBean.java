@@ -9,7 +9,6 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.mail.internet.MimeMessage;
 import java.io.InputStream;
-import java.util.Collection;
 
 public class APMailSenderBean implements APJavaMailSender {
 
@@ -57,21 +56,6 @@ public class APMailSenderBean implements APJavaMailSender {
     @Override
     public void send(SimpleMailMessage... simpleMailMessages) throws MailException {
         emailSender.send(simpleMailMessages);
-    }
-
-
-    @Override
-    public void sendEmailToUsers(String title, String body, Collection<User> users) {
-        String[] to = new String[users.size()];
-        int index=0;
-        for(User u : users){
-            to[index++] = u.getEmail();
-        }
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(title);
-        message.setText(body);
-        emailSender.send(message);
     }
 
     @Override

@@ -22,11 +22,6 @@ public class PropertyRule {
 
     /* package */ PropertyRule() { }
 
-    public PropertyRule(Property property, Rule rule) {
-        this.property = property;
-        this.rule = rule;
-    }
-
     public long getId() {
         return id;
     }

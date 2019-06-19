@@ -36,13 +36,14 @@ public class APNotificationService implements NotificationService {
 
     @Override
     public Notification createNotification(long userId, String subjectCode, String textCode, String link) {
-        Notification.Builder builder = new Notification.Builder();
-        builder.withUser(userDao.get(userId));
-        builder.withSubjectCode(subjectCode);
-        builder.withTextCode(textCode);
-        builder.withLink(link);
-        builder.withState(NotificationState.UNREAD);
-        return notificationDao.createNotification(builder.build());
+        Notification notification = new Notification.Builder()
+                                                .withUser(userDao.get(userId))
+                                                .withSubjectCode(subjectCode)
+                                                .withTextCode(textCode)
+                                                .withLink(link)
+                                                .withState(NotificationState.UNREAD)
+                                                .build();
+        return notificationDao.createNotification(notification);
     }
 
     @Override

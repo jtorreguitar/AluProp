@@ -22,17 +22,6 @@ public class Service {
 
     /* package */ Service() { }
 
-    public Service(long id, String name, Collection<Property> properties) {
-        this.id = id;
-        this.name = name;
-        this.properties = properties;
-    }
-
-    public Service(long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public Service(long id) {
         this.id = id;
     }

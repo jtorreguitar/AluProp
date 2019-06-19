@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.interfaces.dao;
 
 import ar.edu.itba.paw.interfaces.PageRequest;
-import ar.edu.itba.paw.interfaces.PageResponse;
 import ar.edu.itba.paw.model.User;
 
 import java.util.Collection;
-import java.util.stream.Stream;
 
 public interface UserDao {
     Collection<User> getAll();
@@ -18,6 +16,5 @@ public interface UserDao {
     User create(User user);
     boolean userExistsByEmail(String email);
     Collection<User> getUsersInterestedInProperty(long id, PageRequest pageRequest);
-    boolean isUserInterestedInProperty(long userId, long propertyId);
     Long count();
 }

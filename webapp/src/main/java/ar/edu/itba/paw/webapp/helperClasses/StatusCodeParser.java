@@ -1,14 +1,14 @@
-package ar.edu.itba.paw.webapp.utilities;
+package ar.edu.itba.paw.webapp.helperClasses;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.net.HttpURLConnection;
 
-public class StatusCodeUtility {
+@Component
+public class StatusCodeParser {
 
-    private StatusCodeUtility() { }
-
-    public static void parseStatusCode(int statusCode, ModelAndView mavWithSuccessView) {
+    public void parseStatusCode(int statusCode, ModelAndView mavWithSuccessView) {
         switch (statusCode) {
             case HttpURLConnection.HTTP_OK:
                 break;

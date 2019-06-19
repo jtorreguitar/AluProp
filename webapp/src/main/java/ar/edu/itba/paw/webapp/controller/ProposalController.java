@@ -7,7 +7,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UserProposal;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import java.net.URI;
 @Controller
 @RequestMapping("/proposal")
 public class ProposalController {
-    private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
 
     @Autowired
     private ProposalService proposalService;
@@ -41,7 +40,7 @@ public class ProposalController {
     @Autowired
     private NotificationService notificationService;
     @Autowired
-    private NavigationUtility navigationUtility;
+    private ModelAndViewPopulator navigationUtility;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView get(HttpServletRequest request, @PathVariable("id") long id, @ModelAttribute FilteredSearchForm searchForm) {

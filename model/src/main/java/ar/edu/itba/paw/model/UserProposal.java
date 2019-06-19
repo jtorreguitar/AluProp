@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.model;
 
-import ar.edu.itba.paw.model.enums.ProposalState;
 import ar.edu.itba.paw.model.enums.UserProposalState;
 
 import javax.persistence.*;
@@ -23,15 +22,11 @@ public class UserProposal {
     @JoinColumn(name = "proposalId")
     private Proposal proposal;
 
+    // got it wrong in the schema and this enum is an int in prod, can't change it without a migration.
     @Enumerated(EnumType.ORDINAL)
     private UserProposalState state;
 
     /* package */ UserProposal() { }
-
-    public UserProposal(long id){
-        this.id = id;
-        this.state = UserProposalState.PENDING;
-    }
 
     public UserProposal(User user, Proposal proposal) {
         this.user = user;

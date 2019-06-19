@@ -3,8 +3,8 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.service.ProposalService;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
-import ar.edu.itba.paw.webapp.utilities.StatusCodeUtility;
+import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
+import ar.edu.itba.paw.webapp.helperClasses.StatusCodeParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -23,9 +23,11 @@ import java.net.HttpURLConnection;
 public class GuestController {
 
     @Autowired
-    private NavigationUtility navigationUtility;
+    private ModelAndViewPopulator navigationUtility;
     @Autowired
     private ProposalService proposalService;
+    @Autowired
+    private StatusCodeParser statusCodeParser;
 
     @RequestMapping(value = "/delete/{proposalId}", method = RequestMethod.POST )
     public ModelAndView delete(@PathVariable(value = "proposalId") int proposalId,
@@ -49,7 +51,7 @@ public class GuestController {
                                final BindingResult errors) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/proposal/" + proposalId);
         int statusCode = proposalService.setAcceptInvite(proposalId);
-        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        statusCodeParser.parseStatusCode(statusCode, mav);
         return mav;
     }
 
@@ -59,7 +61,7 @@ public class GuestController {
                                 final BindingResult errors) {
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/proposal/" + proposalId);
         int statusCode = proposalService.setDeclineInvite(proposalId);
-        StatusCodeUtility.parseStatusCode(statusCode, mav);
+        statusCodeParser.parseStatusCode(statusCode, mav);
         return mav;
     }
 }

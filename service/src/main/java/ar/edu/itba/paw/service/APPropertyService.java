@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.dao.*;
 import ar.edu.itba.paw.interfaces.service.PropertyService;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -158,18 +157,6 @@ public class APPropertyService implements PropertyService {
         if(prop.getOwner().getId() != currentUser.getId())
             return HttpURLConnection.HTTP_FORBIDDEN;
         propertyDao.changeStatus(propertyId);
-        return HttpURLConnection.HTTP_OK;
-    }
-
-    @Override
-    public int propertyCanBeShown(Property property) {
-        final User user = userService.getCurrentlyLoggedUser();
-        if (property == null)
-            return HttpURLConnection.HTTP_NOT_FOUND;
-        else if (property.getAvailability() == Availability.RENTED &&
-                user != null &&
-                property.getOwner().getId() != user.getId())
-            return HttpURLConnection.HTTP_FORBIDDEN;
         return HttpURLConnection.HTTP_OK;
     }
 }

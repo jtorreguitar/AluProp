@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.service.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
-import ar.edu.itba.paw.webapp.utilities.NavigationUtility;
+import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class ErrorController {
     @Autowired
     private UserService userService;
     @Autowired
-    private NavigationUtility navigationUtility;
+    private ModelAndViewPopulator navigationUtility;
 
     @RequestMapping(value = "errors", method= RequestMethod.GET)
     public ModelAndView renderErrorPage(@ModelAttribute FilteredSearchForm searchForm,
