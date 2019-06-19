@@ -63,7 +63,10 @@ public class UserController {
 
 
     @RequestMapping("/logIn")
-    public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
+    public ModelAndView login(HttpServletRequest request,
+                              @ModelAttribute FilteredSearchForm searchForm) {
+        String referrer = request.getHeader("Referer");
+        request.getSession().setAttribute("url_prior_login", referrer);
         return modelAndViewPopulator.mavWithNavigationAttributes("logInForm");
     }
 
@@ -93,7 +96,7 @@ public class UserController {
             form.setRepeatPassword("");
             return signUp(request, form, searchForm).addObject("passwordMatch", false);
         }
-        String viewName = "redirect:/";
+        String viewName = request.getHeader("Referer");
         HttpSession session = request.getSession(false);
         SavedRequest savedRequest = (SavedRequest)session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
         if (savedRequest != null)
