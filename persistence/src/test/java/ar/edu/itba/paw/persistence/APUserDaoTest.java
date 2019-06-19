@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 import java.util.Collection;
 
 @Sql("classpath:schema.sql")
@@ -26,9 +25,6 @@ public class APUserDaoTest {
 
     /* package */ final static String NAME2 = "Robert";
     /* package */ final static String EMAIL2 = "elReyDelTesting@gmail.com";
-    @Autowired
-    private DataSource ds;
-
     @Autowired
     private UserDao userDao;
 
@@ -65,16 +61,15 @@ public class APUserDaoTest {
         Assert.assertEquals(NAME, maybeUser.getName());
     }
 
-    /* TODO: When migrated to Hibernate
-    @Test
+
+    /*@Test
     public void createUserTest(){
         User expectedUser = userDao.create(Factories.userCreator());
         Assert.assertNotNull(expectedUser);
         Assert.assertEquals(EMAIL2,expectedUser.getEmail());
         Assert.assertEquals(NAME2, expectedUser.getName());
+    }*/
 
-    }
-    */
 
     @Test
     public void userExistsByEmailWithExistingUserReturnsTrueTest(){

@@ -8,8 +8,8 @@ import java.sql.Date;
 
 public class Factories {
     public static User userCreator(){
-        User.Builder builder = new User.Builder();
-        return builder.withEmail(APUserDaoTest.EMAIL2)
+        return new User.Builder()
+                .withEmail(APUserDaoTest.EMAIL2)
                 .withName(APUserDaoTest.NAME2)
                 .withLastName("Tester")
                 .withBirthDate(Date.valueOf("1996-07-12"))
