@@ -303,7 +303,7 @@
                                             </c:choose>
                                             <c:url value="/${property.id}/deInterest/" var="postPath"/>
                                             <form class="my-form" action="${postPath}" method="POST" style="width: 100%;">
-                                                <input type="submit" value="${not_interested}" style="width: 100%;color:white;background-color:red;border-color:red" class="btn btn-primary stretched-link"/>
+                                                <input type="submit" value="${not_interested}" style="width: 100%;" class="btn btn-danger stretched-link"/>
                                             </form>
                                         </div>
                                     </c:when>
