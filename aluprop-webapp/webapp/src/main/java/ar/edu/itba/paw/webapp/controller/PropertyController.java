@@ -13,6 +13,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.enums.Availability;
 import ar.edu.itba.paw.model.enums.PropertyOrder;
 import ar.edu.itba.paw.model.enums.ProposalState;
+import ar.edu.itba.paw.model.enums.Role;
 import ar.edu.itba.paw.webapp.form.FilteredSearchForm;
 import ar.edu.itba.paw.webapp.form.ProposalForm;
 import ar.edu.itba.paw.webapp.helperClasses.ModelAndViewPopulator;
@@ -98,6 +99,8 @@ public class PropertyController {
                                  @ModelAttribute FilteredSearchForm searchForm) {
         final User user = userService.getCurrentlyLoggedUser();
         final ModelAndView mav = navigationUtility.mavWithNavigationAttributes("redirect:/" + propertyId);
+        if (user.getRole() == Role.ROLE_HOST)
+            return mav;
         final int code = propertyService.showInterestOrReturnErrors(propertyId, user);
         statusCodeParser.parseStatusCode(code, mav);
         return mav;
