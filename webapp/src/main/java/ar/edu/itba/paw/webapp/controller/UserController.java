@@ -63,7 +63,10 @@ public class UserController {
 
 
     @RequestMapping("/logIn")
-    public ModelAndView login(HttpServletRequest request, @ModelAttribute FilteredSearchForm searchForm) {
+    public ModelAndView login(HttpServletRequest request,
+                              @ModelAttribute FilteredSearchForm searchForm) {
+        String referrer = request.getHeader("Referer");
+        request.getSession().setAttribute("url_prior_login", referrer);
         return modelAndViewPopulator.mavWithNavigationAttributes("logInForm");
     }
 

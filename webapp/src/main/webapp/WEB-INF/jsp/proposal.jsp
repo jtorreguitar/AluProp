@@ -116,7 +116,7 @@
                         </c:choose>
                     </div>
                 </c:when>
-                <c:when test="${proposal.state == 'SENT'}">
+                <c:when test="${proposal.state == 'SENT' && currentUser.role != 'ROLE_HOST'}">
                     <div class="card-body">
                         <spring:message code="proposal.proposal_sent"/>
                     </div>
@@ -129,8 +129,8 @@
                 </c:when>
                 <c:when test="${isInvited == true && !hasReplied}">
                 <div class="col-12">
-                <div class="row">
-                        <p><spring:message code="label.proposal.you_would_pay"/> ${proposal.property.price/proposalUsers.size()} <spring:message code="label.proposal.per_month"/></p>
+                    <div class="row">
+                        <p><spring:message code="label.proposal.you_would_pay"/> $${proposal.property.price/proposal.users.size()} <spring:message code="label.proposal.per_month"/></p>
                     </div>
                     <div class="row" style="display:flex;justify-content:space-between;">
                         <div>

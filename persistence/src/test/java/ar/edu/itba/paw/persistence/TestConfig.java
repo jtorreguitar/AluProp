@@ -53,8 +53,7 @@ public class TestConfig {
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         final Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
-        properties.setProperty("format_sql", "true");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }

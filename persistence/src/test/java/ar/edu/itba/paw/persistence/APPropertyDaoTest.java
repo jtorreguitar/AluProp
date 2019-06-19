@@ -56,7 +56,7 @@ public class APPropertyDaoTest {
         maybeProperty = propertyDao.get(propertyID);
         Assert.assertNotNull(maybeProperty);
         Assert.assertEquals(propertyID, maybeProperty.getId());
-        Assert.assertEquals(CAPTION, maybeProperty.getCaption());
+        Assert.assertEquals(CAPTION2, maybeProperty.getCaption());
         Assert.assertEquals(DESCRIPTION, maybeProperty.getDescription());
     }
 
@@ -187,7 +187,7 @@ public class APPropertyDaoTest {
     }
 */
 
-    
+
 
 
 }

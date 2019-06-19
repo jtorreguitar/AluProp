@@ -163,6 +163,7 @@ public class APProposalDao implements ProposalDao {
         Collection<Proposal> proposals = owner.getOwnedProperties().stream()
                                                 .flatMap(property -> property.getProposals().stream())
                                                 .filter(proposal -> proposal.getState() != ProposalState.PENDING)
+                                                .sorted((p1, p2) -> Long.compare(p2.getId(),p1.getId()))
                                                 .collect(Collectors.toList());
         proposals.isEmpty();
         proposals.forEach(p -> p.getUserProposals().isEmpty());
