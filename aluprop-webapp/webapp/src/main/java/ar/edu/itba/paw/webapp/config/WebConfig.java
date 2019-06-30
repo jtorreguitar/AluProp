@@ -7,11 +7,9 @@ import ar.edu.itba.paw.interfaces.WhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.builders.HqlWhereConditionBuilder;
 import ar.edu.itba.paw.interfaces.beans.APMailSenderBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
@@ -201,7 +199,11 @@ public class WebConfig implements WebMvcConfigurer {
         return factoryBean;
     }
 
+    // the scope annotation is required so that the bean is created every time it needs to be injected
+    // HqlWhereConditionBuilder contains a string builder as a class attribute and having it as a
+    // singleton would create a race condition.
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WhereConditionBuilder whereConditionBuilder() {
         return new HqlWhereConditionBuilder();
     }

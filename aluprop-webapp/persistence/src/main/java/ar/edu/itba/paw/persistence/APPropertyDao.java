@@ -28,7 +28,6 @@ public class APPropertyDao implements PropertyDao {
 
     private final static Logger logger = LoggerFactory.logger(PropertyDao.class);
 
-    private final static String GET_INTERESTS_OF_USER_QUERY = "FROM properties p WHERE EXISTS (FROM interests i WHERE i.property.id = p.id AND i.user.id = :userId)";
     private final static String INTEREST_BY_PROP_AND_USER_QUERY = "FROM Interest i WHERE i.property.id = :propertyId AND i.user.id = :userId";
     private final static String GET_ALL_ACTIVE_QUERY = "FROM Property p WHERE p.availability = 'AVAILABLE'";
     private final static String GET_ALL_ACTIVE_ORDERED_QUERY = GET_ALL_ACTIVE_QUERY + " ORDER BY";
