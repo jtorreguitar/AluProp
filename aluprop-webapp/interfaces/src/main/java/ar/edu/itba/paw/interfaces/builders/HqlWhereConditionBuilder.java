@@ -6,10 +6,6 @@ public class HqlWhereConditionBuilder implements WhereConditionBuilder {
 
     private StringBuilder condition;
 
-    public HqlWhereConditionBuilder() {
-        this.condition = new StringBuilder();
-    }
-
     @Override
     public WhereConditionBuilder begin() {
         condition = new StringBuilder();
